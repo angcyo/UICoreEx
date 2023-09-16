@@ -76,15 +76,25 @@ class SimpleTransition : ITransition {
             app(),
             bitmap,
             (1 / 1f.toPixel()).toDouble(),
-            direction = 0,
-            angle = 0.0,
-            type = 2 //只获取轮廓
+            params.bitmapToGCodeLineSpace,
+            0,
+            0.0,
+            type = params.bitmapToGCodeType, //只获取轮廓
+            isLast = params.bitmapToGCodeIsLast,
+            boundFirst = params.bitmapToGCodeBoundFirst
         )
         val gCodeText = file.readText()
         file.deleteSafe()
         //添加关闭激光的指令
+
+        /*val gcode = if (params.bitmapToGCodeIsLast) {
+            "$gCodeText\nM2"
+        } else {
+            gCodeText
+        }*/
+
         return gCodeTranslation(
-            "$gCodeText\nM2",
+            gCodeText,
             bounds.left,
             bounds.top,
             params

@@ -241,6 +241,9 @@ object HawkEngraveKeys {
     /**最大的外部导入文件字节数, 1MB 1048576*/
     var openFileByteCount: Long by HawkPropertyValue<Any, Long>(1 * 1024 * 1024)
 
+    /**需要解析log文件成图片时, 文件的最大字节大小. 超过此大小不预览*/
+    var previewFileByteCount: Long by HawkPropertyValue<Any, Long>(10 * 1024 * 1024)
+
     /**最小的文本字体大小, 像素*/
     @Pixel
     var minTextSize: Float by HawkPropertyValue<Any, Float>(5f)

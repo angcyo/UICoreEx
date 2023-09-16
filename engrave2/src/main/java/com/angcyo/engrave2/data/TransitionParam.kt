@@ -6,6 +6,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeHeight
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeWidth
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutLoopCount
+import com.angcyo.bluetooth.fsc.laserpacker.bean._gcodeLineSpace
+import com.angcyo.bluetooth.fsc.laserpacker.bean._sliceCount
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -58,6 +60,24 @@ data class TransitionParam(
      * */
     val isSingleLine: Boolean = false,
 
+    /**[com.angcyo.opencv.OpenCV.bitmapToGCode]相关参数
+     *
+     *  0:.svg文件
+     *  1:为静态图像文件
+     *  2:只获取轮廓(等同于线距足够大时的效果)（包括bmp，jpeg，png均可）
+     *  3:不打印轮廓
+     */
+    var bitmapToGCodeType: Int = 2,
+
+    /**向文件末尾写入M2*/
+    var bitmapToGCodeIsLast: Boolean = true,
+
+    /**最先打印轮廓 or 最后打印轮廓*/
+    var bitmapToGCodeBoundFirst: Boolean = false,
+
+    /**填充时的线距*/
+    var bitmapToGCodeLineSpace: Double = _gcodeLineSpace,
+
     /**使用图片像素转GCode时, 扫描像素的步长*/
     @Pixel
     val pixelGCodeGapValue: Float = LibHawkKeys.pathPixelGapValue.toPixel(),
@@ -65,6 +85,8 @@ data class TransitionParam(
     /**是否激活压缩输出GCode
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
     val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,
+
+    //---切割相关---
 
     /**是否使用GCode切割数据*/
     val enableGCodeCutData: Boolean = false,
@@ -78,12 +100,22 @@ data class TransitionParam(
     /**切割数据的高度*/
     val cutGCodeHeight: Float? = _cutGCodeHeight,
 
-    /**GCode数据额外需要偏移的距离*/
+    /**GCode数据额外需要偏移的距离
+     * LX1 画笔模块数据偏移*/
     @Pixel
     val gcodeOffsetLeft: Float = 0f,
 
     @Pixel
     val gcodeOffsetTop: Float = 0f,
+
+
+    //-----------------切片相关-----------------
+
+    /**是否要激活图片的切片*/
+    val enableSlice: Boolean = false,
+
+    /**切片的数量*/
+    val sliceCount: Int? = _sliceCount,
 ) {
 
     /**需要平移的矩阵信息*/

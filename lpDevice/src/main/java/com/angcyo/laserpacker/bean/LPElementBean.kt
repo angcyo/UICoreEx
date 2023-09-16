@@ -477,8 +477,11 @@ data class LPElementBean(
 ) {
 
     /**数据处理的模式, 处理成机器需要的数据. 通常情况下和雕刻图层一致
+     *
      * [LPDataConstant.DATA_MODE_BLACK_WHITE]
+     *
      * [LPDataConstant.DATA_MODE_GCODE]
+     *
      * [LPDataConstant.DATA_MODE_DITHERING]
      *
      * [com.angcyo.laserpacker.device.data.EngraveLayerInfo]
@@ -492,21 +495,22 @@ data class LPElementBean(
             dataMode
         } else {
             when {
-                mtype == LPDataConstant.DATA_TYPE_BITMAP -> when (imageFilter) {
-                    LPDataConstant.DATA_MODE_PRINT,
-                    LPDataConstant.DATA_MODE_SEAL,
-                    LPDataConstant.DATA_MODE_BLACK_WHITE -> LPDataConstant.DATA_MODE_BLACK_WHITE
+                mtype == LPDataConstant.DATA_TYPE_BITMAP -> if (isNeedSlice) LPDataConstant.DATA_MODE_GCODE /*切片走gcode*/ else
+                    when (imageFilter) {
+                        LPDataConstant.DATA_MODE_PRINT,
+                        LPDataConstant.DATA_MODE_SEAL,
+                        LPDataConstant.DATA_MODE_BLACK_WHITE -> LPDataConstant.DATA_MODE_BLACK_WHITE
 
-                    LPDataConstant.DATA_MODE_DITHERING -> if (vmApp<LaserPeckerModel>().isSupportDithering() && !HawkEngraveKeys.forceGrey) {
-                        //支持抖动
-                        LPDataConstant.DATA_MODE_DITHERING
-                    } else {
-                        //不支持抖动, 则发送灰度图片
-                        LPDataConstant.DATA_MODE_GREY
+                        LPDataConstant.DATA_MODE_DITHERING -> if (vmApp<LaserPeckerModel>().isSupportDithering() && !HawkEngraveKeys.forceGrey) {
+                            //支持抖动
+                            LPDataConstant.DATA_MODE_DITHERING
+                        } else {
+                            //不支持抖动, 则发送灰度图片
+                            LPDataConstant.DATA_MODE_GREY
+                        }
+
+                        else -> imageFilter
                     }
-
-                    else -> imageFilter
-                }
 
                 isRenderTextElement -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
                     //描边文本, 走GCode
@@ -531,7 +535,9 @@ data class LPElementBean(
             }
         }
 
-    /**图层id*/
+    /**图层id
+     * [_layerMode] 图层模式对应的图层id
+     * */
     val _layerId: String?
         get() {
             val result = layerId ?: _layerMode?.toLayerId()
@@ -591,6 +597,10 @@ data class LPElementBean(
         get() = mtype == LPDataConstant.DATA_TYPE_BITMAP &&
                 (imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
                         imageFilter == LPDataConstant.DATA_MODE_GREY)
+
+    /**当前数据是否需要切片*/
+    val isNeedSlice: Boolean
+        get() = isSupportSliceElement && sliceCount > 0
 
     /**是否要显示条码字符*/
     val isShowBarcodeText: Boolean

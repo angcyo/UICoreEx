@@ -41,6 +41,11 @@ import com.angcyo.objectbox.saveAllEntity
 
 /**
  * 业务相关的数据传输助手工具类
+ *
+ * [BaseRenderer] -> [TransferDataEntity]
+ *
+ * [com.angcyo.engrave2.transition.EngraveTransitionHelper] 核心转换助手
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/29
  */
@@ -210,7 +215,9 @@ object LPTransferHelper {
                         TransitionParam(
                             gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
                             gcodeOffsetTop = GCodeDataOffsetItem.offsetTop,
-                            enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData
+                            enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData,
+                            enableSlice = bean.isNeedSlice,
+                            sliceCount = bean.sliceCount
                         )
                     )
                 }

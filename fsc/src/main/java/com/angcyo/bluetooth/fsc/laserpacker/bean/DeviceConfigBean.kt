@@ -5,6 +5,8 @@ import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex.size
 
 /**
  * 设备配置信息结构
@@ -100,6 +102,12 @@ data class DeviceConfigBean(
     /**是否使用批量雕刻属性*/
     var useBatchEngraveCmd: Boolean? = null,
 
+    /**切片的数量*/
+    var sliceCount: Int? = 10,
+
+    /**GCode切片填充的线距*/
+    var gcodeLineSpace: Double? = null,
+
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]
@@ -155,3 +163,24 @@ val _cutGCodeWidth: Float?
 
 val _cutGCodeHeight: Float?
     get() = _deviceConfigBean?.cutGCodeHeight
+val _sliceCount: Int?
+    get() = _deviceConfigBean?.sliceCount
+val _gcodeLineSpace: Double
+    get() = _deviceConfigBean?.gcodeLineSpace ?: 0.125
+
+/**将切片数量转换成对应的切片色阶阈值数组*/
+fun Int.toSliceLevelList(): List<Int> {
+    val max = LibHawkKeys.grayThreshold
+    val count = this
+    val step = maxOf(1, max / count)
+
+    val list = mutableListOf<Int>()
+    while (list.size() < count) {
+        val value = maxOf(0, max - step * list.size())
+        if (value == list.lastOrNull()) {
+            break
+        }
+        list.add(value)
+    }
+    return list
+}

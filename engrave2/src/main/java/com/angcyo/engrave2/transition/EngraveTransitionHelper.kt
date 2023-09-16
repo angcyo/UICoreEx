@@ -8,6 +8,7 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean.toSliceLevelList
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writeErrorLog
@@ -45,12 +46,14 @@ import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.lines
+import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toDrawable
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.ex.withBitmapPaint
+import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
@@ -65,6 +68,12 @@ import kotlin.math.min
 
 /**
  * 雕刻数据转换助手工具类
+ *
+ * [IEngraveDataProvider] -> [TransferDataEntity]
+ *
+ * [com.angcyo.canvas2.laser.pecker.engrave.LPTransferHelper]
+ * [com.angcyo.canvas2.laser.pecker.engrave.LPTransferHelper.transitionRenderer]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/29
  */
@@ -441,6 +450,51 @@ object EngraveTransitionHelper {
             if (bitmap == null) {
                 //也没有图片
                 return null
+            } else if (params.enableSlice) {
+                //使用图片切片
+
+                val sliceGcodeFile = libCacheFile("slice_output.gcode")
+                sliceGcodeFile.deleteSafe()
+
+                val colors = (params.sliceCount ?: 1).toSliceLevelList()
+                colors.forEachIndexed { index, threshold ->
+                    //单切片, 防止一下子内存占用过高
+                    BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
+                        //bitmap.save(libCacheFile("${threshold}.png")).absolutePath
+                        params.bitmapToGCodeType = 1
+                        params.bitmapToGCodeIsLast = index == colors.size - 1
+                        val bounds = provider.getEngraveDataBounds(RectF())
+                        val gCodeFile = if (params.useOpenCvHandleGCode) {
+                            transition.covertBitmap2GCode(bitmap, bounds, params)
+                        } else {
+                            transition.covertBitmapPixel2GCode(bitmap, bounds, params)
+                        }
+                        gCodeFile.readText()?.let { sliceGcodeFile.appendText(it) }
+                        bitmap.recycle()
+                    }
+                }
+
+                val fileSize = sliceGcodeFile.length()
+                saveGCodeEngraveData(transferDataEntity, sliceGcodeFile)
+
+                span {
+                    append("转GCode切片") {
+                        foregroundColor = accentColor
+                    }
+                    append("[$index]->")
+                    append(transferConfigEntity.name)
+                    append(" ${transferDataEntity.lines}行 ")
+                    append(" [${bitmap.width} x ${bitmap.height}] dpi:${layerDpi}") {
+                        foregroundColor = accentColor
+                    }
+                    append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
+                    append(" ${bitmap.byteCount.toSizeString()}->${fileSize.toSizeString()}")
+                    append(" $colors")
+                    append(" 耗时:${LTime.time()}") {
+                        foregroundColor = accentColor
+                    }
+                }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
+
             } else {
                 //使用图片转GCode
 
@@ -651,12 +705,13 @@ object EngraveTransitionHelper {
     //region ---文件输出信息---
 
     private fun saveGCodeEngraveData(transferDataEntity: TransferDataEntity, gCodeFile: File) {
+        val fileLength = gCodeFile.length()
         transferDataEntity.lines = gCodeFile.lines()
         val gCodeText = gCodeFile.readText()
         gCodeFile.deleteSafe()
 
         val index = transferDataEntity.index
-        transferDataEntity.dataPath = gCodeText.toByteArray().writeTransferDataPath("$index")
+        transferDataEntity.dataPath = gCodeText?.toByteArray()?.writeTransferDataPath("$index")
 
         doBack {
             //2:保存一份GCode文本数据/原始数据
@@ -668,10 +723,10 @@ object EngraveTransitionHelper {
                 )
             }
 
-            if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN) {
+            if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN && fileLength <= HawkEngraveKeys.previewFileByteCount) {
                 //val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
                 val gCodeDrawable =
-                    gCodeText.toGCodePath()?.toDrawable(HawkEngraveKeys.projectOutSize.toFloat())
+                    gCodeText?.toGCodePath()?.toDrawable(HawkEngraveKeys.projectOutSize.toFloat())
 
                 //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
                 val previewBitmap = gCodeDrawable?.toBitmap()
