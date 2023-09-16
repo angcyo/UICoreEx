@@ -23,6 +23,14 @@ data class TransferMonitorEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
+    /**正在传输的数据索引
+     * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.index]*/
+    var dataIndex: Int? = null,
+
+    /**正在传输的数据名称
+     * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.name]*/
+    var dataName: String? = null,
+
     //---transfer
 
     /**数据创建的开始时间, 13位毫秒时间*/

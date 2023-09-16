@@ -444,6 +444,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                                 if (monitorEntity.dataTransferSize > 0) {
                                     append(" 大小:${monitorEntity.dataSize()} ")
                                 }
+                                monitorEntity.dataName?.let {
+                                    appendln()
+                                    append("正在传输:$it/${monitorEntity.dataIndex ?: -1}")
+                                }
                                 if (monitorEntity.dataTransferStartTime > 0) {
                                     appendln()
                                     append("传输耗时:")
@@ -1061,6 +1065,15 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             if (!fileName.isNullOrBlank()) {
                 append(fileName)
                 appendLine()
+                if (isDebug()) {
+                    val engraveDataEntity =
+                        EngraveFlowDataHelper.getCurrentEngraveDataEntity(taskId)
+                    engraveDataEntity?.index?.let {
+                        append("$it/") {
+                            fontSize = _titleFontSize * dpi
+                        }
+                    }
+                }
                 append(_string(R.string.engraving)) {
                     fontSize = _titleFontSize * dpi
                 }

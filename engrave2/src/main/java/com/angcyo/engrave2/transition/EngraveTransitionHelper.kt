@@ -494,7 +494,7 @@ object EngraveTransitionHelper {
                     }
                     append("[$index]->")
                     append(transferConfigEntity.name)
-                    append(" ${transferDataEntity.lines}行 ")
+                    append(" ${transferDataEntity.lines}行")
                     append(" [${bitmap.width} x ${bitmap.height}] dpi:${layerDpi}") {
                         foregroundColor = accentColor
                     }
@@ -529,7 +529,7 @@ object EngraveTransitionHelper {
                     }
                     append("[$index]->")
                     append(transferConfigEntity.name)
-                    append(" ${transferDataEntity.lines}行 ")
+                    append(" ${transferDataEntity.lines}行")
                     append(" [${bitmap.width} x ${bitmap.height}] dpi:${layerDpi}") {
                         foregroundColor = accentColor
                     }

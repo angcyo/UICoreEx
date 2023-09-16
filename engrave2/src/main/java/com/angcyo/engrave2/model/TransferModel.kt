@@ -564,7 +564,10 @@ class TransferModel : ViewModel() {
                                     progress,
                                     sendSpeed,
                                     speedList.average().toFloat()
-                                )
+                                ) {
+                                    dataName = transferDataEntity.name
+                                    dataIndex = transferDataEntity.index
+                                }
                                 doMain {
                                     //及时回调
                                     transferState.progress = progress

@@ -174,7 +174,8 @@ object EngraveFlowDataHelper {
         taskId: String?,
         progress: Int,
         speed: Float,
-        averageSpeed: Float
+        averageSpeed: Float,
+        action: TransferMonitorEntity.() -> Unit = {}
     ) {
         TransferMonitorEntity::class.lpUpdateOrCreateEntity({
             apply(TransferMonitorEntity_.taskId.equal("$taskId"))
@@ -185,6 +186,7 @@ object EngraveFlowDataHelper {
             if (progress >= 10) {
                 dataTransferMaxSpeed = max(speed, dataTransferMaxSpeed)
             }
+            action()
         }
     }
 
