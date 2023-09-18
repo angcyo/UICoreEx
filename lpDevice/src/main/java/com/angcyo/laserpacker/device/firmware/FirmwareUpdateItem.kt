@@ -63,6 +63,8 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
     val apiModel = vmApp<FscBleApiModel>()
 
+    val stateModel = vmApp<DeviceStateModel>()
+
     /**开始的时间*/
     var _startTime: Long = -1
 
@@ -112,7 +114,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 }
             }
 
-            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+            if (stateModel.isDeviceConnect()) {
                 peckerModel.deviceVersionData.value?.softwareVersionName?.let {
                     appendln()
                     append("${_string(R.string.device_firmware_version)}:$it")
@@ -133,7 +135,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)
         itemHolder.gone(
             R.id.device_button,
-            vmApp<DeviceStateModel>().isDeviceConnect() || itemIsFinish || itemIsUpdating
+            stateModel.isDeviceConnect() || itemIsFinish || itemIsUpdating
         )
         itemHolder.gone(
             R.id.start_button, itemIsFinish || itemIsUpdating || itemFirmwareInfo == null
@@ -155,7 +157,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
         //开始升级
         itemHolder.click(R.id.start_button) {
-            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+            if (stateModel.isDeviceConnect()) {
                 //开始升级
                 itemFirmwareInfo?.let { info ->
                     if (peckerModel.deviceVersionData.value?.softwareVersion == info.version) {
