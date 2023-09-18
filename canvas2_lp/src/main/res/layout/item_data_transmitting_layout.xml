@@ -18,15 +18,32 @@
         app:progress_show_text="true"
         tools:progress_value="50" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/lib_text_view"
-        style="@style/LibTitleTextStyle"
+    <LinearLayout
+        android:id="@+id/lib_wrap_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/lib_progress_bar"
         app:layout_constraintLeft_toLeftOf="@id/lib_progress_bar"
         app:layout_constraintRight_toRightOf="@id/lib_progress_bar"
-        app:layout_constraintTop_toTopOf="@id/lib_progress_bar"
-        tools:text="@string/remaining_time" />
+        app:layout_constraintTop_toTopOf="@id/lib_progress_bar">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_image_view"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginRight="@dimen/lib_sdpi"
+            app:srcCompat="@drawable/engrave_config_remaining_time_svg" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/remaining_time" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

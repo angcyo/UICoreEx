@@ -420,12 +420,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         null
                     } else {
                         span {
-                            if (HawkEngraveKeys.enableConfigIcon) {
-                                appendDrawable(R.drawable.engrave_config_remaining_time_svg)
-                            } else {
-                                append(_string(R.string.remaining_time))
-                                append(":")
-                            }
+                            append(_string(R.string.remaining_time))
+                            append(":")
                             append(remainingDuration)
                         }
                     }

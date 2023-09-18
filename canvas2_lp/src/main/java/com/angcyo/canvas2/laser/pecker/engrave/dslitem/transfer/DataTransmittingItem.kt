@@ -42,6 +42,8 @@ class DataTransmittingItem : DslAdapterItem() {
             }
         }
 
+        itemHolder.visible(R.id.lib_image_view, HawkEngraveKeys.enableConfigIcon)
+        itemHolder.gone(R.id.lib_wrap_layout, itemRemainingTime.isNullOrEmpty())
         itemHolder.tv(R.id.lib_text_view)?.text = itemRemainingTime
     }
 }
