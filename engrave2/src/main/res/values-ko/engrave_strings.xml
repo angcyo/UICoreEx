@@ -59,7 +59,6 @@
     <string name="file_name">이름</string>
 
     <string name="engrave_file_name">파일 이름</string>
-    <string name="ui_next">다음</string>
     <string name="send_file">파일 보내기</string>
 
     <string name="size_safety_tips">레이저 작업 공간이 안전한지 확인하세요.</string>

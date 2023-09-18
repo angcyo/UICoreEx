@@ -60,7 +60,6 @@
     <string name="file_name">Named</string>
 
     <string name="engrave_file_name">Filename</string>
-    <string name="ui_next">Next</string>
     <string name="send_file">Send File</string>
 
     <string name="size_safety_tips">Please verify that the laser workspace is secure</string>

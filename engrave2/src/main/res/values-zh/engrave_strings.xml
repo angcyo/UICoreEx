@@ -60,7 +60,6 @@
     <string name="file_name">命名</string>
 
     <string name="engrave_file_name">文件命名</string>
-    <string name="ui_next">下一步</string>
     <string name="send_file">发送文件</string>
 
     <string name="size_safety_tips">请确认激光工作区安全</string>

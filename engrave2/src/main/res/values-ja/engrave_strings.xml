@@ -59,7 +59,6 @@
     <string name="file_name">名称</string>
 
     <string name="engrave_file_name">ファイル名</string>
-    <string name="ui_next">次へ</string>
     <string name="send_file">ファイル送信</string>
 
     <string name="size_safety_tips">レーザーのワークスペースが安全であることを確認してください</string>

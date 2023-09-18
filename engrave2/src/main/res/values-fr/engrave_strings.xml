@@ -59,7 +59,6 @@
     <string name="file_name">Nom du produit</string>
 
     <string name="engrave_file_name">Dénomination des fichiers</string>
-    <string name="ui_next">Suivant</string>
     <string name="send_file">Envoi de fichiers</string>
 
     <string name="size_safety_tips">Veuillez vérifier que l\'espace laser est sécurisé.</string>
