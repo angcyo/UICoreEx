@@ -127,5 +127,5 @@
 
     <string name="device_shutdown_tip">Device is shutdown</string>
     <string name="engrave_pump_label">WindSpeedLevel</string>
-
+    <string name="canvas_export_data">ExportData</string>
 </resources>

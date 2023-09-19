@@ -199,6 +199,32 @@ object EngraveFlowDataHelper {
         }
     }
 
+    /**清理[taskId]对应的所有入库数据*/
+    fun clearTask(taskId: String?) {
+        val id = "$taskId"
+        //传输的数据相关信息
+        TransferDataEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(TransferDataEntity_.taskId.equal(id))
+        }
+        //传输的数据监控
+        TransferMonitorEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(TransferMonitorEntity_.taskId.equal(id))
+        }
+
+        //雕刻相关参数
+        EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal(id))
+        }
+        //雕刻任务数据记录
+        EngraveTaskEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveTaskEntity_.taskId.equal(id))
+        }
+        //雕刻进度数据记录
+        EngraveDataEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveDataEntity_.taskId.equal(id))
+        }
+    }
+
     //endregion ---task---
 
     //region ---预览相关---
@@ -217,7 +243,6 @@ object EngraveFlowDataHelper {
     //endregion ---预览相关---
 
     //region ---传输/数据相关---
-
 
     /**构建或者获取生成数据需要的配置信息
      * [taskId] 可以为空*/

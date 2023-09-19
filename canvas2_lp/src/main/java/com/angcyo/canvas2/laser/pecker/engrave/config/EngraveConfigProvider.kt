@@ -59,12 +59,12 @@ class EngraveConfigProvider : IEngraveConfigProvider {
         }
     }
 
-    override fun getEngraveMaterialList(flowLayoutHelper: BaseFlowLayoutHelper): List<MaterialEntity> {
-        val taskId = flowLayoutHelper.flowTaskId
+    override fun getEngraveMaterialList(flowLayoutHelper: IEngraveConfigTaskProvider): List<MaterialEntity> {
+        val taskId = flowLayoutHelper.engraveConfigTaskId
         //默认选中材质, 获取任务之前已经选中的材质, 如果有
         var materialEntityList = EngraveFlowDataHelper.findTaskMaterialList(taskId)
         if (materialEntityList.isNullOrEmpty()) {
-            val projectBean = flowLayoutHelper.projectBean
+            val projectBean = flowLayoutHelper.engraveConfigProjectBean
             val projectMaterialList = projectBean?.getProjectMaterialList()
             if (projectMaterialList.isNullOrEmpty()) {
                 //未初始化材质信息, 默认使用第一个
@@ -97,13 +97,13 @@ class EngraveConfigProvider : IEngraveConfigProvider {
     }
 
     override fun getEngraveMaterial(
-        flowLayoutHelper: BaseFlowLayoutHelper,
+        flowLayoutHelper: IEngraveConfigTaskProvider,
         layerId: String
     ): MaterialEntity = getEngraveMaterialList(flowLayoutHelper).find { it.layerId == layerId }
         ?: MaterialHelper.getLayerMaterialList(layerId).last()
 
-    override fun getEngraveConfigList(flowLayoutHelper: BaseFlowLayoutHelper): List<EngraveConfigEntity> {
-        val taskId = flowLayoutHelper.flowTaskId
+    override fun getEngraveConfigList(flowLayoutHelper: IEngraveConfigTaskProvider): List<EngraveConfigEntity> {
+        val taskId = flowLayoutHelper.engraveConfigTaskId
         val list = EngraveFlowDataHelper.getTaskEngraveConfigList(taskId)
         if (list.isNotEmpty()) {
             //已经有配置, 则使用
@@ -118,10 +118,10 @@ class EngraveConfigProvider : IEngraveConfigProvider {
     }
 
     override fun getEngraveConfig(
-        flowLayoutHelper: BaseFlowLayoutHelper,
+        flowLayoutHelper: IEngraveConfigTaskProvider,
         layerId: String
     ): EngraveConfigEntity {
-        val taskId = flowLayoutHelper.flowTaskId
+        val taskId = flowLayoutHelper.engraveConfigTaskId
         return EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId)
     }
 

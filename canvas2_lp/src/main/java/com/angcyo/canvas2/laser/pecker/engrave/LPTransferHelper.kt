@@ -100,9 +100,10 @@ object LPTransferHelper {
      * [com.angcyo.engrave.transition.EngraveTransitionManager.engraveLayerList]*/
     @CallPoint
     @WorkerThread
-    private fun transitionTransferData(
+    fun transitionTransferData(
         delegate: CanvasRenderDelegate,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        useItemEngraveParams: Boolean = HawkEngraveKeys.enableItemEngraveParams
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
 
@@ -111,7 +112,12 @@ object LPTransferHelper {
             val rendererList = LPEngraveHelper.getLayerRendererList(delegate, null, true)
             if (rendererList.isNotEmpty()) {
                 resultDataList.addAll(
-                    transitionTransferData(rendererList, transferConfigEntity, null)
+                    transitionTransferData(
+                        rendererList,
+                        transferConfigEntity,
+                        null,
+                        useItemEngraveParams
+                    )
                 )
             }
         } else {
@@ -124,7 +130,8 @@ object LPTransferHelper {
                         transitionTransferData(
                             rendererList,
                             transferConfigEntity,
-                            engraveLayerInfo.layerId
+                            engraveLayerInfo.layerId,
+                            useItemEngraveParams
                         )
                     )
                 }
@@ -139,11 +146,13 @@ object LPTransferHelper {
     /**将渲染的item[BaseRenderer], 转换成[TransferDataEntity]
      *
      * [layerId] 指定图层的id, 不指定则从元素中获取
+     * [useItemEngraveParams] 是否要使用元素自己的雕刻参数
      * */
     private fun transitionTransferData(
         rendererList: List<BaseRenderer>,
         transferConfigEntity: TransferConfigEntity,
-        layerId: String?
+        layerId: String?,
+        useItemEngraveParams: Boolean
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
         val taskId = transferConfigEntity.taskId
@@ -154,7 +163,7 @@ object LPTransferHelper {
             val elementBean = renderer.lpElementBean()
             val elementLayerId = layerId ?: elementBean?._layerId
 
-            val transferConfig = if (HawkEngraveKeys.enableItemEngraveParams) {
+            val transferConfig = if (useItemEngraveParams) {
                 //单元素雕刻参数, 使用元素自己的参数
                 val index = elementBean?.index ?: EngraveHelper.generateEngraveIndex()
                 elementBean?.index = index

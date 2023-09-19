@@ -21,6 +21,7 @@ import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.config.EngraveConfigProvider
 import com.angcyo.canvas2.laser.pecker.engrave.config.IEngraveConfigProvider
+import com.angcyo.canvas2.laser.pecker.engrave.config.IEngraveConfigTaskProvider
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLayerConfigItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
@@ -71,7 +72,7 @@ import com.angcyo.widget.span.span
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/07
  */
-abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
+abstract class BaseFlowLayoutHelper : BaseRecyclerIView(), IEngraveConfigTaskProvider {
 
     companion object {
 
@@ -154,7 +155,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     protected val _titleFontSize = 12
 
     /**选过哪些图层, 用来标识对应的图层配置过参数*/
-    val selectLayerList = mutableListOf<String>()
+    val selectLayerList = mutableSetOf<String>()
 
     /**当前选中的图层id
      * [EngraveLayerConfigItem]*/
@@ -188,6 +189,18 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**是否处于最小化预览*/
     var isMinimumPreview: Boolean = false
+
+    override var engraveConfigTaskId: String?
+        get() = flowTaskId
+        set(value) {
+            flowTaskId = value
+        }
+
+    override var engraveConfigProjectBean: LPProjectBean?
+        get() = projectBean
+        set(value) {
+            projectBean = value
+        }
 
     init {
         iViewLayoutId = R.layout.canvas_engrave_flow_layout

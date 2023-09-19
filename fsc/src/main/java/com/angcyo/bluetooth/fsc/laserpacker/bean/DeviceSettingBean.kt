@@ -149,6 +149,8 @@ data class DeviceSettingBean(
     var fileNameRegex: String? = "[\\/:*?\"<>|]",
     /**是否显示变量元素ico提示*/
     var showVariableElementIco: Boolean = true,
+    /**复制元素时, 是否需要偏移位置*/
+    var copyElementOffset: Boolean = true,
 
     //endregion---Android端设置项---
 

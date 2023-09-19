@@ -78,6 +78,9 @@ object LPDataConstant {
     /**单个或者多个[LPElementBean]json结构的数据*/
     const val LPBEAN_EXT = ".lpbean"
 
+    /**U盘数据格式类型*/
+    const val LPB_EXT = ".lpb"
+
     //endregion ---支持的文件类型---
 
     //region ---数据类型---

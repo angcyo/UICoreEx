@@ -30,18 +30,21 @@ interface IEngraveConfigProvider {
     //region ---雕刻参数配置---
 
     /**获取雕刻应用的材质信息, 每个图层都有对应的材质*/
-    fun getEngraveMaterialList(flowLayoutHelper: BaseFlowLayoutHelper): List<MaterialEntity>
+    fun getEngraveMaterialList(flowLayoutHelper: IEngraveConfigTaskProvider): List<MaterialEntity>
 
     /**[getEngraveMaterialList]*/
-    fun getEngraveMaterial(flowLayoutHelper: BaseFlowLayoutHelper, layerId: String): MaterialEntity
+    fun getEngraveMaterial(
+        flowLayoutHelper: IEngraveConfigTaskProvider,
+        layerId: String
+    ): MaterialEntity
 
     /**获取流程对应的所有图层雕刻参数*/
-    fun getEngraveConfigList(flowLayoutHelper: BaseFlowLayoutHelper): List<EngraveConfigEntity>
+    fun getEngraveConfigList(flowLayoutHelper: IEngraveConfigTaskProvider): List<EngraveConfigEntity>
 
     /**获取指定图层的雕刻参数
      * [getEngraveConfigList]*/
     fun getEngraveConfig(
-        flowLayoutHelper: BaseFlowLayoutHelper,
+        flowLayoutHelper: IEngraveConfigTaskProvider,
         layerId: String
     ): EngraveConfigEntity
 

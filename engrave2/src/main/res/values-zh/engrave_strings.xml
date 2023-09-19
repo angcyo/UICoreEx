@@ -127,5 +127,6 @@
 
     <string name="device_shutdown_tip">设备已关机</string>
     <string name="engrave_pump_label">风速等级</string>
+    <string name="canvas_export_data">导出数据</string>
 
 </resources>

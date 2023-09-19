@@ -36,6 +36,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.AddVariableBarCodeItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.AddVariableQrCodeItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.AddVariableTextItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlExportItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlOperateItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlSettingItem
@@ -178,6 +179,11 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             if (isDebug()) {
                 if (!closeCanvasItemsFun.have("_operate_")) {
                     ControlOperateItem()() {
+                        initItem()
+                    }
+                }
+                if (!closeCanvasItemsFun.have("_export_")) {
+                    ControlExportItem()() {
                         initItem()
                     }
                 }
@@ -956,7 +962,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 )
             }
             vh.click(R.id.layer_control_copy_view) {
-                LPRendererHelper.copyRenderer(delegate, list, true)
+                LPRendererHelper.copyRenderer(delegate, list)
             }
         }
     }
@@ -972,7 +978,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     private fun copyRenderer() {
         val delegate = delegate ?: return
         val list = delegate.selectorManager.getSelectorRendererList(false)
-        LPRendererHelper.copyRenderer(delegate, list, true)
+        LPRendererHelper.copyRenderer(delegate, list)
     }
 
     /**切换选中渲染器的可见性*/

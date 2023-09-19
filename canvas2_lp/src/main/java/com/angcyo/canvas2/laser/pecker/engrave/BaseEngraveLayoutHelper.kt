@@ -704,7 +704,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
         }
     }
 
-    /**渲染雕刻配置界面*/
+    /**渲染雕刻配置界面
+     *
+     * 数据导出配置界面
+     * [com.angcyo.canvas2.laser.pecker.dialog.ExportDataDialogConfig.onSelfRenderAdapter]
+     * */
     open fun renderEngraveConfig() {
         updateIViewTitle(_string(R.string.print_setting))
         engraveBackFlow = ENGRAVE_FLOW_PREVIEW
@@ -799,7 +803,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
 
-                if (!deviceStateModel.isPenMode()) {//握笔模块, 不需要材质
+                if (!deviceStateModel.isPenMode()) { //握笔模块, 不需要材质
                     //材质选择
                     EngraveMaterialWheelItem()() {
                         itemTag = MaterialEntity::name.name
