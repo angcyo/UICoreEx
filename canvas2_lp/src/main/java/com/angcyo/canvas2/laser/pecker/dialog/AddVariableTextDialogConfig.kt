@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LPRadioGroupItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LPSingleInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatWheelItem
@@ -46,7 +47,6 @@ import com.angcyo.dsladapter.find
 import com.angcyo.dsladapter.hideItemBy
 import com.angcyo.dsladapter.renderAdapterEmptyStatus
 import com.angcyo.item.DslIncrementItem
-import com.angcyo.item.DslRadioGroupItem
 import com.angcyo.item.DslTextPreviewItem
 import com.angcyo.item.style._itemCheckedIndexList
 import com.angcyo.item.style.itemCheckItems
@@ -423,7 +423,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemText = bean.variableText
         }
 
-        DslRadioGroupItem()() {
+        LPRadioGroupItem()() {
             itemLabel = _string(R.string.variable_date_format)
             itemCheckItems = listOf(
                 _string(R.string.variable_date_format_system),
@@ -463,7 +463,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             }
         }
 
-        DslRadioGroupItem()() {
+        LPRadioGroupItem()() {
             itemLabel = _string(R.string.variable_date_type)
             itemCheckItems = listOf(
                 _string(R.string.variable_date_type_system),
@@ -505,7 +505,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemText = bean.variableText
         }
 
-        DslRadioGroupItem()() {
+        LPRadioGroupItem()() {
             itemLabel = _string(R.string.variable_time_format)
             itemCheckItems = listOf(
                 _string(R.string.variable_time_format_system),
@@ -545,7 +545,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             }
         }
 
-        DslRadioGroupItem()() {
+        LPRadioGroupItem()() {
             itemLabel = _string(R.string.variable_time_type)
             itemCheckItems = listOf(
                 _string(R.string.variable_time_type_system),
@@ -585,7 +585,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         DslTextPreviewItem()() {
             itemText = bean.variableText
         }
-        DslRadioGroupItem()() {
+        LPRadioGroupItem()() {
             itemLabel = _string(R.string.variable_file_type)
             itemCheckItems = listOf(
                 _string(R.string.variable_file_txt),
@@ -634,7 +634,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         DslTextPreviewItem()() {
             itemText = bean.variableText
         }
-        DslRadioGroupItem()() {
+        LPRadioGroupItem()() {
             itemLabel = _string(R.string.variable_file_type)
             itemCheckItems = listOf(
                 _string(R.string.variable_file_txt),
