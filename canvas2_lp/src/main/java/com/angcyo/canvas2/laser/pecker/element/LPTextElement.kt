@@ -53,6 +53,7 @@ import com.angcyo.qrcode.code.QrCodeConfig
 import com.angcyo.qrcode.code.UPCAConfig
 import com.angcyo.qrcode.code.UPCEConfig
 import com.angcyo.qrcode.code.is1DCodeType
+import com.angcyo.qrcode.code.toBarcodeFormat
 import com.angcyo.widget.base.saveView
 import com.google.zxing.BarcodeFormat
 import kotlin.math.roundToInt
@@ -66,13 +67,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     companion object {
 
         /**类型转换[BarcodeFormat]*/
-        fun LPElementBean.toBarcodeFormat(): BarcodeFormat? {
-            return try {
-                BarcodeFormat.valueOf(coding ?: "")
-            } catch (_: Exception) {
-                null
-            }
-        }
+        fun LPElementBean.toBarcodeFormat(): BarcodeFormat? = coding?.toBarcodeFormat()
 
         /**类型转换[BaseCodeConfig]*/
         fun LPElementBean.toBarcodeConfig(): BaseCodeConfig? {

@@ -238,4 +238,5 @@
     <string name="variable_barcode_show_none">不显示</string>
     <string name="variable_back_title">确认退出</string>
     <string name="variable_back_tip">退出后不会保存当前数据\n确认退出？</string>
+    <string name="variable_not_support_barcode_type">条码规则不匹配</string>
 </resources>

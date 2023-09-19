@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
+import android.app.Dialog
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement.Companion.toBarcodeFormat
@@ -13,6 +14,9 @@ import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.setSize
+import com.angcyo.library.ex.toStr
+import com.angcyo.library.toastQQ
+import com.angcyo.qrcode.canCreateBarcode
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 import com.google.zxing.BarcodeFormat
@@ -91,4 +95,13 @@ class BarcodeTypeSelectItem : BaseBarcodePropertyControlItem() {
             }
     }
 
+    override fun onSelfInterceptWheelItemSelector(dialog: Dialog, index: Int, item: Any): Boolean {
+        val content = elementBean?.getVariableText()
+        val coding = item.toStr()
+        if (coding.canCreateBarcode(content)) {
+            return super.onSelfInterceptWheelItemSelector(dialog, index, item)
+        }
+        toastQQ(_string(R.string.variable_not_support_barcode_type))
+        return true
+    }
 }
