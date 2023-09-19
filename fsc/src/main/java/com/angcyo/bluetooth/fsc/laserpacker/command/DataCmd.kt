@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.trimAndPad
 
@@ -136,7 +137,8 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write(dataDir) //2023-8-4
+                write(dataDir) //数据方向 2023-8-4
+                write(bitmapData.size(), 4) //数据字节长度 2023-9-19
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -230,6 +232,8 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
+                write(gcodeData.size(), 4) //数据字节长度 2023-9-19
+
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
                 //第21个字节开始 共36个字节的文件名
@@ -309,7 +313,8 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write(dataDir) //2023-8-4
+                write(dataDir) //数据方向 2023-8-4
+                write(bytes.size(), 4) //数据字节长度 2023-9-19
 
                 /*以下是0x30数据
                 //线段数 低16位
@@ -395,7 +400,8 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write(dataDir) //2023-8-4
+                write(dataDir) //数据方向 2023-8-4
+                write(bytes.size(), 4) //数据字节长度 2023-9-19
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
