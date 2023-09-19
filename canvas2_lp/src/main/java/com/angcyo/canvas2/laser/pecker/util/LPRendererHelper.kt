@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.util
 
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.element.IElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -183,7 +184,7 @@ object LPRendererHelper {
     fun copyRenderer(
         delegate: CanvasRenderDelegate,
         rendererList: List<BaseRenderer>,
-        offset: Boolean
+        offset: Boolean = _deviceSettingBean?.copyElementOffset == true
     ) {
         //复制元素, 主要就是复制元素的数据
         val elementBeanList = mutableListOf<LPElementBean>()
