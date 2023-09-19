@@ -11,6 +11,8 @@ class LPRadioGroupItem : DslRadioGroupItem() {
 
     init {
         itemFlowLayoutGravity = Gravity.RIGHT
+        itemFlowHorizontalSpace = 0//_dimen(R.dimen.lib_hdpi)
+        itemFlowVerticalSpace = itemFlowHorizontalSpace
     }
 
 }
