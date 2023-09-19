@@ -59,4 +59,17 @@ class BarcodeShowStyleMenuItem : BaseTextControlItem() {
             }
         }
     }
+
+    override fun onSelfSetItemData(data: Any?) {
+        super.onSelfSetItemData(data)
+        _elementBean?.let {
+            itemIco = if (it.textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_BOTTOM) {
+                R.drawable.variable_show_style_bottom_svg
+            } else if (it.textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP) {
+                R.drawable.variable_show_style_top_svg
+            } else {
+                R.drawable.variable_show_style_svg
+            }
+        }
+    }
 }
