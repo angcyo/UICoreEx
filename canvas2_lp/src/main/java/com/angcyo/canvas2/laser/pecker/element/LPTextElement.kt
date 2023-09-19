@@ -222,6 +222,9 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
             codeBitmap?.also {
                 renderBitmap(canvas, paint, it, params._renderMatrix)
             }
+            if (codeBitmap == null && params.renderDst is CanvasRenderDelegate) {
+                renderNoData(canvas, params)
+            }
         }
     }
 
