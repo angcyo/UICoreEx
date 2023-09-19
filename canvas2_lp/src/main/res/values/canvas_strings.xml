@@ -239,4 +239,5 @@
     <string name="variable_back_title">ConfirmExit</string>
     <string name="variable_back_tip">The current data will not be saved after exiting\nConfirm to exit?</string>
     <string name="variable_not_support_barcode_type">Barcode rules do not match</string>
+    <string name="variable_element_delete_tip">At least one data must be retained</string>
 </resources>

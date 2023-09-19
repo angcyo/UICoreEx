@@ -44,6 +44,7 @@ import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.replace
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.ex.setSize
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.tintDrawable
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget._rv
@@ -280,6 +281,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
     /**观察拖拽, 用来实现移动到此删除元素*/
     private fun DslRecyclerView.observeDrag() {
         onDispatchTouchEventAction {
+            val canDelete = variableTextBeanList.size() > 1 /*大于1才能删除*/
             if (_dragCallbackHelper?._isStartDrag == true) {
                 _dialogViewHolder?.visible(R.id.lib_trash_view)
                 val textView = _dialogViewHolder?.tv(R.id.lib_trash_view)
@@ -290,14 +292,24 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                         val size = 24 * dpi
                         if (_isTouchMoveInTrash == true) {
                             textView?.setBackgroundColor(_color(R.color.error_light))
-                            textView?.text = span {
-                                appendDrawable(
-                                    _drawable(R.drawable.core_trash_open_svg)
-                                        .tintDrawable(textView!!._textColor)?.setSize(size)
-                                )
-                                append(_string(R.string.core_trash_delete_tip))
+                            if (canDelete) {
+                                textView?.text = span {
+                                    appendDrawable(
+                                        _drawable(R.drawable.core_trash_open_svg)
+                                            .tintDrawable(textView!!._textColor)?.setSize(size)
+                                    )
+                                    append(_string(R.string.core_trash_delete_tip))
+                                }
+                                textView?.longFeedback()
+                            } else {
+                                textView?.text = span {
+                                    appendDrawable(
+                                        _drawable(R.drawable.core_trash_cant_delete_svg)
+                                            .tintDrawable(textView!!._textColor)?.setSize(size)
+                                    )
+                                    append(_string(R.string.variable_element_delete_tip))
+                                }
                             }
-                            textView?.longFeedback()
                         } else {
                             textView?.setBackgroundColor(_color(R.color.error))
                             textView?.text = span {
@@ -311,7 +323,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                     }
                 } else if (it.isTouchFinish()) {
                     _dialogViewHolder?.gone(R.id.lib_trash_view)
-                    if (_isTouchMoveInTrash == true) {
+                    if (_isTouchMoveInTrash == true && canDelete) {
                         (_dragCallbackHelper?.dragTagData as? DslAdapterItem)?.apply {
                             //延迟删除, 避免界面bug
                             postDelay(300) {
