@@ -67,6 +67,7 @@ import com.angcyo.library._screenHeight
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.find
 import com.angcyo.library.ex.getChildOrNull
@@ -337,11 +338,13 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         DslIncrementItem()() {
             itemLabel = _string(R.string.variable_start_number)
+            itemIncrementMinValue = 0
             itemIncrementValue = bean.min.toString()
             observeItemChange {
                 bean.min = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
                 bean.reset()
                 updateNumberValueItem()
+                updateTextPreviewItem()
             }
         }
         VarNumberValueItem()() {
@@ -706,6 +709,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             _adapter?.find<VarNumberValueItem>()?.apply {
                 itemIncrementMinValue = bean.min
                 itemIncrementMaxValue = bean.max
+                bean.current = clamp(bean.current, bean.min, bean.max)
                 itemIncrementValue = bean.current.toString()
                 updateAdapterItem()
             }
