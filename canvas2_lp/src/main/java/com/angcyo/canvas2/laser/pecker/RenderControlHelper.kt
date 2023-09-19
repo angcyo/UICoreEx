@@ -160,6 +160,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     ) {
         //控制item渲染
         val canvasControlRv = _rootViewHolder?.canvasControlRv
+        canvasControlRv?.stopScroll() //停止滚动后, 再去获取保存的滚动位置. 没啥用!
         val scrollPosition = canvasControlRv?.saveScrollPosition()
         canvasControlRv?.renderDslAdapter {
             renderLayoutHelper.hookUpdateDepend(this)
@@ -182,7 +183,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             renderCommonEditItems(renderer)
 
             //是否要恢复滚动的位置
-            if (restoreScrollPosition) {
+            if (restoreScrollPosition && scrollPosition != null) {
                 onDispatchUpdatesOnce {
                     canvasControlRv.restoreScrollPosition(scrollPosition)
                 }
