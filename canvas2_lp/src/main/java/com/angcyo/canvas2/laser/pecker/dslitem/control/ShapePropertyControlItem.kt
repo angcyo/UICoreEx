@@ -58,7 +58,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val elementBean = elementBean
+        val elementBean = _elementBean
         if (elementBean != null) {
             itemHolder.tv(R.id.item_side_count_view)?.text = "${elementBean.side}"
             itemHolder.tv(R.id.item_depth_view)?.text = "${elementBean.depth}"

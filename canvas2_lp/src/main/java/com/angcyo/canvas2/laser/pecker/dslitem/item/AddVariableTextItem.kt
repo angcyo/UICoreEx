@@ -4,14 +4,12 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.dialog.variableTextDialog
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.initVariableIfNeed
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.http.base.copyByJson
-import com.angcyo.http.base.listType
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.laserpacker.bean.LPVariableBean
-import com.angcyo.laserpacker.bean.initFileCacheIfNeed
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -37,13 +35,7 @@ class AddVariableTextItem : CanvasIconItem() {
                 return
             }
             delegate.view.context?.variableTextDialog {
-                varElementBean = bean
-                variableTextBeanList =
-                    bean.variables?.copyByJson(listType(LPVariableBean::class.java))
-                        ?.toMutableList()
-                        ?: mutableListOf()
-                variableTextBeanList.initFileCacheIfNeed(false)
-
+                varElementBean = bean.copyByJson(LPElementBean::class.java)
                 onApplyVariableListAction = {
                     element.updateVariables(it, renderer, delegate)
                 }
@@ -54,9 +46,12 @@ class AddVariableTextItem : CanvasIconItem() {
     init {
         itemClick = {
             it.context.variableTextDialog {
-                varElementBean = LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT)
+                varElementBean =
+                    LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT).apply {
+                        initVariableIfNeed()
+                    }
                 onApplyVariableListAction = {
-                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, varElementType)
+                    LPElementHelper.addElementRender(itemRenderDelegate, it)
                     UMEvent.CANVAS_VARIABLE_TEXT.umengEventValue()
                 }
             }

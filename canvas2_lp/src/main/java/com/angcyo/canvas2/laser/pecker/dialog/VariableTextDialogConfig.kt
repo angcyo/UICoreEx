@@ -11,6 +11,9 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextAddItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextEditItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextListItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem._itemVariableBean
+import com.angcyo.canvas2.laser.pecker.drawCanvasLeft
+import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeTypeSelectItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.initBarcodeIfNeed
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dialog.DslDialogConfig
@@ -26,6 +29,7 @@ import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPVariableBean
+import com.angcyo.laserpacker.isVariableBarcodeType
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
@@ -66,7 +70,11 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
      * [LPDataConstant.DATA_TYPE_VARIABLE_BARCODE]
      * */
     var varElementBean: LPElementBean =
-        LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT)
+        LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT, variables = mutableListOf())
+        set(value) {
+            field = value
+            value.initBarcodeIfNeed()
+        }
 
     val varElementType: Int
         get() = varElementBean.mtype
@@ -76,13 +84,14 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
     private var _dragCallbackHelper: DragCallbackHelper? = null
 
     /**变量文件数据结构集合*/
-    var variableTextBeanList = mutableListOf<LPVariableBean>()
+    private val variableTextBeanList: MutableList<LPVariableBean>
+        get() = varElementBean.variables as MutableList<LPVariableBean>
 
     /**编辑模式*/
     private var isVarItemEditMode = false
 
     /**应用回调*/
-    var onApplyVariableListAction: (List<LPVariableBean>) -> Unit = {}
+    var onApplyVariableListAction: (LPElementBean) -> Unit = {}
 
     private val haveData: Boolean
         get() = variableTextBeanList.isNotEmpty()
@@ -104,7 +113,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
 
         //确定
         dialogViewHolder.click(R.id.dialog_positive_button) {
-            onApplyVariableListAction(variableTextBeanList)
+            onApplyVariableListAction(varElementBean)
             dialog.dismiss()
         }
 
@@ -116,7 +125,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         //default
         if (variableTextBeanList.isEmpty()) {
             //默认预览条形码的内容
-            if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE || varElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+            if (varElementType.isVariableBarcodeType()) {
                 variableTextBeanList.add(LPVariableBean().apply {
                     if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
                         content = _deviceSettingBean?.barcode2DPreviewContent
@@ -201,6 +210,16 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                         }
                     }
                     _listAdapter?.updateAllItem()
+                }
+            }
+            if (varElementType.isVariableBarcodeType()) {
+                BarcodeTypeSelectItem()() {
+                    drawCanvasLeft()
+                    itemElementBean = varElementBean
+                    observeItemChange {
+                        updateBarcodeTypeLabel()
+                        updatePreviewLayout()
+                    }
                 }
             }
         }

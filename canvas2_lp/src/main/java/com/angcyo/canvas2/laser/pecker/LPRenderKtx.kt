@@ -13,6 +13,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter._dslAdapter
+import com.angcyo.dsladapter.drawLeft
 import com.angcyo.dsladapter.drawRight
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.app
@@ -72,6 +73,15 @@ val DslViewHolder.canvasLayerAdapter: DslAdapter?
     get() = canvasLayerRv?._dslAdapter
 
 //---
+
+fun DslAdapterItem.drawCanvasLeft(
+    insertLeft: Int = _dimen(R.dimen.lib_line),
+    offsetTop: Int = _dimen(R.dimen.lib_drawable_padding),
+    offsetBottom: Int = _dimen(R.dimen.lib_drawable_padding),
+    color: Int = _color(R.color.canvas_dark_gray)
+) {
+    drawLeft(insertLeft, offsetTop, offsetBottom, color)
+}
 
 fun DslAdapterItem.drawCanvasRight(
     insertRight: Int = _dimen(R.dimen.lib_line),

@@ -36,7 +36,7 @@
             style="@style/LibMainTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/not_support"
+            android:text="@string/variable_not_support_barcode_type"
             android:textColor="@color/error"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/lib_preview_view"

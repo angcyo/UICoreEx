@@ -16,6 +16,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.laserpacker.device.model.FscDeviceModel
+import com.angcyo.laserpacker.isVariableBarcodeType
 import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
@@ -166,6 +167,17 @@ object LPElementHelper {
         }
     }
 
+    /**添加一个元素渲染*/
+    fun addElementRender(
+        delegate: CanvasRenderDelegate?,
+        elementBean: LPElementBean
+    ): CanvasElementRenderer? {
+        return LPRendererHelper.parseElementRenderer(elementBean, true)?.apply {
+            delegate?.renderManager?.addElementRenderer(this, true, Reason.user, Strategy.normal)
+            LPRendererHelper.generateName(delegate)
+        }
+    }
+
     /**添加一个图片元素到画板
      * [LPDataConstant.DATA_TYPE_BITMAP]*/
     fun addBitmapElement(delegate: CanvasRenderDelegate?, bitmap: Bitmap?) {
@@ -215,9 +227,7 @@ object LPElementHelper {
                 textAlign = _deviceSettingBean?.barcode1DTextAlign
             }
 
-            if (type == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE ||
-                type == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE
-            ) {
+            if (type.isVariableBarcodeType()) {
                 if (coding.isNullOrBlank()) {
                     if (type == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
                         coding = BarcodeFormat.QR_CODE.toStr()
@@ -229,10 +239,7 @@ object LPElementHelper {
 
             config()
         }
-        return LPRendererHelper.parseElementRenderer(elementBean, true)?.apply {
-            delegate?.renderManager?.addElementRenderer(this, true, Reason.user, Strategy.normal)
-            LPRendererHelper.generateName(delegate)
-        }
+        return addElementRender(delegate, elementBean)
     }
 
     /**添加一个路径元素到画板

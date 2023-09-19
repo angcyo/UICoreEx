@@ -388,3 +388,7 @@ fun List<LPElementBean>.generateGroupName(baseName: String = "Group", index: Int
         generateGroupName(baseName, if (index == null) 2 else index + 1)
     }
 }
+
+/**是否是变量条形码类型*/
+fun Int.isVariableBarcodeType() =
+    this == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE || this == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE

@@ -11,6 +11,7 @@ import com.angcyo.item.style.ILabelItem
 import com.angcyo.item.style.ITextItem
 import com.angcyo.item.style.LabelItemConfig
 import com.angcyo.item.style.TextItemConfig
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.ex._drawable
 import com.angcyo.widget.DslViewHolder
 
@@ -33,6 +34,13 @@ abstract class BaseBarcodePropertyControlItem : DslAdapterItem(), ILabelItem, IT
     override var wheelItemConfig: WheelItemConfig = WheelItemConfig()
     override var labelItemConfig: LabelItemConfig = LabelItemConfig()
     override var textItemConfig: TextItemConfig = TextItemConfig()
+
+    var itemElementBean: LPElementBean? = null
+        get() = field ?: _elementBean
+        set(value) {
+            field = value
+            onSelfSetItemData(value)
+        }
 
     init {
         itemLayoutId = R.layout.item_barcode_property_control_layout

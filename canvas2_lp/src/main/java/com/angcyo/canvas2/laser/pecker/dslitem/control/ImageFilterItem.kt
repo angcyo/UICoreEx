@@ -47,7 +47,7 @@ class ImageFilterItem : CanvasIconItem() {
 
         //浮雕item的激活逻辑
         if (itemIsReliefItem) {
-            itemEnable = elementBean?.isSupportSliceElement == true
+            itemEnable = _elementBean?.isSupportSliceElement == true
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

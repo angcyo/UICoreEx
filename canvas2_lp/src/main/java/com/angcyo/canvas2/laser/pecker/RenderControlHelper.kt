@@ -421,7 +421,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIsReliefItem = true
                 itemNewHawkKeyStr = "slice"
                 itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-                itemEnable = elementBean?.isSupportSliceElement == true
+                itemEnable = _elementBean?.isSupportSliceElement == true
                 initItem(renderer)
                 itemClick = {
                     itemHaveNew = false

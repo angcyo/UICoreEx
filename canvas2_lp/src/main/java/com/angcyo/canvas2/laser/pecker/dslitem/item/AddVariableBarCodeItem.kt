@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import com.angcyo.canvas2.laser.pecker.dialog.variableTextDialog
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.initVariableIfNeed
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
@@ -18,9 +19,12 @@ class AddVariableBarCodeItem : CanvasIconItem() {
     init {
         itemClick = {
             it.context.variableTextDialog {
-                varElementBean = LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_BARCODE)
+                varElementBean =
+                    LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_BARCODE).apply {
+                        initVariableIfNeed()
+                    }
                 onApplyVariableListAction = {
-                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, varElementType)
+                    LPElementHelper.addElementRender(itemRenderDelegate, it)
                     UMEvent.CANVAS_VARIABLE_BARCODE.umengEventValue()
                 }
             }

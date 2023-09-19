@@ -16,6 +16,7 @@ import com.angcyo.canvas.render.element.rendererToBitmap
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dslitem.control.initVariableIfNeed
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
@@ -380,6 +381,32 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         }, {
             elementBean.variables = newList
             newList?.initFileCacheIfNeed(false)
+            updateBeanToElement(renderer)
+            renderer?.requestUpdatePropertyFlag(reason, delegate)
+        })
+    }
+
+    /**更新变量元素*/
+    @SupportUndo
+    fun updateVariables(
+        bean: LPElementBean,
+        renderer: BaseRenderer? = null,
+        delegate: CanvasRenderDelegate? = null,
+        reason: Reason = Reason.user.apply {
+            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+        },
+        strategy: Strategy = Strategy.normal
+    ) {
+        val newBean = bean
+        val oldBean = elementBean
+        delegate?.undoManager?.addAndRedo(strategy, true, {
+            oldBean.copyVariableProperty(elementBean)
+            elementBean.initVariableIfNeed(false)
+            updateBeanToElement(renderer)
+            renderer?.requestUpdatePropertyFlag(reason, delegate)
+        }, {
+            newBean.copyVariableProperty(elementBean)
+            elementBean.initVariableIfNeed(false)
             updateBeanToElement(renderer)
             renderer?.requestUpdatePropertyFlag(reason, delegate)
         })

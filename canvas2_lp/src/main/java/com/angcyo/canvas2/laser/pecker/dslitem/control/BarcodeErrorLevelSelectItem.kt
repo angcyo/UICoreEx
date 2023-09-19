@@ -28,7 +28,7 @@ class BarcodeErrorLevelSelectItem : BaseBarcodePropertyControlItem() {
 
     /**条码格式*/
     val barcodeFormat: BarcodeFormat?
-        get() = elementBean?.toBarcodeFormat()
+        get() = _elementBean?.toBarcodeFormat()
 
     init {
         itemClick = {
@@ -59,13 +59,13 @@ class BarcodeErrorLevelSelectItem : BaseBarcodePropertyControlItem() {
         val barcodeFormat = barcodeFormat
         if (barcodeFormat == BarcodeFormat.QR_CODE) {
             itemWheelList = listOf(L, M, Q, H)
-            updateWheelSelectedIndex(elementBean?.eclevel)
+            updateWheelSelectedIndex(_elementBean?.eclevel)
         } else if (barcodeFormat == BarcodeFormat.PDF_417) {
             itemWheelList = (0..7).toList()
-            updateWheelSelectedIndex(elementBean?.errorLevel)
+            updateWheelSelectedIndex(_elementBean?.errorLevel)
         } else if (barcodeFormat == BarcodeFormat.AZTEC) {
             itemWheelList = (0..100).toList()
-            updateWheelSelectedIndex(elementBean?.errorLevel)
+            updateWheelSelectedIndex(_elementBean?.errorLevel)
         }
 
         itemLabel = _string(R.string.variable_barcode_error_correction)

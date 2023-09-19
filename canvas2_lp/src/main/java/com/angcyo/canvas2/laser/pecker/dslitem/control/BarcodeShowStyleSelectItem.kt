@@ -35,9 +35,9 @@ class BarcodeShowStyleSelectItem : BaseTextControlItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        val textShowStyle = elementBean?.textShowStyle
+        val textShowStyle = _elementBean?.textShowStyle
         if (textShowStyle == null) {
-            elementBean?.textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_NONE
+            _elementBean?.textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_NONE
         }
         itemIsSelected = textShowStyle == itemShowStyle
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

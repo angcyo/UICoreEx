@@ -37,7 +37,7 @@ class PathStyleItem : CanvasIconItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        val paintStyle = elementBean?.paintStyle?.toPaintStyle()
+        val paintStyle = _elementBean?.paintStyle?.toPaintStyle()
         itemIsSelected = paintStyle == itemStyle
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }

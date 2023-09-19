@@ -18,7 +18,7 @@ interface ICanvasRendererItem {
     /**画板代理*/
     var itemRenderDelegate: CanvasRenderDelegate?
 
-    val elementBean: LPElementBean?
+    val _elementBean: LPElementBean?
         get() = itemRenderer?.lpElementBean()
 
     val renderUnit: IRenderUnit?

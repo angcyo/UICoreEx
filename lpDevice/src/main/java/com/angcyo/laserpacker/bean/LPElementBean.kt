@@ -751,7 +751,7 @@ data class LPElementBean(
 
     /**获取变量所对应的文本*/
     fun getVariableText(): String? {
-        return variables?.connect("")
+        return variables?.getVariableText()
     }
 
     /**更新变量所对应的文本*/
@@ -789,5 +789,24 @@ data class LPElementBean(
         return to
     }
 
+    /**复制当前bean的变量属性到另一个bean*/
+    fun copyVariableProperty(to: LPElementBean = LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT)): LPElementBean {
+        to.mtype = mtype
+
+        to.variables = variables
+        to.coding = coding
+        to.eclevel = eclevel
+        to.qrMaskPattern = qrMaskPattern
+        to.errorLevel = errorLevel
+
+        to.textShowStyle = textShowStyle
+        return to
+    }
+
     //endregion ---variable----
+}
+
+/**获取变量所对应的文本*/
+fun List<LPVariableBean>.getVariableText(): String {
+    return connect("")
 }

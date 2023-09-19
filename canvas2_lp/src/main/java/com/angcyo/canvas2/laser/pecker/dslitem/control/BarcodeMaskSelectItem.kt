@@ -34,7 +34,7 @@ class BarcodeMaskSelectItem : BaseBarcodePropertyControlItem() {
     override fun onSelfSetItemData(data: Any?) {
         super.onSelfSetItemData(data)
         itemWheelList = itemMaskList
-        updateWheelSelectedIndex(elementBean?.qrMaskPattern ?: -1)
+        updateWheelSelectedIndex(_elementBean?.qrMaskPattern ?: -1)
         itemLabel = _string(R.string.variable_barcode_mask)
     }
 
