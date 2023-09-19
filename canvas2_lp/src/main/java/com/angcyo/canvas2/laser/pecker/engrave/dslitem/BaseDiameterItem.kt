@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem
 import android.widget.TextView
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.keyboardNumberWindow
@@ -52,7 +53,7 @@ abstract class BaseDiameterItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val unit = IValueUnit.MM_RENDER_UNIT
+        val unit = LPConstant.renderUnit
         itemHolder.tv(R.id.perimeter_unit_view)?.text = unit.getUnit()
         itemHolder.tv(R.id.diameter_unit_view)?.text = unit.getUnit()
 

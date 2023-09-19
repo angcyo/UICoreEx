@@ -14,6 +14,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem._itemVariableBean
 import com.angcyo.canvas2.laser.pecker.drawCanvasLeft
 import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeTypeSelectItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.initBarcodeIfNeed
+import com.angcyo.canvas2.laser.pecker.element.LPTextElement.Companion.createBarcodeBitmap
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dialog.DslDialogConfig
@@ -386,6 +387,11 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         _dialogViewHolder?.visible(R.id.lib_preview_tip_view, visibleError)
 
         if (visibleError) {
+            if (varElementBean.mtype.isVariableBarcodeType()) {
+                //默认的条形码图片
+                _dialogViewHolder?.img(R.id.lib_preview_view)
+                    ?.setImageBitmap(createDefaultBarcodeElementBean(varElementBean.mtype).createBarcodeBitmap())
+            }
             _dialogViewHolder?.enable(R.id.dialog_positive_button, false)
         }
 
@@ -396,6 +402,22 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                     ?.setImageDrawable(renderDrawable)
             }
         }
+    }
+}
+
+/**创建一个默认的条码元素*/
+fun createDefaultBarcodeElementBean(mtype: Int): LPElementBean {
+    return LPElementBean(mtype = mtype).apply {
+        variables = listOf(LPVariableBean().apply {
+            if (mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
+                content = _deviceSettingBean?.barcode2DPreviewContent
+            } else {
+                content = _deviceSettingBean?.barcode1DPreviewContent
+            }
+        })
+        textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
+        initBarcodeIfNeed()
+        updateVariableText()
     }
 }
 
