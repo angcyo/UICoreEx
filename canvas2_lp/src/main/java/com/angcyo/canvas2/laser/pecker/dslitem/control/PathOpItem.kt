@@ -58,9 +58,13 @@ class PathOpItem : CanvasIconItem() {
             if (pathList.isNotEmpty()) {
                 val result = pathList.op(op)
                 //val svgContent = result.toSvgPathContent()
-                val svgContent = result.toSVGStrokeContent {
-                    it.isSinglePath = true
-                    it.needClosePath = true
+                val svgContent = if (result.isEmpty) {
+                    null
+                } else {
+                    result.toSVGStrokeContent {
+                        it.isSinglePath = true
+                        it.needClosePath = true
+                    }
                 }
 
                 val elementBean = LPElementBean().apply {

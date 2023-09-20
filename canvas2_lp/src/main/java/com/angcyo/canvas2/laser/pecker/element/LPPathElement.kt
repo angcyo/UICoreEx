@@ -189,6 +189,9 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                 result.addAll(it)
             }
         }
+        if (result.isEmpty()) {
+            return null
+        }
         return result
     }
 
@@ -196,19 +199,25 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         if (pathList == null) {
             parseElementBean()
         }
-        paint.style = elementBean.paintStyle.toPaintStyle()
-        paint.strokeWidth = 1f
 
-        //颜色
-        if (paint.style == Paint.Style.STROKE) {
-            paint.color = elementBean.stroke?.toColorInt() ?: Color.BLACK
+        val drawPathList = getDrawPathList()
+        if (drawPathList.isNullOrEmpty()) {
+            renderNoData(canvas, params)
         } else {
-            paint.color = elementBean.fill?.toColorInt() ?: Color.BLACK
-        }
+            paint.style = elementBean.paintStyle.toPaintStyle()
+            paint.strokeWidth = 1f
 
-        //线型
-        params.updateDrawPathPaintStrokeWidth(paint)
-        renderPath(canvas, paint, elementBean.isLineShape, getDrawPathList(), params._renderMatrix)
+            //颜色
+            if (paint.style == Paint.Style.STROKE) {
+                paint.color = elementBean.stroke?.toColorInt() ?: Color.BLACK
+            } else {
+                paint.color = elementBean.fill?.toColorInt() ?: Color.BLACK
+            }
+
+            //线型
+            params.updateDrawPathPaintStrokeWidth(paint)
+            renderPath(canvas, paint, elementBean.isLineShape, drawPathList, params._renderMatrix)
+        }
     }
 
     override fun updateBeanToElement(renderer: BaseRenderer?) {
