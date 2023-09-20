@@ -605,9 +605,14 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         VarFileChooseItem()() {
             itemData = bean
             itemFileType = InnerFileManageModel.EXT_TXT
+            observeItemChange {
+                renderVariableTextItem(bean)
+            }
         }
         VarFileLineNumberItem()() {
             itemData = bean
+            itemTag = LPVariableBean.TYPE_TXT
+            itemHidden = !bean.isChooseFile
             updateVarFileItemFromBean(bean)
             observeItemChange {
                 updateTextPreviewItem()
@@ -615,6 +620,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarFileLineIncrementItem()() {
             itemData = bean
+            itemTag = LPVariableBean.TYPE_TXT
+            itemHidden = !bean.isChooseFile
             updateVarFileItemFromBean(bean)
             observeItemChange {
                 updateTextPreviewItem()
@@ -622,6 +629,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarPropertySwitchItem()() {
             itemSwitchChecked = bean.reset
+            itemTag = LPVariableBean.TYPE_TXT
+            itemHidden = !bean.isChooseFile
             observeItemChange {
                 bean.reset = itemSwitchChecked
             }
@@ -654,9 +663,14 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         VarFileChooseItem()() {
             itemData = bean
             itemFileType = InnerFileManageModel.EXT_EXCEL
+            observeItemChange {
+                renderVariableTextItem(bean)
+            }
         }
         VarExcelSheetChooseItem()() {
             itemData = bean
+            itemTag = LPVariableBean.TYPE_EXCEL
+            itemHidden = !bean.isChooseFile
             observeItemChange {
                 bean.sheet = itemWheelText().toStr()
                 find<VarExcelColumnChooseItem>()?.updateFileChoose(bean)
@@ -666,6 +680,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarExcelColumnChooseItem()() {
             itemData = bean
+            itemTag = LPVariableBean.TYPE_EXCEL
+            itemHidden = !bean.isChooseFile
             observeItemChange {
                 bean.column = itemWheelText().toStr()
                 updateTextPreviewItem()
@@ -674,6 +690,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarFileLineNumberItem()() {
             itemData = bean
+            itemTag = LPVariableBean.TYPE_EXCEL
+            itemHidden = !bean.isChooseFile
             updateVarFileItemFromBean(bean)
             observeItemChange {
                 updateTextPreviewItem()
@@ -681,12 +699,16 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarFileLineIncrementItem()() {
             itemData = bean
+            itemTag = LPVariableBean.TYPE_EXCEL
+            itemHidden = !bean.isChooseFile
             updateVarFileItemFromBean(bean)
             observeItemChange {
                 updateTextPreviewItem()
             }
         }
         VarPropertySwitchItem()() {
+            itemTag = LPVariableBean.TYPE_EXCEL
+            itemHidden = !bean.isChooseFile
             itemSwitchChecked = bean.reset
             observeItemChange {
                 bean.reset = itemSwitchChecked

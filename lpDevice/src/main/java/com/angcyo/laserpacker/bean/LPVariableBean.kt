@@ -300,6 +300,10 @@ data class LPVariableBean(
             _txtLinesList.size()
         }
 
+    /**是否选择了文件*/
+    val isChooseFile: Boolean
+        get() = !fileUri.isNullOrBlank()
+
     /**获取指定列, 去除表头后的数据集合*/
     fun getColumnDataList(columnIndex: Int = maxOf(0, columnList.indexOf(column))): List<String> {
         val lineList = _excelMap?.get(sheet ?: "") ?: return emptyList()

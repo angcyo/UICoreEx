@@ -35,7 +35,7 @@ val DslAdapterItem._itemVariableBean: LPVariableBean?
 
 /**[com.angcyo.canvas2.laser.pecker.dialog.dslitem.IVarFileItem.updateVarFileItemFromBean]*/
 fun DslAdapter.updateVarFileItem(bean: LPVariableBean?) {
-    eachItem { index, dslAdapterItem ->
+    eachItem(false) { index, dslAdapterItem ->
         if (dslAdapterItem is IVarFileItem) {
             dslAdapterItem.updateVarFileItemFromBean(bean)
         }

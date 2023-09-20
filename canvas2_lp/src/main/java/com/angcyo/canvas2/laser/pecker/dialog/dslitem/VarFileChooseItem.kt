@@ -71,13 +71,13 @@ class VarFileChooseItem : LPLabelWheelItem() {
             if (type == LPVariableBean.TYPE_EXCEL) {
                 //init
                 itemDslAdapter?.apply {
-                    find<VarExcelSheetChooseItem>()?.updateFileChoose(bean!!)
-                    find<VarExcelColumnChooseItem>()?.updateFileChoose(bean!!)
+                    find<VarExcelSheetChooseItem>(useFilterList = false)?.updateFileChoose(bean!!)
+                    find<VarExcelColumnChooseItem>(useFilterList = false)?.updateFileChoose(bean!!)
                     updateVarFileItem(bean)
                 }
             }
         }
-        updateAdapterItem()
+        itemChanging = true
     }
 
 }
