@@ -94,27 +94,35 @@ import com.angcyo.widget.tab
  */
 class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(context) {
 
-    /**元素数据类型*/
-    var addVarElementType: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
-
-    /**需要编辑的结构*/
-    var editVariableBean: LPVariableBean? = null
-
-    /**是否是编辑模式 */
-    val isVariableEditModel: Boolean
-        get() = editVariableBean != null
-
     private var _adapter: DslAdapter? = null
 
     private val _fileBean = LPVariableBean(LPVariableBean._TYPE_FILE).apply {
         _fileType = LPVariableBean.TYPE_TXT
     }
-    private val _txtBean = LPVariableBean(LPVariableBean.TYPE_TXT).apply {
+    private var _txtBean = LPVariableBean(LPVariableBean.TYPE_TXT).apply {
         current = LPVariableBean.DATA_START_INDEX
     }
-    private val _excelBean = LPVariableBean(LPVariableBean.TYPE_EXCEL).apply {
+    private var _excelBean = LPVariableBean(LPVariableBean.TYPE_EXCEL).apply {
         current = LPVariableBean.DATA_START_INDEX
     }
+
+    /**元素数据类型*/
+    var addVarElementType: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+
+    /**需要编辑的结构*/
+    var editVariableBean: LPVariableBean? = null
+        set(value) {
+            field = value
+            if (value?.type == LPVariableBean.TYPE_TXT) {
+                _txtBean = value
+            } else if (value?.type == LPVariableBean.TYPE_EXCEL) {
+                _excelBean = value
+            }
+        }
+
+    /**是否是编辑模式 */
+    val isVariableEditModel: Boolean
+        get() = editVariableBean != null
 
     private val variableBeanList = mutableListOf<LPVariableBean>().apply {
         add(LPVariableBean(LPVariableBean.TYPE_FIXED))
