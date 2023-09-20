@@ -10,6 +10,7 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
 import com.angcyo.laserpacker.device.R
+import com.angcyo.library.component._delay
 import com.angcyo.library.ex.ClickAction
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.extName
@@ -124,7 +125,9 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
         itemHolder.visible(R.id.import_button, innerFileManageModel.isSupportImportFile(itemFile))
         itemHolder.click(R.id.import_button) {
             if (innerFileManageModel.importFile(itemFile)) {
-                toastQQ(_string(R.string.core_add_file_success))
+                _delay {
+                    toastQQ(_string(R.string.core_add_file_success))
+                }
                 cancelAction(it)
             } else {
                 toastQQ(_string(R.string.core_add_file_fail))
