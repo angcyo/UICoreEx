@@ -25,6 +25,8 @@ import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.aztec.encoder.Encoder
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 1D/2D条形码类型切换item
@@ -97,6 +99,19 @@ class BarcodeTypeSelectItem : BaseBarcodePropertyControlItem() {
 
     private fun updateElementBean(bean: LPElementBean) {
         bean.coding = itemWheelBean()
+
+        bean.coding?.let { coding ->
+            if (bean.is2DCodeElement) {
+                UMEvent.CANVAS_VARIABLE_QRCODE.umengEventValue {
+                    put(UMEvent.KEY_BARCODE_TYPE, coding)
+                }
+            } else if (bean.is1DCodeElement) {
+                UMEvent.CANVAS_VARIABLE_BARCODE.umengEventValue {
+                    put(UMEvent.KEY_BARCODE_TYPE, coding)
+                }
+            }
+        }
+
         bean.initBarcodeIfNeed()
     }
 
