@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.device.ble.dslitem
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
+import com.angcyo.core.CoreApplication
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.github.SwitchButton
@@ -60,7 +61,7 @@ class HelpPropertySwitchItem : DslPropertySwitchItem() {
     private fun openFlagHelp() {
         val helpUrl = itemHelpUrl
         if (!helpUrl.isNullOrBlank()) {
-            LaserPeckerConfigHelper.onOpenUrlAction?.invoke(helpUrl)
+            CoreApplication.onOpenUrlAction?.invoke(helpUrl)
         }
     }
 

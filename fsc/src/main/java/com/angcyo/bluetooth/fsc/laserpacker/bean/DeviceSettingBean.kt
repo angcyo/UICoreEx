@@ -118,6 +118,8 @@ data class DeviceSettingBean(
     var zhImportFilePackageNameList: List<String>? = null,
     /**国外环境导入文件支持的软件包名*/
     var importFilePackageNameList: List<String>? = null,
+    /**导入文件帮助链接*/
+    var importFileHelpUrl: String? = null,
     /**二维码支持的格式集合*/
     var barcode2DTypeList: List<String>? = null,
     /**一维码支持的格式集合*/

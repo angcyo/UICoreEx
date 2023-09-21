@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.core.CoreApplication
 import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
@@ -72,7 +73,7 @@ class GCodeDataOffsetItem : DslAdapterItem() {
             }
             url?.let {
                 if (it.isNotEmpty()) {
-                    LaserPeckerConfigHelper.onOpenUrlAction?.invoke(it)
+                    CoreApplication.onOpenUrlAction?.invoke(it)
                 }
             }
         }
