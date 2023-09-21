@@ -29,6 +29,7 @@
             android:padding="@dimen/lib_padding_left"
             android:scaleType="centerInside"
             app:layout_constraintDimensionRatio="39:30"
+            tools:background="@color/transparent20"
             tools:srcCompat="@drawable/core_file_icon_video" />
 
         <androidx.appcompat.widget.AppCompatTextView

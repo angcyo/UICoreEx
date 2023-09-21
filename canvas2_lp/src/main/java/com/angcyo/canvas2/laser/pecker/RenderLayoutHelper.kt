@@ -102,7 +102,11 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
     //region ---基础---
 
-    /**调用入口*/
+    /**调用入口
+     *
+     * 暗色适配
+     * [com.angcyo.canvas2.laser.pecker.dialog.VariableTextDialogConfig.initDialogView]
+     * */
     @CallPoint
     fun bindRenderLayout(vh: DslViewHolder) {
         _rootViewHolder = vh

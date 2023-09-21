@@ -17,6 +17,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.control.initBarcodeIfNeed
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement.Companion.createBarcodeBitmap
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
+import com.angcyo.core.component.model._isDarkMode
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configFullScreenDialog
 import com.angcyo.dialog.normalIosDialog
@@ -122,6 +123,12 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         //back
         dialogViewHolder.click(R.id.dialog_negative_button) {
             showBackTipDialog(dialog)
+        }
+
+        if (_isDarkMode) {
+            //暗色适配 com.angcyo.canvas2.laser.pecker.RenderLayoutHelper.bindRenderLayout
+            dialogViewHolder.view(R.id.lib_preview_view)
+                ?.setBackgroundColor(_color(R.color.colorPrimaryDark))
         }
 
         //default

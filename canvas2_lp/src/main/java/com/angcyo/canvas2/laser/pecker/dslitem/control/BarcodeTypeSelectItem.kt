@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement.Companion.toBarcodeFormat
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
+import com.angcyo.core.component.model.tintDrawableNight
 import com.angcyo.dialog2.dslitem.itemWheelBean
 import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dialog2.dslitem.updateWheelSelectedIndex
@@ -70,10 +71,16 @@ class BarcodeTypeSelectItem : BaseBarcodePropertyControlItem() {
         itemLabel = span {
             if (_deviceSettingBean?.showVariableElementIco == true && itemRenderDelegate != null) {
                 if (itemElementBean?.is1DCodeElement == true) {
-                    appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
+                    appendDrawable(
+                        _drawable(R.drawable.canvas_var_barcode_ico)?.tintDrawableNight()
+                            ?.setSize(14 * dpi)
+                    )
                     append(" ")
                 } else if (itemElementBean?.is2DCodeElement == true) {
-                    appendDrawable(_drawable(R.drawable.canvas_var_qrcode_ico)?.setSize(14 * dpi))
+                    appendDrawable(
+                        _drawable(R.drawable.canvas_var_qrcode_ico)?.tintDrawableNight()
+                            ?.setSize(14 * dpi)
+                    )
                     append(" ")
                 }
             }

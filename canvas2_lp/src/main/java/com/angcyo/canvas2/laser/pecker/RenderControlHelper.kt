@@ -46,6 +46,7 @@ import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
+import com.angcyo.core.component.model.tintDrawableNight
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -524,7 +525,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                         if (lpElementBean.is1DCodeElement || lpElementBean.is2DCodeElement) {
                             //appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
                         } else {
-                            appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
+                            appendDrawable(
+                                _drawable(R.drawable.canvas_var_text_ico)?.tintDrawableNight()
+                                    ?.setSize(14 * dpi)
+                            )
                         }
                         append(" ")
                     }
