@@ -1218,6 +1218,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     /**重建任务,使用上一次的传输配置,进行二次传输并雕刻
      * [changeToTransmitting]*/
     open fun continueTransferEngrave() {
+        //检查数据是否超出了范围
+        if (!checkCanNext()) {
+            return
+        }
+
         val oldTaskId = flowTaskId
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(oldTaskId)
 
