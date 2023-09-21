@@ -146,6 +146,9 @@ object UMEvent {
     /**字符样式*/
     const val CANVAS_VARIABLE_SHOW_STYLE = "canvas_variable_show_style"
 
+    /**路径填充*/
+    const val CANVAS_PATH_FILL = "canvas_path_fill"
+
     /**变量文本, 后继续雕刻*/
     const val CONTINUE_ENGRAVE = "continue_engrave"
 

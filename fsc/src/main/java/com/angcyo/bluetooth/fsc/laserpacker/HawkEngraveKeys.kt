@@ -410,4 +410,7 @@ object HawkEngraveKeys {
 
     /**是否激活渲染器大小分布*/
     var enableRendererSizeFlat: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
+    /**是否激活使用绘制后的路径进行路径填充*/
+    var enableDrawPathFill: Boolean by HawkPropertyValue<Any, Boolean>(true)
 }

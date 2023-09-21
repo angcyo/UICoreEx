@@ -8,11 +8,13 @@ import android.graphics.Path
 import android.graphics.PathEffect
 import android.graphics.RectF
 import android.os.Build
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
+import com.angcyo.canvas.render.util.RenderHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.toGCodePath
@@ -27,6 +29,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
 import com.angcyo.svg.Svg
+import com.angcyo.toSVGStrokeContent
 import com.angcyo.vector.VectorHelper
 import com.angcyo.vector.VectorWriteHandler
 import com.pixplicity.sharp.Sharp
@@ -194,6 +197,12 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         return result
     }
 
+    /**获取不包含路径填充, 最原始的的路径, 映射后的路径*/
+    fun getOriginPathTranslateAfter(): List<Path>? {
+        val list = pathList ?: return null
+        return RenderHelper.translateToRender(list, renderProperty)
+    }
+
     override fun onRenderInside(renderer: BaseRenderer?, canvas: Canvas, params: RenderParams) {
         if (pathList == null) {
             parseElementBean()
@@ -310,11 +319,33 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             elementBean.gcodeFillStep = gcodeFillStep
             elementBean.gcodeFillAngle = gcodeFillAngle
 
-            fillPathList = VectorHelper.pathFill(
-                pathList,
-                gcodeFillStep,
-                gcodeFillAngle,
-            )
+            if (HawkEngraveKeys.enableDrawPathFill) {
+                //使用编辑后的数据进行路径填充, 需要改变数据,清空原始渲染属性
+                val pList = getOriginPathTranslateAfter()
+                val svg = pList?.toSVGStrokeContent {
+                    it.isSinglePath = true
+                    it.needClosePath = true
+                }
+                elementBean.data = null
+                elementBean.path = svg
+
+                renderProperty.resetSize()
+                val bounds = RenderHelper.computePathBounds(pList)
+                updateRenderWidthHeight(bounds.width(), bounds.height(), false)
+
+                pathList = null
+                fillPathList = VectorHelper.pathFill(
+                    pList,
+                    gcodeFillStep,
+                    gcodeFillAngle,
+                )
+            } else {
+                fillPathList = VectorHelper.pathFill(
+                    pathList,
+                    gcodeFillStep,
+                    gcodeFillAngle,
+                )
+            }
         }
     }
 

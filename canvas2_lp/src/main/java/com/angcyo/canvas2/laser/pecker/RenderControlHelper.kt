@@ -235,6 +235,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                         LPBitmapHandler.handleBlackWhite(
                             renderDelegate,
                             it,
@@ -244,7 +245,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                     }
                 }
             }
@@ -258,6 +258,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                         LPBitmapHandler.handleDithering(
                             renderDelegate,
                             it,
@@ -267,7 +268,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                     }
                 }
             }
@@ -281,11 +281,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                         LPBitmapHandler.handleGCode(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                     }
                 }
             }
@@ -300,11 +300,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     initItem(renderer)
                     itemImageFilter = LPDataConstant.DATA_MODE_GREY
                     itemClick = {
+                        UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
                         LPBitmapHandler.handleGrey(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
                     }
                 }
             }
@@ -318,11 +318,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                         LPBitmapHandler.handlePrint(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                     }
                 }
             }
@@ -336,11 +336,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
                         LPBitmapHandler.handleSeal(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
                     }
                 }
             }
@@ -355,11 +355,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
                         LPBitmapHandler.handleMesh(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
-                        UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
                     }
                 }
                 drawCanvasRight()
@@ -377,10 +377,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_MAGIC_WAND.umengEventValue()
                         LPBitmapHandler.handleMagicWand(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
-                        UMEvent.CANVAS_MAGIC_WAND.umengEventValue()
                     }
                 }
                 if (closeImageEditItemsFun.have("_outline_") && closeImageEditItemsFun.have("_crop_")) {
@@ -401,10 +401,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_OUTLINE.umengEventValue()
                         LPBitmapHandler.handleOutline(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
-                        UMEvent.CANVAS_IMAGE_OUTLINE.umengEventValue()
                     }
                 }
                 if (closeImageEditItemsFun.have("_crop_")) {
@@ -427,10 +427,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_SLICE.umengEventValue()
                         LPBitmapHandler.handleSlice(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
-                        UMEvent.CANVAS_IMAGE_SLICE.umengEventValue()
                     }
                 }
             }
@@ -444,10 +444,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
                         LPBitmapHandler.handleCrop(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
-                        UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
                     }
                 }
                 drawCanvasRight()
@@ -579,10 +579,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemEnable = lpTextElement?.isSupportCurve == true
                     if (itemEnable) {
                         itemHaveNew = false
+                        UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
                         LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                         }
-                        UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
                     } else {
                         updateAdapterItem()
                     }
@@ -703,6 +703,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
+                        UMEvent.CANVAS_PATH_FILL.umengEventValue()
                         LPBitmapHandler.handlePathFill(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
@@ -783,8 +784,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                     itemClick = {
                         itemHaveNew = false
-                        LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
                         UMEvent.CANVAS_RASTERIZE.umengEventValue()
+                        LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
                     }
                 }
             }

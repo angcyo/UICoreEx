@@ -119,6 +119,7 @@ data class LPElementBean(
      * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_RECT]
      * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_OVAL]
      * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_LINE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_SVG]
      * */
     var mtype: Int = -1,
 

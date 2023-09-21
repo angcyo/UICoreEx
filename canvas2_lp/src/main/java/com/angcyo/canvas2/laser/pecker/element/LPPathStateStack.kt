@@ -2,12 +2,12 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Path
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.PathStateStack
 import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 
 /**
@@ -33,6 +33,10 @@ class LPPathStateStack : PathStateStack() {
 
     var gcodeFillAngle: Float = 0f
 
+    var mtype: Int = -1
+    var path: String? = null
+    var data: String? = null
+
     override fun saveState(renderer: BaseRenderer, delegate: CanvasRenderDelegate?) {
         super.saveState(renderer, delegate)
 
@@ -46,6 +50,10 @@ class LPPathStateStack : PathStateStack() {
 
             gcodeFillStep = elementBean.gcodeFillStep
             gcodeFillAngle = elementBean.gcodeFillAngle
+
+            mtype = elementBean.mtype
+            path = elementBean.path
+            data = elementBean.data
         }
     }
 
@@ -65,6 +73,10 @@ class LPPathStateStack : PathStateStack() {
 
             elementBean.gcodeFillStep = gcodeFillStep
             elementBean.gcodeFillAngle = gcodeFillAngle
+
+            elementBean.mtype = mtype
+            elementBean.path = path
+            elementBean.data = data
         }
         super.restoreState(renderer, reason, strategy, delegate)
     }
