@@ -202,7 +202,7 @@ data class LPElementBean(
     /**
      * 字符显示样式: top:显示在条码上 bottom:显示在条码上 none:不显示 `2023-9-9`
      * */
-    var textShowStyle: String? = LPDataConstant.TEXT_SHOW_STYLE_NONE,
+    var textShowStyle: String? = null,
 
     /**文本的对齐方式
      * [Paint.Align.toAlignString]
