@@ -1,6 +1,5 @@
 package com.angcyo.laserpacker.device.ble
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -38,17 +37,17 @@ class EngraveExperimentalFragment : DebugFragment() {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable =
-            ColorDrawable(_color(R.color.lib_theme_white_color))
+        val themeWhite = _color(R.color.lib_theme_white_color)
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(themeWhite)
         super.onInitFragment(savedInstanceState)
         rootControl().view(R.id.lib_content_wrap_layout)?.background = dslGradientDrawable {
             gradientColors = intArrayOf(
                 "#2d8dfb".toColor(),
                 "#8ae7f6".toColor(),
                 "#208ae7f6".toColor(),
-                Color.WHITE,
-                Color.WHITE,
-                Color.WHITE,
+                themeWhite,
+                themeWhite,
+                themeWhite
             )
             gradientOrientation = GradientDrawable.Orientation.TOP_BOTTOM
         }
