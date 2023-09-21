@@ -171,7 +171,6 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                     bean.gcodeFillStep > 0 &&
                     bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()
         }
-
     }
 
     /**路径填充时的路径数据*/
