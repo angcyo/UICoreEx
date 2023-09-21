@@ -668,7 +668,7 @@ object LPBitmapHandler {
             firstApply = false
             onApplyAction = { dismiss ->
                 if (dismiss) {
-                    //no
+                    onDismissAction()
                 } else {
                     val gcodeFillStep = getFloatOrDef(
                         CanvasRegulatePopupConfig.KEY_PATH_FILL_LINE_SPACE,
