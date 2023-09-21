@@ -31,6 +31,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeOffsetItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeSelectWheelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.updateVarFileItem
 import com.angcyo.core.component.manage.InnerFileManageModel
+import com.angcyo.core.component.model.tintDrawableNight
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
@@ -785,4 +786,4 @@ fun String.toVariableTypeIco(
     LPVariableBean.TYPE_TIME -> _drawable(R.drawable.variable_time_svg)
     LPVariableBean._TYPE_FILE, LPVariableBean.TYPE_TXT, LPVariableBean.TYPE_EXCEL -> _drawable(R.drawable.variable_file_svg)
     else -> null
-}
+}?.tintDrawableNight()
