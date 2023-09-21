@@ -6,6 +6,7 @@ import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.core.component.model._isDarkMode
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.createTextPaint
@@ -40,6 +41,12 @@ class TablePreviewItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.img(R.id.lib_image_view)?.apply {
+
+            if (_isDarkMode) {
+                //暗色适配 com.angcyo.canvas2.laser.pecker.RenderLayoutHelper.bindRenderLayout
+                setBackgroundColor(_color(R.color.colorPrimaryDark))
+            }
+
             if (itemPreviewBitmap == null) {
                 setImageResource(R.drawable.lib_empty_tip)
             } else {
