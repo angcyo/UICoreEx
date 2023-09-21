@@ -81,6 +81,9 @@ object LPDataConstant {
     /**U盘数据格式类型*/
     const val LPB_EXT = ".lpb"
 
+    /**xtool的文件格式*/
+    const val XCS_EXT = ".xcs"
+
     //endregion ---支持的文件类型---
 
     //region ---数据类型---

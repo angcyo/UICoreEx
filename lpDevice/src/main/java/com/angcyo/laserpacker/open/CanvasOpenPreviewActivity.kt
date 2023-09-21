@@ -15,11 +15,14 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateAdapterState
 import com.angcyo.getData
+import com.angcyo.http.base.fromJson
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.kabeja.library.Dxf
 import com.angcyo.laserpacker.*
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.XCSBean
+import com.angcyo.laserpacker.bean.toElementBeanList
 import com.angcyo.laserpacker.device.BuildConfig
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsync
@@ -404,6 +407,32 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                     }
                 }
             }
+            return true
+        } else if (path.endsWith(LPDataConstant.XCS_EXT, true)) {
+            //xtool的文件格式
+
+            val text = file.readText()
+            val xcsBean = text.fromJson<XCSBean>()
+            val beanList = xcsBean?.toElementBeanList()
+            if (beanList.isNullOrEmpty()) {
+                return false
+            }
+
+            adapter?.render {
+                clearAllItems()
+                CanvasOpenPreviewItem()() {
+                    itemFilePath = path
+                    itemDrawable = convertElementBeanListToDrawable?.invoke(beanList)
+                    openAction = {
+                        canvasOpenModel.open(this@CanvasOpenPreviewActivity, beanList)
+                        finish()
+                    }
+                    cancelAction = {
+                        finish()
+                    }
+                }
+            }
+
             return true
         }
         return false
