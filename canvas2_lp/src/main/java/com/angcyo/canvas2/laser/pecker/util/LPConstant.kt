@@ -5,6 +5,7 @@ import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
 import com.angcyo.library.unit.PxRenderUnit
+import com.angcyo.library.unit.toPixel
 
 /**
  * 常量
@@ -46,4 +47,13 @@ object LPConstant {
         }
 
     //endregion ---Canvas设置项---
+}
+
+/**将mm单位的值, 转换成对应的渲染单位对应的值*/
+fun Float.mmToRenderUnitValue(): Float {
+    if (LPConstant.renderUnit is MmRenderUnit) {
+        return this
+    }
+    val pixel = toPixel()
+    return LPConstant.renderUnit.convertPixelToValue(pixel)
 }

@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.mmToRenderUnitValue
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.item.data.LabelDesData
@@ -125,12 +126,12 @@ fun remainingTimesData(des: CharSequence?) = LabelDesData(
 fun widthHeightData(width: Float, height: Float, isMm: Boolean = true): LabelDesData {
     val valueUnit = LPConstant.renderUnit
     val w = valueUnit.formatValue(
-        if (isMm) width else valueUnit.convertPixelToValue(width),
+        if (isMm) width.mmToRenderUnitValue() else valueUnit.convertPixelToValue(width),
         true,
         false
     )
     val h = valueUnit.formatValue(
-        if (isMm) height else valueUnit.convertPixelToValue(height),
+        if (isMm) height.mmToRenderUnitValue() else valueUnit.convertPixelToValue(height),
         true,
         false
     )

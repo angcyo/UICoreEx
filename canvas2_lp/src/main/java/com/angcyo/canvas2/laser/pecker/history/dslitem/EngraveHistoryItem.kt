@@ -8,6 +8,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLabelItem
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.mmToRenderUnitValue
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
@@ -258,12 +259,12 @@ open class EngraveHistoryItem : DslTagGroupItem() {
 
     private fun widthHeightLabelDes(width: Float, height: Float, isMm: Boolean): LabelDesData {
         val w = valueUnit.formatValue(
-            if (isMm) width else valueUnit.convertPixelToValue(width),
+            if (isMm) width.mmToRenderUnitValue() else valueUnit.convertPixelToValue(width),
             true,
             true
         )
         val h = valueUnit.formatValue(
-            if (isMm) height else valueUnit.convertPixelToValue(height),
+            if (isMm) height.mmToRenderUnitValue() else valueUnit.convertPixelToValue(height),
             true,
             true
         )
