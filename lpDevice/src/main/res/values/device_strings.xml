@@ -146,5 +146,5 @@
     <string name="usb_file_title">Flash drive</string>
     <string name="external_sharing">External sharing</string>
     <string name="rotate_flag_tip_title">Please confirm that your [%1$s] is powered on</string>
-    <string name="see_tutorial">View tutorial</string>
+    <string name="see_tutorial">View help</string>
 </resources>
