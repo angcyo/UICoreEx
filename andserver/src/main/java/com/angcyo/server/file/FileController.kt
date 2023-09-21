@@ -14,6 +14,12 @@ import com.yanzhenjie.andserver.http.multipart.MultipartFile
 
 /**
  * 文件服务相关的控制接口
+ *
+ * 调试入口
+ * [com.yanzhenjie.andserver.DispatcherHandler.handle]
+ * [com.yanzhenjie.andserver.DispatcherHandler.getHandlerAdapter]
+ * [com.yanzhenjie.andserver.framework.handler.MappingAdapter.intercept]
+ *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2023/04/09
@@ -23,13 +29,19 @@ import com.yanzhenjie.andserver.http.multipart.MultipartFile
 @RestController(FileServerService.GROUP_NAME)
 class FileController {
 
-    /**实现一个上传文件的口, 文件接收*/
+    /**实现一个上传文件的口, 文件接收
+     *
+     * [com.yanzhenjie.andserver.http.multipart.StandardMultipartResolver.parseFileItems]
+     * */
     @PostMapping("/uploadFile")
     fun handleFileUpload(@RequestParam("file") file: MultipartFile?): String {
         // 处理上传的文件
         file?.let {
+            val name = file.filename ?: file.name
+            vmApp<DataShareModel>().shareMessageOnceData.postValue("开始接收文件:$name")
+
             //file.name //这个值就是 file 字符串
-            val cacheFile = libCacheFile(file.filename ?: file.name)
+            val cacheFile = libCacheFile(name)
             val filePath = cacheFile.absolutePath
             it.stream.copyToFile(filePath)
 
@@ -50,7 +62,7 @@ class FileController {
                 }
             }
         }
-        return "no file!"
+        return "no files!"
     }
 
     /**接收字符串的接口*/
