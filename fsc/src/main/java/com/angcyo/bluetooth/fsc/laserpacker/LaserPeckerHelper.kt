@@ -975,6 +975,17 @@ object LaserPeckerHelper {
         return maxOf(last?.pump ?: 0, 0)
     }
 
+    /**获取推荐的气泵参数*/
+    fun getRecommendPump(layerId: String?, depth: Int): Int? {
+        val list = _deviceConfigBean?.pumpMap?.get(layerId) ?: return null
+        //气泵参数推荐
+        return if (depth <= 40) {
+            list.firstOrNull()?.value
+        } else {
+            list.lastOrNull()?.value
+        }
+    }
+    
     //</editor-fold desc="packet">
 }
 

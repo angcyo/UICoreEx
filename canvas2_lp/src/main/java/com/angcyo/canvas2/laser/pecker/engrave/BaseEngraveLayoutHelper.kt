@@ -650,10 +650,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         itemEngraveItemBean = elementItemBean
                         initPumpIfNeed()
                         itemSegmentList = pumpList
-                        itemCurrentIndex = max(
-                            0,
-                            pumpList.indexOf(pumpList.find { it.value == elementItemBean?.pump })
-                        )
+                        itemUpdateAction(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
                     }
                 }
             }
@@ -905,10 +902,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             itemEngraveConfigEntity = engraveConfigEntity
                             initPumpIfNeed()
                             itemSegmentList = pumpList
-                            itemCurrentIndex = max(
-                                0,
-                                pumpList.indexOf(pumpList.find { it.value == engraveConfigEntity.pump })
-                            )
+                            itemUpdateAction(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
                         }
                     }
                 }

@@ -7,6 +7,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.getSelectedSegmentBean
+import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.find
@@ -15,6 +16,7 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetChild
+import kotlin.math.max
 
 /**
  * 雕刻参数, 气泵风速选择
@@ -22,6 +24,10 @@ import com.angcyo.widget.base.resetChild
  * @since 2023/09/15
  */
 class EngravePumpItem : EngraveSegmentScrollItem() {
+
+    companion object {
+        const val PAYLOAD_UPDATE_PUMP = 0x1000
+    }
 
     /**参数配置实体*/
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
@@ -32,6 +38,20 @@ class EngravePumpItem : EngraveSegmentScrollItem() {
     init {
         itemText = _string(R.string.engrave_pump_label)
         itemSegmentLayoutId = R.layout.layout_engrave_pump_segment
+
+        itemUpdateAction = {
+            if (it == PAYLOAD_UPDATE_PUMP) {
+                val pumpList = itemSegmentList as? List<PumpConfigBean>
+                if (pumpList != null) {
+                    val pump = itemEngraveConfigEntity?.pump ?: itemEngraveItemBean?.pump
+                    itemCurrentIndex = max(
+                        0,
+                        pumpList.indexOf(pumpList.find { it.value == pump })
+                    )
+                    onSelfPumpChange()
+                }
+            }
+        }
     }
 
     override fun onSelfItemInitTabSegmentLayout(
@@ -72,6 +92,11 @@ class EngravePumpItem : EngraveSegmentScrollItem() {
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         super.onItemChangeListener(item)
+        onSelfPumpChange()
+    }
+
+    /**值改变时, 需要进行的操作*/
+    fun onSelfPumpChange() {
         val value = getSelectedSegmentBean<PumpConfigBean>()?.value
         itemEngraveConfigEntity?.apply {
             pump = value ?: pump

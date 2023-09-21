@@ -32,7 +32,7 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemDes
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemLabel
-import com.angcyo.item.style.itemSelectIndexChangeAction
+import com.angcyo.item.style.itemTabSelectIndexChangeAction
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.device.R
@@ -44,7 +44,6 @@ import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.hawkGetBoolean
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
@@ -386,7 +385,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                              } else {
                                  zDirIndex
                              }*/
-                        itemSelectIndexChangeAction =
+                        itemTabSelectIndexChangeAction =
                             { fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean ->
                                 val index = selectIndexList.first()
                                 //QuerySettingParser.Z_MODEL = index //确切的模式

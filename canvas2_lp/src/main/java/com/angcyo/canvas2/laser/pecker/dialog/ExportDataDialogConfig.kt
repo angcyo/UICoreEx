@@ -359,10 +359,7 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
                     itemEngraveConfigEntity = engraveConfigEntity
                     initPumpIfNeed()
                     itemSegmentList = pumpList
-                    itemCurrentIndex = max(
-                        0,
-                        pumpList.indexOf(pumpList.find { it.value == engraveConfigEntity.pump })
-                    )
+                    itemUpdateAction(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
                 }
             }
         }

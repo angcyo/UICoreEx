@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.graphics.Typeface
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.component.model.NightModel
@@ -9,6 +10,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.updateAdapterItem
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.ex._color
@@ -67,7 +69,7 @@ class EngravePropertyItem : DslAdapterItem() {
 
         itemHolder.tv(R.id.lib_label_view)?.text = itemLabelText
 
-        //属性
+        //属性, 功率
         val powerLabel = _string(R.string.custom_power)
         val power = itemEngraveConfigEntity?.power ?: (itemEngraveItemBean?.printPower
             ?: HawkEngraveKeys.lastPower)
@@ -86,7 +88,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("%")
         }
 
-        //深度
+        //深度-速度
         val speedLabel = _string(R.string.custom_speed)
         val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
             ?: HawkEngraveKeys.lastDepth)
@@ -143,6 +145,7 @@ class EngravePropertyItem : DslAdapterItem() {
                 }
             }
         }
+        //深度-速度
         itemHolder.click(R.id.speed_view) {
             context.wheelDialog {
                 dialogTitle = speedLabel
@@ -161,6 +164,14 @@ class EngravePropertyItem : DslAdapterItem() {
                         HawkEngraveKeys.lastDepth = it
                         itemEngraveConfigEntity?.depth = it
                         itemEngraveItemBean?.printDepth = it
+
+                        //气泵参数推荐
+                        LaserPeckerHelper.getRecommendPump(itemEngraveConfigEntity?.layerId, it)
+                            ?.let {
+                                itemEngraveConfigEntity?.pump = it
+                                itemDslAdapter?.get<EngravePumpItem>()
+                                    ?.updateAdapterItem(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
+                            }
                     }
                     itemChanging = true
                     false
