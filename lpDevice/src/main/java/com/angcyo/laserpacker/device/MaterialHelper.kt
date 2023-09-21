@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._productName
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.core.vmApp
@@ -218,7 +219,7 @@ object MaterialHelper {
             initLayerDpi(layerId, dpi)
 
             //2: 优先使用上一次的参数
-            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            val productName = _productName
             val lastEngraveConfig = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 if (productName.isNullOrBlank()) {
                     //使用最后一次图层的参数

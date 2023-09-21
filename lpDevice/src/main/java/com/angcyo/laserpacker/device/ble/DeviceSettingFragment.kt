@@ -12,6 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._productName
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -35,19 +36,19 @@ import com.angcyo.item.style.itemSelectIndexChangeAction
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.device.R
+import com.angcyo.laserpacker.device.ble.dslitem.HelpPropertySwitchItem
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.hawkGetBoolean
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
-import com.angcyo.widget.span.span
 import kotlin.math.max
 
 
@@ -60,6 +61,38 @@ class DeviceSettingFragment : BaseDslFragment() {
 
     companion object {
 
+        /**每个产品提醒一次*/
+        val rotateFlagPromptKey: String
+            get() = "rotateFlagPromptKey_${_productName}"
+
+        /**每个产品提醒一次*/
+        val slideFlagPromptKey: String
+            get() = "slideFlagPromptKey_${_productName}"
+
+        /**每个产品提醒一次*/
+        val slideFilesFlagPromptKey: String
+            get() = "slideFilesFlagPromptKey_${_productName}"
+
+        /**每个产品提醒一次*/
+        val thirdAxisFlagPromptKey: String
+            get() = "thirdAxisFlagPromptKey_${_productName}"
+        
+        /**旋转轴帮助链接*/
+        val rotateFlagHelpUrl: String?
+            get() = getFlagHelpUrl("aor")
+
+        /**滑台帮助链接*/
+        val slideFlagHelpUrl: String?
+            get() = getFlagHelpUrl("slide")
+
+        /**滑台多文件帮助链接*/
+        val slideFilesFlagHelpUrl: String?
+            get() = getFlagHelpUrl("slide_files")
+
+        /**第三轴帮助链接*/
+        val thirdAxisFlagHelpUrl: String?
+            get() = getFlagHelpUrl("third_axis")
+
         /**上传日志的item*/
         var createUploadLogItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
             null
@@ -67,6 +100,19 @@ class DeviceSettingFragment : BaseDslFragment() {
         /**创建固件升级的item*/
         var createFirmwareUpdateItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
             null
+
+        fun getFlagHelpUrl(ex: String): String? {
+            val setting = _deviceSettingBean
+            val name = _productName
+            val baseUrl = setting?.flagHelpBase ?: return null
+            val isZh = LanguageModel.isChinese()
+            val helpUrl = if (isZh) {
+                "${baseUrl}/${ex}_${name}_zh"
+            } else {
+                "${baseUrl}/${ex}_${name}_en"
+            }
+            return helpUrl
+        }
 
         /**[com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.ignoreTempSensor]*/
         fun updateIgnoreTempSensor(ignoreTempSensor: Boolean) {
@@ -226,7 +272,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                                 }
                                 negativeButton { dialog, dialogViewHolder ->
                                     dialog.dismiss()
-                                    updateSwitchChecked(false)
+                                    updateItemSwitchChecked(false)
                                     syncQueryDeviceState()
                                 }
                             }
@@ -304,8 +350,12 @@ class DeviceSettingFragment : BaseDslFragment() {
                     true
                 )
             ) {
-                DslPropertySwitchItem()() {
+                HelpPropertySwitchItem()() {
+                    itemHelpUrl = thirdAxisFlagHelpUrl
+                    itemFlagPromptKey = thirdAxisFlagPromptKey
+
                     itemLabel = _string(R.string.device_ex_z_label)
+
                     itemDes = _string(R.string.device_ex_z_des)
 
                     itemSwitchChecked = settingParser?.zFlag == 1
@@ -357,31 +407,11 @@ class DeviceSettingFragment : BaseDslFragment() {
                     true
                 )
             ) {
-                DslPropertySwitchItem()() {
+                HelpPropertySwitchItem()() {
+                    itemHelpUrl = rotateFlagHelpUrl
+                    itemFlagPromptKey = rotateFlagPromptKey
 
-                    val setting = _deviceSettingBean
-                    val isZh = LanguageModel.isChinese()
-                    val url = if (isZh) {
-                        setting?.rotateFlagHelpUrlZh ?: setting?.rotateFlagHelpUrl
-                    } else {
-                        setting?.rotateFlagHelpUrl
-                    }
-
-                    if (url.isNullOrBlank()) {
-                        itemLabel = _string(R.string.device_ex_r_label)
-                    } else {
-                        itemLabel = span {
-                            append(_string(R.string.device_ex_r_label))
-                            append(" ")
-                            appendDrawable(_drawable(R.drawable.rotate_flag_help_svg))
-                        }
-
-                        itemBindOverride = { itemHolder, itemPosition, adapterItem, payloads ->
-                            itemHolder.click(labelItemConfig.itemLabelViewId) {
-                                LaserPeckerConfigHelper.onOpenUrlAction?.invoke(url)
-                            }
-                        }
-                    }
+                    itemLabel = _string(R.string.device_ex_r_label)
 
                     itemDes = _string(R.string.device_ex_r_des)
                     initItem()
@@ -402,8 +432,12 @@ class DeviceSettingFragment : BaseDslFragment() {
                     true
                 )
             ) {
-                DslPropertySwitchItem()() {
+                HelpPropertySwitchItem()() {
+                    itemHelpUrl = slideFlagHelpUrl
+                    itemFlagPromptKey = slideFlagPromptKey
+
                     itemLabel = _string(R.string.device_ex_s_label)
+
                     itemDes = _string(R.string.device_ex_s_des)
                     initItem()
 
@@ -425,7 +459,10 @@ class DeviceSettingFragment : BaseDslFragment() {
                     true
                 )
             ) {
-                DslPropertySwitchItem()() {
+                HelpPropertySwitchItem()() {
+                    itemHelpUrl = slideFilesFlagHelpUrl
+                    itemFlagPromptKey = slideFilesFlagPromptKey
+
                     itemLabel = _string(R.string.device_s_batch_engrave_label)
                     itemDes = _string(R.string.device_s_batch_engrave_des)
                     initItem()

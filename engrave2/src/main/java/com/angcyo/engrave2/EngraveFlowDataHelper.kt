@@ -2,8 +2,7 @@ package com.angcyo.engrave2
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.core.vmApp
+import com.angcyo.bluetooth.fsc.laserpacker._productName
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
@@ -485,7 +484,7 @@ object EngraveFlowDataHelper {
 
     /**查找任务配置的材质信息*/
     fun findTaskMaterialList(taskId: String?): List<MaterialEntity>? {
-        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        val productName = _productName
         //优先使用任务配置的雕刻信息
         val configList = EngraveConfigEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(
@@ -520,7 +519,7 @@ object EngraveFlowDataHelper {
 
     /**则查找相同产品的最近一次的雕刻信息*/
     fun findLastMaterial(): MaterialEntity? {
-        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        val productName = _productName
         val config = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveConfigEntity_.materialCode.notNull()
@@ -591,7 +590,7 @@ object EngraveFlowDataHelper {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
         }
         val result = mutableListOf<MaterialEntity>()
-        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        val productName = _productName
         val key = "${materialName}_${nowTime()}"
 
         configList.forEach { configEntity ->
@@ -676,7 +675,7 @@ object EngraveFlowDataHelper {
             this.layerId = layerId
 
             //获取最后一次相同图层的雕刻参数
-            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            val productName = _productName
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.productName.equal("$productName")
@@ -717,7 +716,7 @@ object EngraveFlowDataHelper {
             val previewConfigEntity = generatePreviewConfig(taskId)
             diameterPixel = previewConfigEntity.diameterPixel
 
-            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            val productName = _productName
             this.productName = productName
 
             //---

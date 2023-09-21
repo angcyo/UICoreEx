@@ -141,4 +141,6 @@
     <string name="sd_card_file_title">SD卡</string>
     <string name="usb_file_title">U盘</string>
     <string name="external_sharing">外部分享</string>
+    <string name="rotate_flag_tip_title">请确认你的【%1$s】已通电</string>
+    <string name="see_tutorial">查看教程</string>
 </resources>

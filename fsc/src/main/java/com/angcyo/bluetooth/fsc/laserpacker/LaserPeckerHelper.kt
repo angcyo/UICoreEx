@@ -964,7 +964,7 @@ object LaserPeckerHelper {
     /**获取最后一次的气泵参数*/
     fun getLastPump(
         layerId: String?,
-        productName: String? = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        productName: String? = _productName
     ): Int {
         val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
@@ -977,6 +977,10 @@ object LaserPeckerHelper {
 
     //</editor-fold desc="packet">
 }
+
+/**当前连接的产品名称*/
+val _productName: String?
+    get() = vmApp<LaserPeckerModel>().productInfoData.value?.name
 
 /**当前矩形, 是否超出了设备物理雕刻范围*/
 fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).run {

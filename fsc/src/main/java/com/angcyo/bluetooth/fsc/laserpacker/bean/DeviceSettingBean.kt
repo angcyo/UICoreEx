@@ -94,9 +94,22 @@ data class DeviceSettingBean(
     /**中文特殊跳转*/
     var dataOffsetHelpUrlZh: String? = null,
     /**旋转轴帮助文档地址, 默认跳转*/
+    @Deprecated("当前属性只支持LP4")
     var rotateFlagHelpUrl: String? = null,
     /**中文特殊跳转*/
+    @Deprecated("当前属性只支持LP4")
     var rotateFlagHelpUrlZh: String? = null,
+
+    /**
+     * 实例  https://faq.hingin.com/docs/aor_lp4_zh
+     *       https://faq.hingin.com/docs/aor_lx1_en
+     * 滑台: slide
+     * 旋转轴: aor
+     * 滑台多文件: slide_files
+     * 第三轴: third_axis
+     * */
+    var flagHelpBase: String? = "https://faq.hingin.com/docs",
+
     /**日期推荐格式列表*/
     var dateFormatList: List<String>? = null,
     /**时间推荐格式列表*/

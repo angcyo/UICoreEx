@@ -2,9 +2,8 @@ package com.angcyo.laserpacker
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._productName
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.MaterialHelper
@@ -44,7 +43,7 @@ object LPTransferData {
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
 
             //获取最后一次相同图层的雕刻参数
-            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            val productName = _productName
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.productName.equal("$productName")

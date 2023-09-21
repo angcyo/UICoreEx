@@ -220,7 +220,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     }
 
                     viewHolder.post {
-                        updateSwitchChecked(def, true)
+                        updateItemSwitchChecked(def, true)
                     }
                 }
             }
