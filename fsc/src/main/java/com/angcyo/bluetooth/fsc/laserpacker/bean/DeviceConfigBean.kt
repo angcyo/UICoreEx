@@ -140,7 +140,10 @@ data class DeviceConfigBean(
     }
 
     /**获取指定图层的配置信息
-     * [layerId] 图层id*/
+     * [layerId] 图层id
+     *
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.findProductLayerSupportPxList]
+     * */
     fun getLayerConfig(layerId: String): LayerConfigBean {
         layer?.get(layerId)?.let {
             return it.filterDpiList()

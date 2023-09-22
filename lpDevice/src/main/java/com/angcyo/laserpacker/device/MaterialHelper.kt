@@ -153,13 +153,14 @@ object MaterialHelper {
                 for (materialEntity in list) {
                     materialEntity.materialType = MaterialEntity.MATERIAL_TYPE_SYSTEM
                     if (materialEntity.dpi <= 0f) {
-                        val dpi = materialEntity.dpiScale * LaserPeckerHelper.DPI_254
-                        materialEntity.dpi = dpi
-                        materialEntity.layerId?.let {
-                            materialEntity.initLayerDpi(
-                                it,
-                                materialEntity.dpiScale * LaserPeckerHelper.DPI_254
-                            )
+                        materialEntity.layerId?.let { layerId ->
+                            //这里的dpi并不是简单的*254
+                            val pxInfo = LaserPeckerHelper.findProductLayerSupportPxList(layerId)
+                                .find { it.des == "${materialEntity.dpiScale.toInt()}K" }
+                            val dpi =
+                                pxInfo?.dpi ?: (materialEntity.dpiScale * LaserPeckerHelper.DPI_254)
+                            materialEntity.dpi = dpi
+                            materialEntity.initLayerDpi(layerId, dpi)
                         }
                     }
                     if (isLPSeries && materialEntity.layerId == LaserPeckerHelper.LAYER_FILL) {

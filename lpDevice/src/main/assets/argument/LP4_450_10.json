@@ -56,6 +56,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "aluminum_blue_bw_4",
     "layerId": "layerFill",
     "depth": 5,
@@ -67,6 +68,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "aluminum_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 10,
@@ -133,6 +135,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "abs_blue_bw_4",
     "layerId": "layerFill",
     "depth": 10,
@@ -144,6 +147,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "abs_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 5,
@@ -243,6 +247,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "steel_blue_bw_4",
     "layerId": "layerFill",
     "depth": 10,
@@ -254,6 +259,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "steel_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 20,
@@ -320,6 +326,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "shale_slabs_blue_bw_4",
     "layerId": "layerFill",
     "depth": 3,
@@ -331,6 +338,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "shale_slabs_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 10,
@@ -397,6 +405,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "marble_slabs_blue_bw_4",
     "layerId": "layerFill",
     "depth": 50,
@@ -408,6 +417,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "marble_slabs_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 70,
@@ -485,6 +495,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "basswood_planks_blue_bw_4",
     "layerId": "layerFill",
     "depth": 3,
@@ -562,6 +573,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "black_walnut_blue_bw_4",
     "layerId": "layerFill",
     "depth": 10,
@@ -573,6 +585,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "black_walnut_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 10,
@@ -650,6 +663,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "imitation_leather_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 1,
@@ -727,6 +741,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "vellum_blue_bw_4",
     "layerId": "layerFill",
     "depth": 1,
@@ -738,6 +753,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "vellum_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 1,
@@ -859,6 +875,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "cardboard_blue_bw_4",
     "layerId": "layerFill",
     "depth": 1,
@@ -870,6 +887,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "cardboard_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 1,
@@ -1013,6 +1031,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "pvc_blue_bw_4",
     "layerId": "layerFill",
     "depth": 5,
@@ -1024,6 +1043,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "pvc_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 5,
@@ -1101,6 +1121,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "acrylic_blue_bw_4",
     "layerId": "layerFill",
     "depth": 5,
@@ -1112,6 +1133,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "acrylic_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 1,
@@ -1222,6 +1244,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "glasses_blue_bw_4",
     "layerId": "layerFill",
     "depth": 8,
@@ -1233,6 +1256,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "glasses_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 15,
@@ -1310,6 +1334,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "recycle_paper_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 3,
@@ -1486,6 +1511,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "bamboo_blue_bw_4",
     "layerId": "layerFill",
     "depth": 2,
@@ -1497,6 +1523,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "bamboo_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 5,
@@ -1552,6 +1579,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "poplar_chips_blue_bw_4",
     "layerId": "layerFill",
     "depth": 3,
@@ -1629,6 +1657,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "bamboo2_blue_bw_4",
     "layerId": "layerFill",
     "depth": 3,
@@ -1640,6 +1669,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "bamboo2_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 3,
@@ -1717,6 +1747,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "beechwood_blue_bw_4",
     "layerId": "layerFill",
     "depth": 1,
@@ -1728,6 +1759,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "beechwood_blue_bw_4",
     "layerId": "layerPicture",
     "depth": 2,
@@ -1783,6 +1815,7 @@
   },
   {
     "dpiScale": 4,
+    "dpi": 846.66666,
     "code": "mdf_blue_bw_4",
     "layerId": "layerFill",
     "depth": 3,
