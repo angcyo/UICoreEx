@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.element
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.DashPathEffect
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PathEffect
@@ -21,9 +22,11 @@ import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.scaleToSize
 import com.angcyo.library.ex.toColorInt
 import com.angcyo.library.ex.toRadians
+import com.angcyo.library.ex.transform
 import com.angcyo.library.ex.updateFillType
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
@@ -273,10 +276,12 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             //path数据
             val path = Sharp.loadPath(elementBean.path)
             pathList = listOf(path)
-            updateOriginPathList(pathList)
+            //updateOriginPathList(pathList)
+            updateAndScaleOriginPathList(pathList)
         } else {
             createPath(elementBean)?.let { pathList = listOf(it) }
-            updateOriginPathList(pathList)
+            //updateOriginPathList(pathList)
+            updateAndScaleOriginPathList(pathList)
         }
         //this
         pathList?.updateFillType()
@@ -372,6 +377,34 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         parseElementBean()
         updateOriginPathList(pathList, keepVisibleSize)
         renderer?.updateRenderProperty()
+    }
+
+    /**
+     * 路径数据解析后的宽高和[LPElementBean]中描述的宽高不一致时, 需要缩放路径数据
+     * */
+    fun updateAndScaleOriginPathList(pathList: List<Path>?) {
+        @Pixel
+        val width = elementBean.width?.toPixel()
+        val height = elementBean.height?.toPixel()
+        if (!pathList.isNullOrEmpty() && width != null && height != null) {
+            val bounds = RenderHelper.computePathBounds(pathList)
+            val scaleX = width / bounds.width()
+            var scaleY = height / bounds.height()
+
+            if (elementBean.isLineShape) {
+                scaleY = scaleX
+            }
+            if (scaleX != 1f || scaleY != 1f) {
+                val matrix = Matrix()
+                matrix.setScale(scaleX, scaleY)
+                val newList = pathList.transform(matrix)
+                updateOriginPathList(newList)
+            } else {
+                updateOriginPathList(pathList)
+            }
+        } else {
+            updateOriginPathList(pathList)
+        }
     }
 
 }
