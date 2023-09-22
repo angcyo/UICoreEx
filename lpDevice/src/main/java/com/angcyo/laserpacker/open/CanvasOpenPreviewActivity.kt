@@ -1,6 +1,5 @@
 package com.angcyo.laserpacker.open
 
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -72,7 +71,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         var adapter: DslAdapter? = null
 
         _vh.rv(R.id.lib_recycler_view)?.apply {
-            setBackgroundColor(Color.WHITE)
+            setBackgroundColor(_color(R.color.lib_theme_white_bg_color))
             renderDslAdapter {
                 adapter = this
                 dslAdapterStatusItem.itemEnableRetry = false
