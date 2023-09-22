@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="canvas_item_layout">@color/lib_theme_white_color</color>
-    <color name="canvas_control_layout">@color/lib_theme_white_color</color>
+    <color name="canvas_control_layout">@color/lib_theme_white_color2</color>
     <color name="canvas_ico">@color/lib_text_color</color>
     <color name="canvas_segment_tab_bg_color">@color/lib_segment_tab_bg_color</color>
     <color name="canvas_line">@color/lib_line</color>
