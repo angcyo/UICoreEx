@@ -58,13 +58,16 @@ import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.update
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.libCacheFile
+import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.usb.storage.UsbStorageHelper.writeNewFile
 import com.angcyo.usb.storage.UsbStorageModel
+import com.angcyo.usb.storage.usbStorageFolderSelectorDialog
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 import java.io.File
@@ -201,16 +204,27 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
         }
     }
 
+    /**导出文件到U盘*/
     fun exportFile(dialog: Dialog) {
-        outputFile?.let {
+        outputFile?.let { file ->
             if (usbStorageModel.haveUsbDevice) {
                 /*usbFolderSelector(usbStorageModel.selectedDevice?.partitions?.get(0)?.fileSystem?.rootDirectory) {
-                    it?.let {
-                        fragmentTitle = it.absolutePath
+                    file?.let {
+                        fragmentTitle = file.absolutePath
                     }
                 }*/
+                dialog.context.usbStorageFolderSelectorDialog(usbStorageModel.selectedFileSystem?.rootDirectory) {
+                    usbSelectorConfig {
+                        onUsbFileSelector = { usbFile ->
+                            usbFile?.let {
+                                usbFile.writeNewFile(usbStorageModel.selectedFileSystem, file)
+                                toastQQ(_string(R.string.core_import_success))
+                            }
+                        }
+                    }
+                }
             } else {
-                it.shareFile()
+                file.shareFile()
             }
         }
     }

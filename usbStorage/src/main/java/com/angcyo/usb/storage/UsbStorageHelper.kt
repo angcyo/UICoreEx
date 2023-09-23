@@ -7,6 +7,7 @@ import com.angcyo.library.ex.toListOf
 import me.jahnen.libaums.core.fs.FileSystem
 import me.jahnen.libaums.core.fs.UsbFile
 import me.jahnen.libaums.core.fs.UsbFileStreamFactory
+import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
 
@@ -59,9 +60,17 @@ object UsbStorageHelper {
         fileSystem: FileSystem?,
         newFileName: String,
         action: BufferedOutputStream.() -> Unit
-    ) {
-        fileSystem ?: return
-        createFile(newFileName).write(fileSystem, action)
+    ): Boolean {
+        fileSystem ?: return false
+        if (isDirectory) {
+            //判断文件是否已存在
+            val newFile = search(newFileName)
+            newFile?.delete()
+            createFile(newFileName).write(fileSystem, action)
+            return true
+        } else {
+            return false
+        }
     }
 
     fun UsbFile.writeNewFile(fileSystem: FileSystem?, file: File) {
@@ -71,6 +80,14 @@ object UsbStorageHelper {
                 inputStream.copyTo(this)
             }
         }
+    }
+
+    //---
+
+    /**读取文件数据流*/
+    fun UsbFile.inputStream(fileSystem: FileSystem?): BufferedInputStream? {
+        fileSystem ?: return null
+        return UsbFileStreamFactory.createBufferedInputStream(this, fileSystem)
     }
 
 }

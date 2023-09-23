@@ -18,6 +18,7 @@ import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
 import me.jahnen.libaums.core.UsbMassStorageDevice
+import me.jahnen.libaums.core.fs.FileSystem
 import java.io.IOException
 
 /**
@@ -53,6 +54,10 @@ class UsbStorageModel : ViewModel() {
     /**是否有USB存储设备, 并且具有访问权限*/
     val haveUsbDevice: Boolean
         get() = selectedDevice != null
+
+    /**选中的文件系统*/
+    val selectedFileSystem: FileSystem?
+        get() = selectedDevice?.partitions?.firstOrNull()?.fileSystem
 
     private val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
