@@ -2,6 +2,7 @@ package com.angcyo.usb.storage
 
 import androidx.annotation.AnyThread
 import com.angcyo.http.rx.doMain
+import com.angcyo.library.L
 import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex.toListOf
 import me.jahnen.libaums.core.fs.FileSystem
@@ -10,6 +11,7 @@ import me.jahnen.libaums.core.fs.UsbFileStreamFactory
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * usb存储
@@ -55,6 +57,33 @@ object UsbStorageHelper {
 
     //---
 
+    /**删除文件/文件夹如果存在*/
+    fun UsbFile.deleteIfExist(fileName: String): Boolean {
+        if (isDirectory) {
+            val file = search(fileName)
+            file?.delete()
+            return true
+        }
+        return false
+    }
+
+    /**获取或者创建一个文件夹, 并返回*/
+    fun UsbFile.getOrCreateFolder(folderName: String): UsbFile {
+        if (isDirectory) {
+            val file = search(folderName)
+            if (file == null) {
+                return createDirectory(folderName)
+            } else if (file.isDirectory) {
+                return file
+            } else {
+                file.delete()
+                return createDirectory(folderName)
+            }
+        } else {
+            return this
+        }
+    }
+
     /**在指定文件夹中创建一个新的文件[newFileName]并写入数据*/
     fun UsbFile.writeNewFile(
         fileSystem: FileSystem?,
@@ -64,10 +93,16 @@ object UsbStorageHelper {
         fileSystem ?: return false
         if (isDirectory) {
             //判断文件是否已存在
-            val newFile = search(newFileName)
-            newFile?.delete()
-            createFile(newFileName).write(fileSystem, action)
-            return true
+            return try {
+                val newFile = search(newFileName)
+                newFile?.delete()
+                createFile(newFileName).write(fileSystem, action)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                L.e(e)
+                false
+            }
         } else {
             return false
         }
@@ -90,4 +125,25 @@ object UsbStorageHelper {
         return UsbFileStreamFactory.createBufferedInputStream(this, fileSystem)
     }
 
+    //---
+
+    /**递归拷贝文件数据
+     * [count] 已拷贝文件数
+     * [action] 已经拷贝了多少个回调的回调*/
+    fun UsbFile.recursivelyCopy(
+        fileSystem: FileSystem?,
+        file: File,
+        count: AtomicLong = AtomicLong(0),
+        action: (file: File, count: Long) -> Unit = { _, _ -> }
+    ) {
+        if (file.isDirectory) {
+            val folder = getOrCreateFolder(file.name)
+            file.listFiles()?.forEach {
+                folder.recursivelyCopy(fileSystem, it, count, action)
+            }
+        } else {
+            action(file, count.incrementAndGet())
+            writeNewFile(fileSystem, file)
+        }
+    }
 }

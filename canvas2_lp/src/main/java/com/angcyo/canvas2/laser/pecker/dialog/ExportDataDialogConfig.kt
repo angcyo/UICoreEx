@@ -47,17 +47,22 @@ import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
+import com.angcyo.laserpacker.device.engraveStrokeLoadingCaller
 import com.angcyo.library.L
 import com.angcyo.library.annotation.DSL
+import com.angcyo.library.app
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ceil
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.update
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.libCacheFile
+import com.angcyo.library.libFileFolder
 import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.utils.writeToFile
@@ -65,6 +70,8 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.usb.storage.UsbStorageHelper.getOrCreateFolder
+import com.angcyo.usb.storage.UsbStorageHelper.recursivelyCopy
 import com.angcyo.usb.storage.UsbStorageHelper.writeNewFile
 import com.angcyo.usb.storage.UsbStorageModel
 import com.angcyo.usb.storage.usbStorageFolderSelectorDialog
@@ -135,6 +142,34 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
         transferConfigEntity = LPEngraveHelper.generateTransferConfig(taskId, renderDelegate)
 
         super.initDialogView(dialog, dialogViewHolder)
+
+        //长按导出所有数据到U盘
+        dialogViewHolder.longClick(R.id.dialog_title_view) {
+            if (usbStorageModel.haveUsbDevice) {
+                usbStorageModel.selectedFileSystem?.apply {
+                    engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                        runOnBackground {
+                            rootDirectory.getOrCreateFolder(app().packageName)
+                                .recursivelyCopy(
+                                    this,
+                                    libFileFolder() /*libAppFolderFile()*/
+                                ) { file, count ->
+                                    doMain {
+                                        dialogTitle = span {
+                                            append(_string(R.string.canvas_export_data))
+                                            appendln()
+                                            append("${file.name} ($count)") {
+                                                fontSize = 12 * dpi
+                                            }
+                                        }
+                                    }
+                                }
+                            loadEnd(true, null)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**创建lpb数据

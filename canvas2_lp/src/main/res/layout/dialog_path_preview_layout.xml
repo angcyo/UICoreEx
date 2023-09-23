@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:gravity="center"
         android:minHeight="@dimen/dialog_item_height"
         android:text="@string/device_setting_act_model_preview_g_code"
         android:textStyle="bold"
