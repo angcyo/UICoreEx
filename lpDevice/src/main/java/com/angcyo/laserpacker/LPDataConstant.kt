@@ -20,6 +20,9 @@ object LPDataConstant {
     /**默认的GCode线距*/
     const val DEFAULT_LINE_SPACE = 5.0f
 
+    /**最小的GCode间隙*/
+    const val DEFAULT_MIN_LINE_SPACE = 0.125f
+
     /**默认的字间距*/
     @MM
     const val DEFAULT_CHAR_SPACING = 0.5f

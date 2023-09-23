@@ -216,7 +216,17 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
                     itemSwitchChangedAction = {
                         property[KEY_OUTLINE] = it
-                        enableItemTags(!it, listOf(KEY_LINE_SPACE, KEY_ANGLE, KEY_DIRECTION))
+
+                        val lineSpace = getFloatOrDef(
+                            KEY_LINE_SPACE,
+                            LPDataConstant.DEFAULT_LINE_SPACE
+                        )
+                        val outline = getBooleanOrDef(KEY_OUTLINE, false)
+                        val disableSubmit =
+                            lineSpace < LPDataConstant.DEFAULT_MIN_LINE_SPACE && !outline
+                        enableItemTags(!disableSubmit, listOf(KEY_SUBMIT))
+
+                        //enableItemTags(!it, listOf(KEY_LINE_SPACE, KEY_ANGLE, KEY_DIRECTION))
                     }
 
                     viewHolder.post {
@@ -231,7 +241,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     itemInfoText = _string(R.string.canvas_line_space) //0.125-5
                     initItem()
 
-                    val start = 0.1f //0.125f
+                    val start = 0f //0.125f
                     val max = 5f
                     val def = getFloatOrDef(KEY_LINE_SPACE, LPDataConstant.DEFAULT_LINE_SPACE)
 
@@ -247,7 +257,14 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     }
 
                     itemSeekTouchEnd = { value, fraction ->
-                        property[KEY_LINE_SPACE] = start + (max - start) * fraction
+                        //GCode线距
+                        val lineSpace = start + (max - start) * fraction
+                        property[KEY_LINE_SPACE] = lineSpace
+
+                        val outline = getBooleanOrDef(KEY_OUTLINE, false)
+                        val disableSubmit =
+                            lineSpace < LPDataConstant.DEFAULT_MIN_LINE_SPACE && !outline
+                        enableItemTags(!disableSubmit, listOf(KEY_SUBMIT))
                     }
                 }
             }
@@ -421,6 +438,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             //确认按钮
             if (regulateList.contains(KEY_SUBMIT)) {
                 DslBlackButtonItem()() {
+                    itemTag = KEY_SUBMIT
                     itemButtonText = _string(R.string.dialog_positive)
                     itemClick = {
                         _valueChange = true //2023-3-10 need?

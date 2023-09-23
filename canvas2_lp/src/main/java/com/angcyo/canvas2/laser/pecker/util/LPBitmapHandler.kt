@@ -157,7 +157,8 @@ object LPBitmapHandler {
             lineSpace = bean.gcodeLineSpace.toDouble(),
             direction = bean.gcodeDirection,
             angle = bean.gcodeAngle.toDouble(),
-            type = if (bean.gcodeOutline) 1 else 3
+            type = if (bean.gcodeOutline && bean.gcodeLineSpace < LPDataConstant.DEFAULT_MIN_LINE_SPACE)
+                2 /*仅轮廓*/ else if (bean.gcodeOutline) 1 /*轮廓+填充*/ else 3 /*不需要轮廓*/
         )
     }
 
@@ -680,7 +681,12 @@ object LPBitmapHandler {
                     )
 
                     owner.engraveLoadingAsync({
-                        element.updatePathFill(renderer, delegate, gcodeFillStep, gcodeFillAngle)
+                        element.updatePathFill(
+                            renderer,
+                            delegate,
+                            gcodeFillStep,
+                            gcodeFillAngle
+                        )
                     }) {
                         onDismissAction()
                     }
@@ -870,7 +876,12 @@ object LPBitmapHandler {
                             val centerX = curveCx
                             val centerY = curveCy
                             val resultPath = Path()
-                            resultPath.addCircle(centerX, centerY, innerRadius, Path.Direction.CW)
+                            resultPath.addCircle(
+                                centerX,
+                                centerY,
+                                innerRadius,
+                                Path.Direction.CW
+                            )
 
                             val matrix = acquireTempMatrix()
                             element.renderProperty.getRenderMatrix(matrix)
