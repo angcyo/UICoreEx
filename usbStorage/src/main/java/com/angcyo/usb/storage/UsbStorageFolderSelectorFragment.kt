@@ -8,6 +8,7 @@ import com.angcyo.core.R
 import com.angcyo.core.fragment.BaseFragment
 import com.angcyo.library.annotation.DSL
 import com.angcyo.widget.layout.touch.TouchBackLayout
+import me.jahnen.libaums.core.fs.FileSystem
 import me.jahnen.libaums.core.fs.UsbFile
 
 /**
@@ -91,12 +92,13 @@ class UsbStorageFolderSelectorFragment : BaseFragment() {
  * */
 @DSL
 fun Fragment.usbFolderSelector(
-    root: UsbFile?,
+    fileSystem: FileSystem?,
+    root: UsbFile? = fileSystem?.rootDirectory,
     config: UsbSelectorConfig.() -> Unit = {},
     onResult: (UsbFile?) -> Unit = {}
 ) {
     dslFHelper {
-        usbFolderSelector(root, config, onResult)
+        usbFolderSelector(fileSystem, root, config, onResult)
     }
 }
 
@@ -105,13 +107,15 @@ fun Fragment.usbFolderSelector(
  * */
 @DSL
 fun DslFHelper.usbFolderSelector(
-    root: UsbFile?,
+    fileSystem: FileSystem?,
+    root: UsbFile? = fileSystem?.rootDirectory,
     config: UsbSelectorConfig.() -> Unit = {},
     onResult: (UsbFile?) -> Unit = {}
 ) {
     noAnim()
     show(UsbStorageFolderSelectorFragment().apply {
         usbSelectorConfig {
+            this.fileSystem = fileSystem
             rootDirectory = root
             config()
             onUsbFileSelector = onResult

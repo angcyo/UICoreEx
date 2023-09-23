@@ -5,6 +5,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex.toListOf
+import com.angcyo.library.libCacheFile
 import me.jahnen.libaums.core.fs.FileSystem
 import me.jahnen.libaums.core.fs.UsbFile
 import me.jahnen.libaums.core.fs.UsbFileStreamFactory
@@ -33,6 +34,23 @@ object UsbStorageHelper {
                     action(file.toListOf())
                 }
             }
+        }
+    }
+
+    /**安全删除U盘文件*/
+    fun UsbFile.deleteSafe(): Boolean {
+        return try {
+            if (isDirectory) {
+                listFiles().forEach {
+                    it.deleteSafe()
+                }
+            }
+            delete()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            L.e(e)
+            false
         }
     }
 
@@ -123,6 +141,16 @@ object UsbStorageHelper {
     fun UsbFile.inputStream(fileSystem: FileSystem?): BufferedInputStream? {
         fileSystem ?: return null
         return UsbFileStreamFactory.createBufferedInputStream(this, fileSystem)
+    }
+
+    /**转换成[File]对象*/
+    fun UsbFile.toFile(fileSystem: FileSystem?, file: File = libCacheFile(name)): File? {
+        fileSystem ?: return null
+        if (isDirectory) return null
+        inputStream(fileSystem)?.use { inputStream ->
+            inputStream.copyTo(file.outputStream())
+        }
+        return file
     }
 
     //---

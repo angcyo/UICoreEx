@@ -1,25 +1,42 @@
 package com.angcyo.usb.storage
 
+import android.view.Gravity
 import android.view.View
 import android.widget.HorizontalScrollView
 import com.angcyo.core.R
+import com.angcyo.core.component.model.NightModel
+import com.angcyo.core.tgStrokeLoading
+import com.angcyo.core.vmApp
+import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.data.loadSingleData2
 import com.angcyo.dsladapter.select
 import com.angcyo.dsladapter.selector
 import com.angcyo.dsladapter.singleModel
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex.Anim
+import com.angcyo.library.ex._drawable
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.doAnimate
 import com.angcyo.library.ex.drawWidth
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.open
+import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.toString
 import com.angcyo.library.ex.withMinValue
+import com.angcyo.library.toastWX
+import com.angcyo.usb.storage.UsbStorageHelper.deleteSafe
+import com.angcyo.usb.storage.UsbStorageHelper.toFile
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget._rv
 import com.angcyo.widget.progress.HSProgressView
 import com.angcyo.widget.recycler.initDslAdapter
+import com.angcyo.widget.span.span
+import me.jahnen.libaums.core.fs.FileSystem
 import me.jahnen.libaums.core.fs.UsbFile
 
 /**
@@ -98,6 +115,7 @@ class UsbStorageFolderSelectorHelper {
     }
 
     /**是否要拦截back操作*/
+    @CallPoint
     fun onBackPressed(): Boolean {
         return if (currentUsbFile == usbSelectorConfig.rootDirectory) {
             //已经是根目录了, 再次返回就是关闭界面
@@ -110,8 +128,19 @@ class UsbStorageFolderSelectorHelper {
         }
     }
 
-    fun firstLoad() {
+    /**首次加载*/
+    @CallPoint
+    fun firstLoad(
+        fileSystem: FileSystem? = null,
+        rootDirectory: UsbFile? = fileSystem?.rootDirectory
+    ) {
         _vh.post {
+            if (fileSystem != null) {
+                usbSelectorConfig.fileSystem = fileSystem
+            }
+            if (rootDirectory != null) {
+                usbSelectorConfig.rootDirectory = rootDirectory
+            }
             if (usbSelectorConfig.isSelectFolder) {
                 selectorUsbFile = usbSelectorConfig.rootDirectory
             }
@@ -185,6 +214,8 @@ class UsbStorageFolderSelectorHelper {
                 .setDuration(Anim.ANIM_DURATION)
                 .withEndAction(onEnd)
                 .start()
+        }.elseNull {
+            onEnd()
         }
     }
 
@@ -215,20 +246,98 @@ class UsbStorageFolderSelectorHelper {
         _adapter.loadSingleData2<UsbFileSelectorItem>(filterList, 1, Int.MAX_VALUE) { data ->
             itemIsSelected = selectorUsbFile == data
 
+            val itemIsFolder = (data as? UsbFile)?.isDirectory == true
             itemClick = {
                 itemUsbFile?.apply {
-                    if (itemIsFile(null)) {
+                    if (!itemIsFolder) {
                         if (usbSelectorConfig.isSelectFile) {
                             _adapter.select {
                                 it == this@loadSingleData2
                             }
                         }
-                    } else if (itemIsFolder(null)) {
+                    } else if (itemIsFolder) {
                         if (usbSelectorConfig.isSelectFolder) {
                             selectorUsbFile = itemUsbFile
                         }
                         resetPath(itemUsbFile)
                     }
+                }
+            }
+
+            if (usbSelectorConfig.showFileMenu) {
+                itemLongClick = {
+                    _vh.context.itemsDialog {
+                        canceledOnTouchOutside = true
+                        dialogBottomCancelItem = null
+
+                        val nightModel = vmApp<NightModel>()
+                        if (!itemIsFolder) {
+                            addDialogItem {
+                                itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
+                                itemText = span {
+                                    drawable {
+                                        backgroundDrawable =
+                                            nightModel.tintDrawableNight(_drawable(R.drawable.ic_file_open))
+                                    }
+                                    append(" ${_string(R.string.ui_open)}")
+                                }
+                                itemClick = {
+                                    _dialog?.dismiss()
+                                    itemUsbFile?.toFile(usbSelectorConfig.fileSystem)?.open()
+                                }
+                            }
+                        }
+
+                        addDialogItem {
+                            itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
+                            itemText = span {
+                                drawable {
+                                    backgroundDrawable = _drawable(R.drawable.ic_file_delete)
+                                }
+                                append(" ${_string(R.string.ui_delete)}")
+                            }
+                            itemClick = {
+                                _dialog?.dismiss()
+                                _vh.context.tgStrokeLoading { isCancel, loadEnd ->
+                                    runOnBackground {
+                                        val result = itemUsbFile?.deleteSafe() == true
+                                        loadEnd(result, null)
+                                        doMain {
+                                            if (result) {
+                                                _adapter.render {
+                                                    removeItem(this@loadSingleData2)
+                                                }
+                                            } else {
+                                                toastWX(
+                                                    _string(R.string.ui_delete_fail),
+                                                    _vh.context,
+                                                    R.drawable.lib_ic_error
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!itemIsFolder) {
+                            addDialogItem {
+                                itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
+                                itemText = span {
+                                    drawable {
+                                        backgroundDrawable = _drawable(R.drawable.ic_file_share)
+                                    }
+                                    append(" ${_string(R.string.ui_share)}")
+                                }
+                                itemClick = {
+                                    _dialog?.dismiss()
+                                    itemUsbFile?.toFile(usbSelectorConfig.fileSystem)
+                                        ?.shareFile(it.context)
+                                }
+                            }
+                        }
+                    }
+                    true
                 }
             }
         }
@@ -238,6 +347,9 @@ class UsbStorageFolderSelectorHelper {
 
 open class UsbSelectorConfig {
 
+    /**文件系统*/
+    var fileSystem: FileSystem? = null
+
     /**最根的目录*/
     var rootDirectory: UsbFile? = null
 
@@ -246,6 +358,9 @@ open class UsbSelectorConfig {
 
     /**是否需要选择文件夹*/
     var isSelectFolder: Boolean = true
+
+    /**是否长按显示文件菜单*/
+    var showFileMenu = false
 
     /**选择回调*/
     var onUsbFileSelector: ((UsbFile?) -> Unit)? = null
