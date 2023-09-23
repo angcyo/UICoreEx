@@ -28,4 +28,5 @@ dependencies {
 
     //toSvgPathContent
     implementation project(allModule.path) //2023-5-29
+    implementation project(allModule.usbStorage)//2023-9-23
 }

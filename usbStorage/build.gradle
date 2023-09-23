@@ -1,0 +1,15 @@
+apply from: allGradle.libBase
+android {
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.usb.storage'
+}
+dependencies {
+    implementation project(allModule.library)
+    implementation project(allModule.core)
+
+    //https://github.com/magnusja/libaums
+    //https://mvnrepository.com/artifact/me.jahnen.libaums/core
+    api 'me.jahnen.libaums:core:0.10.0'
+    //api 'me.jahnen.libaums:httpserver:0.6.2'
+    //api 'me.jahnen.libaums:storageprovider:0.6.2'
+}

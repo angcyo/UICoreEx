@@ -64,6 +64,7 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.usb.storage.UsbStorageModel
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 import java.io.File
@@ -96,6 +97,7 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
 
     private val deviceStateModel = vmApp<DeviceStateModel>()
     private val laserPeckerModel = vmApp<LaserPeckerModel>()
+    private val usbStorageModel = vmApp<UsbStorageModel>()
 
     override var engraveConfigTaskId: String?
         get() = taskId
@@ -111,10 +113,10 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
         positiveButton { dialog, dialogViewHolder ->
             if (outputFile == null) {
                 createLpbData {
-                    outputFile?.shareFile()
+                    exportFile(dialog)
                 }
             } else {
-                outputFile?.shareFile()
+                exportFile(dialog)
             }
             //dialog.dismiss()
         }
@@ -195,6 +197,20 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
                 doMain {
                     action()
                 }
+            }
+        }
+    }
+
+    fun exportFile(dialog: Dialog) {
+        outputFile?.let {
+            if (usbStorageModel.haveUsbDevice) {
+                /*usbFolderSelector(usbStorageModel.selectedDevice?.partitions?.get(0)?.fileSystem?.rootDirectory) {
+                    it?.let {
+                        fragmentTitle = it.absolutePath
+                    }
+                }*/
+            } else {
+                it.shareFile()
             }
         }
     }
