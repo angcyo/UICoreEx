@@ -128,17 +128,17 @@ data class QuerySettingParser(
                 gcodeView = readInt(1, GCODE_PREVIEW)
                 safe = readInt(1, safe)
                 custom = readInt(1, custom)
-                zFlag = if (productInfo?.isSupportZ() == true) readInt(1, 0) else 0
-                zDir = if (productInfo?.isSupportZ() == true) readInt(1, 0) else 0
+                zFlag = if (productInfo?.isSupportZ() == true) readInt(1, 0) else offset(1, 0)
+                zDir = if (productInfo?.isSupportZ() == true) readInt(1, 0) else offset(1, 0)
                 keyView = readInt(1, 0)
                 irDst = readInt(1, 0)
                 keyPrint = readInt(1, 0)
-                rFlag = if (productInfo?.isSupportR() == true) readInt(1, 0) else 0
-                sFlag = if (productInfo?.isSupportS() == true) readInt(1, 0) else 0
+                rFlag = if (productInfo?.isSupportR() == true) readInt(1, 0) else offset(1, 0)
+                sFlag = if (productInfo?.isSupportS() == true) readInt(1, 0) else offset(1, 0)
                 dir = readInt(1, 0)
                 gcodePower = readInt(1, 0)
-                sRep = if (productInfo?.isSupportS() == true) readInt(1, 0) else 0
-                carFlag = if (productInfo?.isCSeries() == true) readInt(1, 0) else 0
+                sRep = if (productInfo?.isSupportS() == true) readInt(1, 0) else offset(1, 0)
+                carFlag = if (productInfo?.isCSeries() == true) readInt(1, 0) else offset(1, 0)
                 printDir = readInt(1, 0)
                 ignoreTempSensor = readInt(1, 0)
                 //---最后位
