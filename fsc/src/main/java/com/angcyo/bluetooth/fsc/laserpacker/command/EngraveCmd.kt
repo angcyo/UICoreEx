@@ -236,7 +236,7 @@ data class EngraveCmd(
             cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         } else {
             //正常雕刻指令
-            dataLength = 0x14 //18 //数据长度
+            dataLength = 0x15 //18 //数据长度
             data = buildString {
                 append(commandFunc().toHexString())
                 append(state.toHexString())
@@ -251,6 +251,7 @@ data class EngraveCmd(
                 append(type.toHexString())
                 append(diameter.toByteArray(2).toHexString(false))
                 append(precision.toHexString())
+                append(pumpLine.toHexString())//所有图层的气泵参数都一样
             }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
             check = data.checksum() //“功能码”和“数据内容”在内的校验和
             cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
@@ -269,7 +270,7 @@ data class EngraveCmd(
                 append(" 功率:$power")
                 append(" 深度:$depth")
                 append(" 次数:$time")
-                append(" state:$state x:$x y:$y type:$type 直径:${diameter} 加速级别:${precision}")
+                append(" state:$state x:$x y:$y type:$type 直径:${diameter} 加速级别:${precision} 气泵:${pumpLine}")
             }
 
             0x02.toByte() -> append(" 继续雕刻!")

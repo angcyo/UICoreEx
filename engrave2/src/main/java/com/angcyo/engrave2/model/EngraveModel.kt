@@ -906,7 +906,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             engraveConfigEntity.type,
             0x09,
             diameter,
-            engraveConfigEntity.precision
+            engraveConfigEntity.precision,
+            pumpFill = engraveConfigEntity.pump,
+            pumpPicture = engraveConfigEntity.pump,
+            pumpLine = engraveConfigEntity.pump,
+            pumpCut = engraveConfigEntity.pump,
         ) else EngraveCmd.filenameEngrave(
             fileName, (transferDataEntity?.mount ?: QueryCmd.TYPE_SD).toByte(),
             engraveConfigEntity.power.toByte(),
