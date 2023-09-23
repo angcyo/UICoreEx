@@ -8,11 +8,13 @@ import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConf
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.model._isDarkMode
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.createTextPaint
 import com.angcyo.library.ex.drawTextCenter
 import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
+import java.lang.ref.WeakReference
 
 /**
  * 用来预览参数推荐表
@@ -21,13 +23,17 @@ import com.angcyo.widget.DslViewHolder
  */
 class TablePreviewItem : DslAdapterItem() {
 
+    companion object {
+        internal var lastCachePreviewBitmap: WeakReference<Bitmap?>? = null
+    }
+
     var parameterComparisonTableDialogConfig: ParameterComparisonTableDialogConfig? = null
         set(value) {
             field = value
             updatePreview()
         }
 
-    var itemPreviewBitmap: Bitmap? = null
+    var itemPreviewBitmap: Bitmap? = lastCachePreviewBitmap?.get()
 
     init {
         itemLayoutId = R.layout.item_table_preview__layout
@@ -55,13 +61,15 @@ class TablePreviewItem : DslAdapterItem() {
         }
     }
 
+    /**更新预览效果图*/
     fun updatePreview() {
-        val paint = createTextPaint(
-            _color(R.color.colorAccent),
-            ParameterComparisonTableDialogConfig.pctTextFontSize.toPixel()
-        )
-        itemPreviewBitmap =
-            CanvasGroupRenderer.createRenderBitmap(
+        runOnBackground {
+            val paint = createTextPaint(
+                _color(R.color.colorAccent),
+                ParameterComparisonTableDialogConfig.pctTextFontSize.toPixel()
+            )
+
+            val bitmap = CanvasGroupRenderer.createRenderBitmap(
                 parameterComparisonTableDialogConfig?.parseParameterComparisonTable(),
                 HawkEngraveKeys.projectOutSize.toFloat()
             ) { renderer, canvas, renderProperty, params ->
@@ -85,7 +93,10 @@ class TablePreviewItem : DslAdapterItem() {
                     )
                 }
             }
-        updateAdapterItem()
+            lastCachePreviewBitmap?.get()?.recycle()
+            lastCachePreviewBitmap = WeakReference(bitmap)
+            itemPreviewBitmap = bitmap
+            updateAdapterItem()
+        }
     }
-
 }
