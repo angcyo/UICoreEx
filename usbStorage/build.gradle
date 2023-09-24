@@ -1,7 +1,9 @@
 apply from: allGradle.libBase
 android {
-    //AGP 8.x 必须指定命名空间
-    namespace 'com.angcyo.usb.storage'
+    if (project.android.hasProperty("namespace")) {
+        //AGP 8.x 必须指定命名空间
+        namespace 'com.angcyo.usb.storage'
+    }
 }
 dependencies {
     implementation project(allModule.library)
