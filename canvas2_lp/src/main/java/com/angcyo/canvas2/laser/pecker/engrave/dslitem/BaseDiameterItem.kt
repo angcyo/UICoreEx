@@ -8,7 +8,6 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
-import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
 
@@ -41,6 +40,9 @@ abstract class BaseDiameterItem : DslAdapterItem() {
     @Pixel
     var itemDiameter: Float = 0f
 
+    /**单位*/
+    private val itemUnit = LPConstant.renderUnit
+
     init {
         itemLayoutId = R.layout.item_engrave_data_diameter
     }
@@ -53,7 +55,7 @@ abstract class BaseDiameterItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val unit = LPConstant.renderUnit
+        val unit = itemUnit
         itemHolder.tv(R.id.perimeter_unit_view)?.text = unit.getUnit()
         itemHolder.tv(R.id.diameter_unit_view)?.text = unit.getUnit()
 
@@ -77,7 +79,7 @@ abstract class BaseDiameterItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
-                    val x = IValueUnit.MM_RENDER_UNIT.convertValueToPixel(value)
+                    val x = itemUnit.convertValueToPixel(value)
                     itemDiameter = x.toDiameter()
                 }
             }
@@ -92,7 +94,7 @@ abstract class BaseDiameterItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
-                    val x = IValueUnit.MM_RENDER_UNIT.convertValueToPixel(value)
+                    val x = itemUnit.convertValueToPixel(value)
                     itemDiameter = x
                 }
             }
