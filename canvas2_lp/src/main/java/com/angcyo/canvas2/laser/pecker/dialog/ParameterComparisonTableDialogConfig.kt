@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.element.limitElementMaxSizeMatrix
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -702,7 +703,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //---横竖线
         val gCodeHandler = GCodeWriteHandler()
         gCodeHandler.unit = IValueUnit.MM_UNIT
-        gCodeHandler.isAutoCnc = laserPeckerModel.isCSeries()
+        gCodeHandler.isAutoCnc = _isAutoCnc
         val gCodeWriter = StringWriter()
         gCodeHandler.writer = gCodeWriter
         gCodeHandler.onPathStart()

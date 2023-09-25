@@ -2,13 +2,12 @@ package com.angcyo.engrave2.data
 
 import android.graphics.Matrix
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeHeight
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeWidth
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutLoopCount
 import com.angcyo.bluetooth.fsc.laserpacker.bean._gcodeLineSpace
+import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.bluetooth.fsc.laserpacker.bean._sliceCount
-import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -52,7 +51,7 @@ data class TransitionParam(
     var useOpenCvHandleGCode: Boolean = true,
 
     /**转GCode时, 是否要自动开关激光*/
-    val isAutoCnc: Boolean = vmApp<LaserPeckerModel>().isCSeries(),
+    val isAutoCnc: Boolean = _isAutoCnc,
 
     /**图片转GCode时, 是否是简单的线生成的图片.
      * 如果是线条生成的图片, 则开启此开关, 会有优化处理. 尤其是虚线
