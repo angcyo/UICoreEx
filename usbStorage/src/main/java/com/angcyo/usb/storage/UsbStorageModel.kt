@@ -53,7 +53,7 @@ class UsbStorageModel : ViewModel() {
 
     /**是否有USB存储设备, 并且具有访问权限*/
     val haveUsbDevice: Boolean
-        get() = selectedDevice != null
+        get() = selectedDevice != null && selectedFileSystem != null
 
     /**选中的文件系统*/
     val selectedFileSystem: FileSystem?
