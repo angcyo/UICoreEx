@@ -19,6 +19,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.LPTransferHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.core.component.model._isDarkMode
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
@@ -33,6 +34,7 @@ import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.component._delay
 import com.angcyo.library.component.pad.isInPadMode
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
@@ -86,6 +88,10 @@ class PathPreviewDialogConfig : DslDialogConfig() {
         val element = renderer.lpElement() ?: return
 
         dialogViewHolder.img(R.id.lib_image_view)?.apply {
+            if (_isDarkMode) {
+                //暗色适配 com.angcyo.canvas2.laser.pecker.RenderLayoutHelper.bindRenderLayout
+                setBackgroundColor(_color(R.color.colorPrimaryDark))
+            }
             post {
                 setImageDrawable(
                     element.requestElementDrawable(
