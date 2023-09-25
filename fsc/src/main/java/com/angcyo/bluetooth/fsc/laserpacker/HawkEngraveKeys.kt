@@ -283,6 +283,9 @@ object HawkEngraveKeys {
      * */
     var batchEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
 
+    /**支持自动激光雕刻的固件范围*/
+    var autoCncEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
+
     /**是否激活雕刻参数配置信息使用icon*/
     var enableConfigIcon: Boolean by HawkPropertyValue<Any, Boolean>(true)
 

@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.core.vmApp
@@ -47,6 +48,8 @@ data class DeviceSettingBean(
     var cutLayerModule: String? = null,
     /**显示风速设置的固件范围*/
     var showPumpRange: String? = null,
+    /**支持自动激光的固件版本*/
+    var autoCncRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/
@@ -193,3 +196,9 @@ fun String?.matchesProductVersion(defOrNull: Boolean = false, defOrEmpty: Boolea
 
 val _enableQuickOperation: Boolean
     get() = _deviceSettingBean?.enableQuickOperation == true && !isInPadMode()
+
+/**是否使用自动控制激光
+ * [com.angcyo.gcode.GCodeWriteHandler.isAutoCnc]*/
+val _isAutoCnc: Boolean
+    get() = HawkEngraveKeys.autoCncEngraveSupportFirmware.matchesProductVersion() ||
+            _deviceSettingBean?.autoCncRange?.matchesProductVersion() == true

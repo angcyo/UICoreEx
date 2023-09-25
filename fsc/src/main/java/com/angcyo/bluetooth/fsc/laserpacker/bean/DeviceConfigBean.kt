@@ -108,10 +108,6 @@ data class DeviceConfigBean(
     /**GCode切片填充的线距*/
     var gcodeLineSpace: Double? = null,
 
-    /**是否使用自动控制激光
-     * [com.angcyo.gcode.GCodeWriteHandler.isAutoCnc]*/
-    var isAutoCnc: Boolean = false,
-
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]
@@ -174,9 +170,6 @@ val _sliceCount: Int?
     get() = _deviceConfigBean?.sliceCount
 val _gcodeLineSpace: Double
     get() = _deviceConfigBean?.gcodeLineSpace ?: 0.125
-
-val _isAutoCnc: Boolean
-    get() = _deviceConfigBean?.isAutoCnc == true
 
 /**将切片数量转换成对应的切片色阶阈值数组*/
 fun Int.toSliceLevelList(): List<Int> {
