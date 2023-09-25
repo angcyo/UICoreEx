@@ -297,6 +297,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView(), IEngraveConfigTaskPro
                     if (error != null) {
                         toastQQ(error.message)
                     } else {
+                        //EngraveNotifyHelper.hideEngraveNotify()//隐藏通知
                         super.hide(end)
                     }
                 }
