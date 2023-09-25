@@ -34,7 +34,8 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginRight="@dimen/lib_sdpi"
-            app:srcCompat="@drawable/engrave_config_remaining_time_svg" />
+            app:srcCompat="@drawable/engrave_config_remaining_time_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/lib_text_view"
