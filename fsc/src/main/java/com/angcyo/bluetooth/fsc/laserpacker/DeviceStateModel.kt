@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.matchesProductVersion
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
@@ -474,3 +475,8 @@ fun syncQueryDeviceState(
 ) {
     vmApp<DeviceStateModel>().queryDeviceState(flag, block)
 }
+
+/**是否要气泵参数*/
+val _showPumpConfig: Boolean
+    get() = _deviceSettingBean?.showPumpRange?.matchesProductVersion() == true &&
+            vmApp<DeviceStateModel>().getDeviceLaserModule(255.toByte())?.showPump == true

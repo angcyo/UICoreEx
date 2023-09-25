@@ -42,6 +42,9 @@ data class LaserTypeInfo(
      * ```
      * */
     val labelIdStr: String? = null,
+    /**是否要显示气泵参数
+     * 显示风速设置的开关*/
+    val showPump: Boolean = false,
 ) : IToText {
 
     //override fun toText(): CharSequence = "${wave}nm (${label})"  //label

@@ -7,7 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
-import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._showPumpConfig
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -51,7 +51,6 @@ import com.angcyo.laserpacker.device.engraveStrokeLoadingCaller
 import com.angcyo.library.L
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.app
-import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex.Action
@@ -410,14 +409,8 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
             }
         }
 
-        //风速等级
-        if (VersionMatcher.matches(
-                laserPeckerModel.productInfoData.value?.version,
-                _deviceSettingBean?.showPumpRange,
-                false,
-                true
-            )
-        ) {
+        //风速等级/气泵
+        if (_showPumpConfig) {
             val pumpList = _deviceConfigBean?.pumpMap?.get(engraveConfigEntity.layerId)
             if (!pumpList.isNullOrEmpty()) {
                 EngravePumpItem()() {

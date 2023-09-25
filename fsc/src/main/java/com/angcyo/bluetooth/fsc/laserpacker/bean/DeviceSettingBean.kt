@@ -46,7 +46,8 @@ data class DeviceSettingBean(
     /**LX1支持切割图层的模块,号分割多个
      * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.isCutModule]*/
     var cutLayerModule: String? = null,
-    /**显示风速设置的固件范围*/
+    /**显示风速设置的固件范围, 同时还要对应的模块支持
+     * [com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo.showPump]*/
     var showPumpRange: String? = null,
     /**支持自动激光的固件版本*/
     var autoCncRange: String? = null,

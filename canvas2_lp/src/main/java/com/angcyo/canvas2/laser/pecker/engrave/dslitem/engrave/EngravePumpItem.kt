@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean.PumpConfigBean
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
+import com.angcyo.core.component.model.tintImageViewNight
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.getSelectedSegmentBean
 import com.angcyo.item.style.itemCurrentIndex
@@ -63,14 +64,17 @@ class EngravePumpItem : EngraveSegmentScrollItem() {
         itemHolder.v<DslTabLayout>(tabLayoutItemConfig.itemTabLayoutViewId)?.apply {
             tabLayoutConfig?.tabEnableIcoColor = false
             resetChild(itemSegmentList, itemSegmentLayoutId) { itemView, item, itemIndex ->
-                itemView.find<ImageView>(R.id.lib_image_view)?.setImageResource(
-                    when (itemIndex) {
-                        0 -> R.drawable.engrave_pump_level1_selector
-                        1 -> R.drawable.engrave_pump_level2_selector
-                        2 -> R.drawable.engrave_pump_level3_selector
-                        else -> R.drawable.engrave_pump_level3_selector
-                    }
-                )
+                itemView.find<ImageView>(R.id.lib_image_view)?.apply {
+                    setImageResource(
+                        when (itemIndex) {
+                            0 -> R.drawable.engrave_pump_level1_selector
+                            1 -> R.drawable.engrave_pump_level2_selector
+                            2 -> R.drawable.engrave_pump_level3_selector
+                            else -> R.drawable.engrave_pump_level3_selector
+                        }
+                    )
+                    tintImageViewNight()
+                }
             }
         }
     }

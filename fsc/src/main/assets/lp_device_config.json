@@ -564,6 +564,7 @@
         "type": 0,
         "wave": 450,
         "power": 5,
+        "showPump": true,
         "label": "蓝光"
       },
       {
@@ -571,6 +572,7 @@
         "type": 0,
         "wave": 450,
         "power": 10,
+        "showPump": true,
         "label": "蓝光"
       },
       {
@@ -578,6 +580,7 @@
         "type": 0,
         "wave": 450,
         "power": 20,
+        "showPump": true,
         "label": "蓝光"
       },
       {
@@ -758,6 +761,7 @@
         "type": 0,
         "wave": 450,
         "power": 5,
+        "showPump": true,
         "label": "蓝光"
       },
       {
@@ -765,6 +769,7 @@
         "type": 0,
         "wave": 450,
         "power": 10,
+        "showPump": true,
         "label": "蓝光"
       },
       {
@@ -772,6 +777,7 @@
         "type": 0,
         "wave": 450,
         "power": 20,
+        "showPump": true,
         "label": "蓝光"
       },
       {

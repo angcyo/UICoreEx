@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._showPumpConfig
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
@@ -66,7 +67,6 @@ import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
-import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._color
@@ -635,14 +635,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
             }
 
-            //风速等级
-            if (VersionMatcher.matches(
-                    laserPeckerModel.productInfoData.value?.version,
-                    _deviceSettingBean?.showPumpRange,
-                    false,
-                    true
-                )
-            ) {
+            //风速等级/气泵
+            if (_showPumpConfig) {
                 val pumpList = _deviceConfigBean?.pumpMap?.get(elementItemBean?._layerId)
                 if (!pumpList.isNullOrEmpty()) {
                     EngravePumpItem()() {
@@ -888,14 +882,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
 
-                //风速等级
-                if (VersionMatcher.matches(
-                        laserPeckerModel.productInfoData.value?.version,
-                        _deviceSettingBean?.showPumpRange,
-                        false,
-                        true
-                    )
-                ) {
+                //风速等级/气泵
+                if (_showPumpConfig) {
                     val pumpList = _deviceConfigBean?.pumpMap?.get(engraveConfigEntity.layerId)
                     if (!pumpList.isNullOrEmpty()) {
                         EngravePumpItem()() {
