@@ -51,6 +51,8 @@ data class DeviceSettingBean(
     var showPumpRange: String? = null,
     /**支持自动激光的固件版本*/
     var autoCncRange: String? = null,
+    /**显示速度参考的固件范围*/
+    var showRefVelocityRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/
@@ -203,3 +205,6 @@ val _enableQuickOperation: Boolean
 val _isAutoCnc: Boolean
     get() = HawkEngraveKeys.autoCncEngraveSupportFirmware.matchesProductVersion() ||
             _deviceSettingBean?.autoCncRange?.matchesProductVersion() == true
+
+val _showRefVelocity: Boolean
+    get() = _deviceSettingBean?.showRefVelocityRange?.matchesProductVersion() == true
