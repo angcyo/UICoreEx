@@ -63,8 +63,11 @@ fun String.toGCodePathDrawable(paint: Paint = createPaint(), overrideSize: Float
     toGCodePath().toDrawable(overrideSize, paint)
 
 /**[toGCodePath]*/
-fun String.toGCodePathBitmap(paint: Paint = createPaint(), overrideSize: Float? = null) =
-    toGCodePath().toBitmap(overrideSize, paint)
+fun String.toGCodePathBitmap(
+    paint: Paint = createPaint(),
+    overrideSize: Float? = null,
+    bgColor: Int = Color.TRANSPARENT
+) = toGCodePath().toBitmap(overrideSize, paint, bgColor)
 
 /**扩展*/
 fun parseSvg(svgText: String?): SharpDrawable? = if (svgText.isNullOrEmpty()) {
