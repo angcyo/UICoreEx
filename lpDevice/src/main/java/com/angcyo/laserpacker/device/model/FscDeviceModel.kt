@@ -120,7 +120,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     //WIFI连接成功
                     val isAutoConnect = tcpState.connectInfo?.isAutoConnect == true
                     onDeviceConnect(
-                        tcpDevice.deviceName ?: "",
+                        tcpDevice.deviceName ?: "Unknown-wifi",
                         tcpDevice.address,
                         tcpDevice.port,
                         isAutoConnect,
@@ -156,8 +156,9 @@ class FscDeviceModel : LifecycleViewModel() {
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_SUCCESS && deviceConnectState.isNormalConnect) {
                     //蓝牙已连接
                     onDeviceConnect(
-                        deviceConnectState.device.name,
-                        deviceConnectState.device.address,
+                        deviceConnectState.device.name ?: "Unknown-ble",
+                        deviceConnectState.device.address ?: LaserPeckerHelper.lastDeviceAddress()
+                        ?: "",
                         0,
                         deviceConnectState.isAutoConnect,
                         deviceConnectState.connectTime,
