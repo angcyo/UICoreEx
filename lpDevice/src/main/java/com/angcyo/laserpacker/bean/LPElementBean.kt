@@ -318,7 +318,7 @@ data class LPElementBean(
 
     /**图片滤镜
      * 图片滤镜 'black'(黑白) | 'seal'(印章) | 'gray'(灰度) | 'prints'(版画) | 'Jitter(抖动)' | 'gcode'
-     * imageFilter 图片滤镜 1:黑白 | 2:印章 | 3:灰度 | 4:版画 | 5:抖动 | 6:gcode `2022-9-21`
+     * imageFilter 图片滤镜 1:黑白 | 2:印章 | 3:灰度 | 4:版画 | 5:抖动 | 6:gcode | 7:2D浮雕 `2023-10-7`
      *
      * [LPDataConstant.DATA_MODE_BLACK_WHITE]
      * [LPDataConstant.DATA_MODE_SEAL]
@@ -389,6 +389,9 @@ data class LPElementBean(
 
     /**切片的数量*/
     var sliceCount: Int = 0,
+
+    /**2d浮雕强度[1~20]*/
+    var reliefStrength: Int = 1,
 
     //endregion ---图片数据---
 
@@ -502,6 +505,9 @@ data class LPElementBean(
                         LPDataConstant.DATA_MODE_PRINT,
                         LPDataConstant.DATA_MODE_SEAL,
                         LPDataConstant.DATA_MODE_BLACK_WHITE -> LPDataConstant.DATA_MODE_BLACK_WHITE
+
+                        //2D浮雕/灰度图片
+                        LPDataConstant.DATA_MODE_GREY, LPDataConstant.DATA_MODE_RELIEF -> LPDataConstant.DATA_MODE_GREY
 
                         LPDataConstant.DATA_MODE_DITHERING -> if (vmApp<LaserPeckerModel>().isSupportDithering() && !HawkEngraveKeys.forceGrey) {
                             //支持抖动

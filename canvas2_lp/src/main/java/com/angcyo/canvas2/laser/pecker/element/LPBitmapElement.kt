@@ -156,7 +156,17 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                                 elementBean.sealThreshold
                             )
 
-                            else -> null
+                            LPDataConstant.DATA_MODE_RELIEF -> LPBitmapHandler.toReliefHandle(
+                                bitmap,
+                                elementBean.reliefStrength.toFloat(),
+                                elementBean.inverse,
+                            )
+
+                            //其他情况统一使用灰度
+                            else -> LPBitmapHandler.toGrayHandle(
+                                bitmap,
+                                elementBean
+                            )
                         }
                         "图片[${bitmap.byteCount.toSizeString()}]算法处理[${elementBean.imageFilter}]耗时:${LTime.time()}".writePerfLog()
                     }

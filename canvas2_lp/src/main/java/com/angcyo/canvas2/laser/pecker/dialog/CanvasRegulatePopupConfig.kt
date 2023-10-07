@@ -123,6 +123,12 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
         /**曲线文本曲率*/
         const val KEY_CURVATURE = "key_curvature"
+
+        /**2D浮雕反色*/
+        const val KEY_RELIEF_INVERT = "key_relief_invert"
+
+        /**2D浮雕强度*/
+        const val KEY_RELIEF_STRENGTH = "key_relief_strength"
     }
 
     /**需要调整的项目, 需要啥就添加对应的项
@@ -430,6 +436,20 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     getIntOrDef(KEY_SLICE, 0),
                     0,
                     LibHawkKeys.grayThreshold
+                )
+            }
+
+            //2D浮雕
+            if (regulateList.contains(KEY_RELIEF_INVERT)) {
+                renderInvertItem(KEY_RELIEF_INVERT)
+            }
+            if (regulateList.contains(KEY_RELIEF_STRENGTH)) {
+                renderSeekBarItem(
+                    KEY_RELIEF_STRENGTH,
+                    _string(R.string.canvas_relief_strength),
+                    getIntOrDef(KEY_RELIEF_STRENGTH, 1),
+                    HawkEngraveKeys.minReliefStrength,
+                    HawkEngraveKeys.maxReliefStrength
                 )
             }
 

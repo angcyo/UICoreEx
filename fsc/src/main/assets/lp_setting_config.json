@@ -30,7 +30,7 @@
   "enableFun": null,
   "maxEngraveItemCount": 30,
   "updateHawkCommand": "",
-  "newHawkKeyStr": "_variableText_",
+  "newHawkKeyStr": "_variableText__2dRelief_",
   "openFun": "enableItemEngraveParams,enableSingleItemTransfer,",
   "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_en",
   "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_zh",

@@ -346,6 +346,27 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
+        if (!closeImageEditItemsFun.have("_relief_")) {
+            ImageFilterItem()() {
+                itemIco = R.drawable.canvas_bitmap_2d_relief
+                itemText = _string(R.string.canvas_2d_relief)
+                initItem(renderer)
+                itemImageFilter = LPDataConstant.DATA_MODE_RELIEF
+                itemNewHawkKeyStr = "2dRelief"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                itemClick = {
+                    itemHaveNew = false
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_2D_RELIEF.umengEventValue()
+                        LPBitmapHandler.handleRelief(renderDelegate, it, fragment, renderer) {
+                            itemIsSelected = false
+                            updateAllItemBy { it is ImageFilterItem }
+                        }
+                    }
+                }
+            }
+        }
         if (isDebugType() && !closeImageEditItemsFun.have("_mesh_")) {
             //扭曲
             ImageFilterItem()() {

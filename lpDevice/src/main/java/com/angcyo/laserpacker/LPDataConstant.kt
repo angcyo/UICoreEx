@@ -182,6 +182,12 @@ object LPDataConstant {
      * */
     const val DATA_MODE_GCODE = 6
 
+    /**2D浮雕
+     * 对应传输给机器的数据类型:
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP]
+     * */
+    const val DATA_MODE_RELIEF = 7
+
     //---算法支持, 但是机器不支持
 
     /**数据模式, 版画*/

@@ -240,4 +240,8 @@
     <string name="variable_back_tip">退出后不会保存当前数据\n确认退出？</string>
     <string name="variable_not_support_barcode_type">条码规则不匹配</string>
     <string name="variable_element_delete_tip">必须保留至少一个数据</string>
+
+    <string name="canvas_2d_relief">2D浮雕</string>
+    <string name="canvas_relief_strength">强度</string>
+
 </resources>

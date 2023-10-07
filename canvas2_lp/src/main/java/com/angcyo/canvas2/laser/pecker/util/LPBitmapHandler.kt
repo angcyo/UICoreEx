@@ -101,6 +101,15 @@ object LPBitmapHandler {
         )
     }
 
+    /**2D浮雕处理*/
+    fun toReliefHandle(
+        bitmap: Bitmap,
+        strength: Float = 0f,
+        invert: Boolean = false,
+    ): Bitmap? {
+        return RustBitmapHandle.bitmapRelief(bitmap, strength, invert)
+    }
+
     /**版画处理*/
     fun toPrint(context: Context, bitmap: Bitmap, printsThreshold: Float): Bitmap? {
         val result = RustBitmapHandle.bitmapPrint(
@@ -926,6 +935,62 @@ object LPBitmapHandler {
                     renderer.requestUpdatePropertyFlag(Reason.user.apply {
                         controlType = BaseControlPoint.CONTROL_TYPE_DATA
                     }, delegate)
+                }
+            }
+        }
+    }
+
+    /**2D浮雕*/
+    fun handleRelief(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
+        val bean = element.elementBean
+        val context = anchor.context
+
+        //用来恢复的状态
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
+
+        context.canvasRegulateWindow(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_RELIEF_INVERT, bean.inverse)
+            addRegulate(CanvasRegulatePopupConfig.KEY_RELIEF_STRENGTH, bean.reliefStrength)
+            firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_RELIEF
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
+                    if (_valueChange) {
+                        addBitmapStateToStack(delegate, renderer, undoState)
+                    }
+                } else {
+                    owner.engraveLoadingAsync({
+                        operateBitmap.let { bitmap ->
+                            bean.inverse = getBooleanOrDef(
+                                CanvasRegulatePopupConfig.KEY_RELIEF_INVERT,
+                                bean.inverse
+                            )
+                            bean.reliefStrength = getIntOrDef(
+                                CanvasRegulatePopupConfig.KEY_RELIEF_STRENGTH,
+                                bean.reliefStrength
+                            )
+                            element.updateImageFilter(LPDataConstant.DATA_MODE_RELIEF)
+                            LTime.tick()
+                            val result =
+                                toReliefHandle(bitmap, bean.reliefStrength.toFloat(), bean.inverse)
+                            element.updateBeanWidthHeightFromBitmap(bitmap, false)
+                            "图片[${bitmap.byteCount.toSizeString()}]转2D浮雕耗时:${LTime.time()}\n${bean}".writePerfLog()
+                            result
+                        }
+                    }) { result ->
+                        element.renderBitmap = result
+                        renderer.requestUpdatePropertyFlag(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
+                    }
                 }
             }
         }

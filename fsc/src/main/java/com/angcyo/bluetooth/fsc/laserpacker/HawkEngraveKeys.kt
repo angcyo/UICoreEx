@@ -416,4 +416,9 @@ object HawkEngraveKeys {
 
     /**是否激活使用绘制后的路径进行路径填充*/
     var enableDrawPathFill: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
+    /**最小最大浮雕强度设置*/
+    var minReliefStrength: Int by HawkPropertyValue<Any, Int>(1)
+    var maxReliefStrength: Int by HawkPropertyValue<Any, Int>(20)
+
 }

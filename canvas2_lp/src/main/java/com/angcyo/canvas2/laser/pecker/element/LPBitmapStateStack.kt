@@ -3,12 +3,12 @@ package com.angcyo.canvas2.laser.pecker.element
 import android.graphics.Path
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.BitmapStateStack
 import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 
 /**
@@ -46,6 +46,12 @@ class LPBitmapStateStack : BitmapStateStack() {
     var maxDiameter: Float? = null
     var isMesh = false
 
+    /**切片的数量*/
+    var sliceCount: Int = 0
+
+    /**2d浮雕强度[1~20]*/
+    var reliefStrength: Int = 1
+
     //endregion---需要存储的数据---
 
     override fun saveState(renderer: BaseRenderer, delegate: CanvasRenderDelegate?) {
@@ -76,6 +82,9 @@ class LPBitmapStateStack : BitmapStateStack() {
             meshShape = elementBean.meshShape
             maxDiameter = elementBean.maxDiameter
             isMesh = elementBean.isMesh
+
+            sliceCount = elementBean.sliceCount
+            reliefStrength = elementBean.reliefStrength
         }
     }
 
@@ -110,6 +119,9 @@ class LPBitmapStateStack : BitmapStateStack() {
             elementBean.maxDiameter = maxDiameter
             elementBean.meshShape = meshShape
             elementBean.isMesh = isMesh
+
+            elementBean.sliceCount = sliceCount
+            elementBean.reliefStrength = reliefStrength
         }
 
         super.restoreState(renderer, reason, strategy, delegate)
