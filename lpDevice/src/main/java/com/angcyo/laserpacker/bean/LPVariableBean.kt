@@ -304,6 +304,10 @@ data class LPVariableBean(
     val isChooseFile: Boolean
         get() = !fileUri.isNullOrBlank()
 
+    /**是否是时间变量*/
+    val isDateTimeVariable: Boolean
+        get() = type == TYPE_DATE || type == TYPE_TIME
+
     /**获取指定列, 去除表头后的数据集合*/
     fun getColumnDataList(columnIndex: Int = maxOf(0, columnList.indexOf(column))): List<String> {
         val lineList = _excelMap?.get(sheet ?: "") ?: return emptyList()
@@ -318,7 +322,14 @@ data class LPVariableBean(
     }
 
     /**雕刻完成之后, 更新数据*/
-    fun updateAfterEngrave() {
+    fun updateAfterEngrave(onlyDateTime: Boolean) {
+        if (onlyDateTime) {
+            //只更新时间
+            if (isDateTimeVariable && auto) {
+                current = nowTime()
+            }
+            return
+        }
         printCount++
         if (type == TYPE_NUMBER) {
             if (printCount >= step) {
@@ -338,7 +349,7 @@ data class LPVariableBean(
                 }
                 printCount = 0
             }
-        } else if (type == TYPE_DATE || type == TYPE_TIME) {
+        } else if (isDateTimeVariable) {
             if (auto) {
                 current = nowTime()
             }

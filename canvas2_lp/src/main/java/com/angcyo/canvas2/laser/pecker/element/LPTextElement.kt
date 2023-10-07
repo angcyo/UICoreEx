@@ -422,7 +422,25 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         }
     ) {
         if (elementBean.isVariableElement) {
-            elementBean.updateVariableTextAfterEngrave()
+            elementBean.updateVariableTextAfterEngrave(false)
+            updateOriginText(elementBean.text)
+
+            //更新属性
+            renderer?.requestUpdatePropertyFlag(reason, delegate)
+        }
+    }
+
+    /**更新元素内容-仅更新日期/时间变量*/
+    @CallPoint
+    fun updateElementAutoDateTime(
+        renderer: BaseRenderer? = null,
+        delegate: CanvasRenderDelegate? = null,
+        reason: Reason = Reason.user.apply {
+            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+        }
+    ) {
+        if (elementBean.isAutoDateTimeVariable) {
+            elementBean.updateVariableTextAfterEngrave(true)
             updateOriginText(elementBean.text)
 
             //更新属性

@@ -298,4 +298,26 @@ fun BaseRenderer.lpPathElement(): LPPathElement? {
     return null
 }
 
+fun CanvasRenderDelegate.updateElementAfterEngrave() {
+    getAllSingleElementRendererList().updateElementAfterEngrave(this)
+}
+
+/**雕刻完成, 更新变量文本*/
+fun List<BaseRenderer>.updateElementAfterEngrave(renderDelegate: CanvasRenderDelegate?) {
+    for (renderer in this) {
+        renderer.lpTextElement()?.updateElementAfterEngrave(renderer, renderDelegate)
+    }
+}
+
+fun CanvasRenderDelegate.updateElementAutoDateTime() {
+    getAllSingleElementRendererList().updateElementAutoDateTime(this)
+}
+
+/**更新变量文本-仅更新时间变量*/
+fun List<BaseRenderer>.updateElementAutoDateTime(renderDelegate: CanvasRenderDelegate?) {
+    for (renderer in this) {
+        renderer.lpTextElement()?.updateElementAutoDateTime(renderer, renderDelegate)
+    }
+}
+
 //endregion---LpRenderer---

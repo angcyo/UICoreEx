@@ -37,6 +37,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataName
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.canvas2.laser.pecker.util.updateElementAutoDateTime
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
@@ -1205,8 +1206,12 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     }
 
     /**重建任务,使用上一次的传输配置,进行二次传输并雕刻
-     * [changeToTransmitting]*/
+     * [changeToTransmitting]
+     * [com.angcyo.canvas.render.core.CanvasRenderDelegate.updateElementAfterEngrave]
+     * */
     open fun continueTransferEngrave() {
+        engraveCanvasFragment?.renderDelegate?.updateElementAutoDateTime()
+
         //检查数据是否超出了范围
         if (!checkCanNext()) {
             return

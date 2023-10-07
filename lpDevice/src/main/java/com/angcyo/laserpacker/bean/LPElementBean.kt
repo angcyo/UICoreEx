@@ -669,6 +669,14 @@ data class LPElementBean(
     val isLineShape: Boolean
         get() = mtype == LPDataConstant.DATA_TYPE_LINE
 
+    /**是否是时间变量文本*/
+    val isDateTimeVariable: Boolean
+        get() = isVariableElement && variables?.find { it.isDateTimeVariable } != null
+
+    /**是否是自动时间变量文本*/
+    val isAutoDateTimeVariable: Boolean
+        get() = isVariableElement && variables?.find { it.isDateTimeVariable && it.auto } != null
+
     /**构建一个图层名, 当前的元素, 在[list]中的不重名名称*/
     fun generateName(list: List<LPElementBean>) {
         if (name == null) {
@@ -769,9 +777,9 @@ data class LPElementBean(
     }
 
     /**雕刻完成之后, 更新变量文本*/
-    fun updateVariableTextAfterEngrave() {
+    fun updateVariableTextAfterEngrave(onlyDateTime: Boolean) {
         for (bean in variables ?: emptyList()) {
-            bean.updateAfterEngrave()
+            bean.updateAfterEngrave(onlyDateTime)
         }
         text = getVariableText()
     }

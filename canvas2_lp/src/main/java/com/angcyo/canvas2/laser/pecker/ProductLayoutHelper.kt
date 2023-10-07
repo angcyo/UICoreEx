@@ -13,7 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
-import com.angcyo.canvas2.laser.pecker.util.lpTextElement
+import com.angcyo.canvas2.laser.pecker.util.updateElementAfterEngrave
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
@@ -201,9 +201,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     //雕刻任务完成后, 更新变量文本
                     if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
                         "雕刻完成, 更新变量文本".writeEngraveLog(L.INFO)
-                        renderDelegate?.getAllSingleElementRendererList()?.forEach {
-                            it.lpTextElement()?.updateElementAfterEngrave(it, renderDelegate)
-                        }
+                        renderDelegate?.updateElementAfterEngrave()
                     }
                 }
             }
