@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.angcyo.widget.layout.DslFlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/lib_padding_right"
-    android:paddingVertical="@dimen/lib_padding_right">
+    android:paddingVertical="@dimen/lib_padding_right"
+    app:r_flow_equ_width="true"
+    app:r_flow_item_horizontal_space="@dimen/lib_xhdpi">
 
     <com.angcyo.widget.DslButton
         android:id="@+id/share_button"
         style="@style/LibButtonThemeSolidStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/lib_xhdpi"
-        android:layout_weight="1"
         android:text="@string/share_community"
         android:textColor="@color/device_primary_color"
         tools:visibility="visible" />
@@ -22,9 +22,8 @@
     <com.angcyo.widget.DslButton
         android:id="@+id/again_button"
         style="@style/LibButtonBlackSolidStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="@string/engrave_again"
         android:textColor="@color/text_general_color"
         app:button_gradient_colors="@color/bg_primary_color" />
@@ -32,14 +31,12 @@
     <com.angcyo.widget.DslButton
         android:id="@+id/continue_button"
         style="@style/LibButtonBlackSolidStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_xhdpi"
-        android:layout_weight="1"
         android:text="@string/engrave_variable_continue"
         android:textColor="@color/text_general_color"
         android:visibility="gone"
         app:button_gradient_colors="@color/bg_primary_color"
         tools:visibility="visible" />
 
-</LinearLayout>
+</com.angcyo.widget.layout.DslFlowLayout>

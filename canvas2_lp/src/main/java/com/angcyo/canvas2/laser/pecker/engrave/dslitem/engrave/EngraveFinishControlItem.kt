@@ -12,7 +12,10 @@ import com.angcyo.widget.DslViewHolder
 class EngraveFinishControlItem : DslAdapterItem() {
 
     /**是否要显示分享按钮*/
-    var itemShowShareButton = true
+    var itemShowShareButton = false
+
+    /**是否要显示再雕一次按钮*/
+    var itemShowAgainButton = true
 
     /**是否要显示继续雕刻按钮*/
     var itemShowContinueButton = false
@@ -39,6 +42,7 @@ class EngraveFinishControlItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.visible(R.id.share_button, itemShowShareButton)
+        itemHolder.visible(R.id.again_button, itemShowAgainButton)
         itemHolder.visible(R.id.continue_button, itemShowContinueButton)
 
         itemHolder.click(R.id.share_button) {

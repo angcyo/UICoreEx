@@ -1184,6 +1184,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             true,
                             false
                         ).haveVariableElement() == true
+                itemShowAgainButton = !itemShowContinueButton //显示持续雕刻的情况下, 不显示再次雕刻按钮
                 itemShareAction = {
                     val delegate = engraveCanvasFragment?.renderDelegate
                     LPProjectManager().saveProjectV2Share(delegate, taskId)
