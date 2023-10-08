@@ -124,8 +124,21 @@ data class DeviceSettingBean(
     var zhImportFilePackageNameList: List<String>? = null,
     /**国外环境导入文件支持的软件包名*/
     var importFilePackageNameList: List<String>? = null,
-    /**导入文件帮助链接*/
+    /**导入文件帮助链接, 配置了才有帮助按钮入口*/
     var importFileHelpUrl: String? = null,
+    /**中文帮助文档地址*/
+    var importFileHelpUrlZh: String? = null,
+
+    /**变量文本日期格式说明, 配置了才有帮助按钮入口*/
+    var dateFormatHelpUrl: String? = null,
+    /**中文帮助文档地址*/
+    var dateFormatHelpUrlZh: String? = null,
+
+    /**变量文本时间格式说明, 配置了才有帮助按钮入口*/
+    var timeFormatHelpUrl: String? = null,
+    /**中文帮助文档地址*/
+    var timeFormatHelpUrlZh: String? = null,
+
     /**二维码支持的格式集合*/
     var barcode2DTypeList: List<String>? = null,
     /**一维码支持的格式集合*/

@@ -1,11 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.core.CoreApplication
+import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.itemLabel
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._drawable
-import com.angcyo.library.toastQQ
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -17,13 +19,21 @@ import com.angcyo.widget.DslViewHolder
  */
 class VarTimeFormatInputItem : LPSingleInputItem() {
 
+    private val helpUrl: String?
+        get() = LanguageModel.getLanguagePriorityString(
+            _deviceSettingBean?.timeFormatHelpUrl,
+            _deviceSettingBean?.timeFormatHelpUrlZh
+        )
+
     init {
         itemLabel = ""
-        labelItemConfig.itemLabelTextStyle.apply {
-            paddingRight = helpIcoPaddingRight
-            paddingTop = _dimen(R.dimen.lib_hdpi)
-            paddingBottom = paddingTop
-            rightDrawable = _drawable(R.drawable.canvas_invert_help_svg)
+        if (!helpUrl.isNullOrBlank()) {
+            labelItemConfig.itemLabelTextStyle.apply {
+                paddingRight = helpIcoPaddingRight
+                paddingTop = _dimen(R.dimen.lib_hdpi)
+                paddingBottom = paddingTop
+                rightDrawable = _drawable(R.drawable.canvas_invert_help_svg)
+            }
         }
     }
 
@@ -35,8 +45,10 @@ class VarTimeFormatInputItem : LPSingleInputItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.click(labelItemConfig.itemLabelViewId) {
-            toastQQ("时间格式帮助")
+        if (!helpUrl.isNullOrBlank()) {
+            itemHolder.click(labelItemConfig.itemLabelViewId) {
+                CoreApplication.onOpenUrlAction?.invoke(helpUrl!!)
+            }
         }
     }
 }

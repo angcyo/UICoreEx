@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceSettingBean
 import com.angcyo.core.Debug
 import com.angcyo.core.component.manage.InnerFileManageModel
+import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
@@ -162,7 +163,10 @@ object LaserPeckerConfigHelper {
             result?.importFilePackageNameList?.let {
                 importFilePackageNameList = it
             }
-            result?.importFileHelpUrl?.let {
+            LanguageModel.getLanguagePriorityString(
+                result?.importFileHelpUrl,
+                result?.importFileHelpUrlZh
+            )?.let {
                 innerFileImportHelpUrl = it
             }
         }
