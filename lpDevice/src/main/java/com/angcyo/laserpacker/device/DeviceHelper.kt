@@ -7,14 +7,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.core.component.DslLayout
+import com.angcyo.core.component.ScreenShotModel
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.renderLayout
 import com.angcyo.core.vmApp
 import com.angcyo.glide.loadImage
-import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.runRx
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.library.Library
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.deleteRecursivelySafe
 import com.angcyo.library.ex.eachFile
@@ -26,20 +25,15 @@ import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.zip
 import com.angcyo.library.getAppVersionCode
-import com.angcyo.library.libAppFile
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
-import com.angcyo.library.utils.Constant
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.filePath
 import com.angcyo.library.utils.folderPath
-import com.angcyo.library.utils.logFileName
-import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
-import com.orhanobut.hawk.HawkValueParserHelper
 import java.io.File
 
 /**
@@ -67,27 +61,7 @@ object DeviceHelper {
 
     /**获取所有日志路径*/
     fun getEngraveLogPathList() = mutableListOf<String>().apply {
-        add(logPath())
-
-        //http log
-        add(libAppFile(logFileName(), Constant.HTTP_FOLDER_NAME).absolutePath)
-        //crash log
-        add(
-            libAppFile(
-                fileNameTime(suffix = ".log"),
-                Constant.CRASH_FOLDER_NAME
-            ).absolutePath
-        )
-
-        Library.hawkPath?.let {
-            val map = HawkValueParserHelper.parseFromXml(it)
-            map.toJson()?.let {
-                libCacheFile("Hawk2.json").apply {
-                    writeText(it)
-                    add(absolutePath)
-                }
-            }
-        }
+        addAll(ScreenShotModel.getBaseLogShareList())
 
         //xml
         addAll(getTaskEngraveLogFilePath())

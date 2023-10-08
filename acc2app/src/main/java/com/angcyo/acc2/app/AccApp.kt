@@ -18,7 +18,13 @@ import com.angcyo.library.L
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component._delay
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.uuid
+import com.angcyo.library.ex.zip
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
@@ -103,7 +109,7 @@ open class AccApp : CoreApplication() {
         vmApp<ScreenShotModel>().apply {
             startListen()
             screenShotPathData.observeForever { path ->
-                if (!path.isNullOrBlank()) {
+                if (!path.isNullOrBlank() && !RBackground.isBackground()) {
                     doBack {
                         val logList = mutableListOf<String>()
                         AccWindow.catchNodeLog()?.let { logList.add(it) }

@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.device.ble.dslitem
 
+import com.angcyo.core.component.ScreenShotModel
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.http.rx.runRx
 import com.angcyo.item.style.addGridMedia
@@ -8,11 +9,15 @@ import com.angcyo.item.style.gridMediaSpanCount
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.R
-import com.angcyo.library.Library
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._color
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.toFullTime
+import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.zip
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
-import com.angcyo.library.utils.logPath
 import com.angcyo.pager.dslitem.DslNineMediaItem
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -80,8 +85,8 @@ class TransferDataItem : DslNineMediaItem() {
         }
         toastQQ(_string(R.string.create_log_tip))
         runRx({
-            val logList = mutableListOf(logPath())
-            Library.hawkPath?.let { logList.add(it) } //xml
+            val logList = mutableListOf<String>()
+            logList.addAll(ScreenShotModel.getBaseLogShareList())
             logList.addAll(list)
 
             logList.zip(libCacheFile("TransferData-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
