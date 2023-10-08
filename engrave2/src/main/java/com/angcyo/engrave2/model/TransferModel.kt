@@ -225,7 +225,7 @@ class TransferModel : ViewModel() {
                         }
                     }
                 } else {
-                    "未成功进入数据传输模式:${error}".writeErrorLog()
+                    "未成功进入数据传输模式:${error.toStr()}".writeErrorLog()
                     error?.printStackTrace()
                     action(error ?: IllegalStateException("未成功进入数据传输模式"))
                 }
@@ -615,7 +615,7 @@ class TransferModel : ViewModel() {
                                         }
                                     }
                                     if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                                        "发送数据失败,无效的返回值:[${transferDataEntity.index}] error:${error}".writeErrorLog()
+                                        "发送数据失败,无效的返回值:[${transferDataEntity.index}] error:${error.toStr()}".writeErrorLog()
                                         errorTransfer(transferState, TransferException())
                                         action(transferState.error)
                                     }

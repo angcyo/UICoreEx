@@ -34,6 +34,7 @@ import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.classHash
 import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -88,7 +89,7 @@ object LPTransferHelper {
                     transferModel.startTransferData(transferState.taskId)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    "$e".writeErrorLog()
+                    e.toStr().writeErrorLog()
                     transferModel.errorTransfer(transferState, TransferException())
                 }
             }

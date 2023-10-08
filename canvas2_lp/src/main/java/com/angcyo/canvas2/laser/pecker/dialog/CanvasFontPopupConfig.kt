@@ -38,6 +38,7 @@ import com.angcyo.library.ex.getShowName
 import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.ex.zip
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.model.TypefaceInfo
@@ -210,7 +211,7 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
             FontManager.importCustomFont(uri)
         } catch (e: Exception) {
             e.printStackTrace()
-            "导入字体失败[${"$uri".decode()}]:${e}".writeErrorLog()
+            "导入字体失败[${"$uri".decode()}]:${e.toStr()}".writeErrorLog()
             null
         }
     }

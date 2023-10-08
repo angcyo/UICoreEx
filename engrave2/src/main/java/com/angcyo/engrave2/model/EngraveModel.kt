@@ -35,6 +35,7 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toMsTime
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -589,12 +590,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 deviceStateModel.startLoopCheckState(reason = "批量雕刻指令")
             } else if (error is CommandException) {
                 //指令异常
-                "雕刻失败:[${indexList}] $error".writeErrorLog()
+                "雕刻失败:[${indexList}] ${error.toStr()}".writeErrorLog()
                 errorEngrave(error)
             } else {
                 //雕刻失败, 重试
                 val taskEntity = _engraveTaskEntity
-                "雕刻失败:[${indexList}] $error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
+                "雕刻失败:[${indexList}] ${error.toStr()}, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
 
                 if (taskEntity?.state == ENGRAVE_STATE_START &&
                     vmApp<DeviceStateModel>().isDeviceConnect()
@@ -936,7 +937,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 deviceStateModel.startLoopCheckState(reason = "雕刻指令")
             } else if (error is CommandException) {
                 //指令异常
-                "雕刻失败:[${index}] $error".writeErrorLog()
+                "雕刻失败:[${index}] ${error.toStr()}".writeErrorLog()
                 errorEngrave(error)
             } else {
                 //如果索引雕刻异常, 则不能跳过索引雕刻

@@ -10,6 +10,7 @@ import com.angcyo.library.ex.className
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.toastQQ
 import java.util.LinkedList
 
@@ -150,9 +151,7 @@ object CommandQueueHelper {
                     next()
                 }
                 try {
-                    error?.let {
-                        it.stackTraceToString().writeErrorLog()
-                    }
+                    error?.toStr()?.writeErrorLog()
                     commandInfo.listener?.onReceive(bean, error)
                 } catch (e: Exception) {
                     e.printStackTrace()
