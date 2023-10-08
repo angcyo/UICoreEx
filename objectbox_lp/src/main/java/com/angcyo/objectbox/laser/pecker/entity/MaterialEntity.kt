@@ -88,7 +88,7 @@ data class MaterialEntity(
      * 用来标识同一组材质的关键字段*/
     var key: String? = null,
 
-    /**强制显示的材质名称, 不指定则使用[resId]*/
+    /**强制显示的材质名称, 自定义材质时使用的名称, 不指定则使用[resId]*/
     var name: String? = null,
 
     //---过滤参数----
