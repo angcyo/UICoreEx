@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.Companion.TYPE_SD
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.Companion.TYPE_USB
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
 import com.angcyo.bluetooth.fsc.laserpacker.parse.listenerFileList
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -22,8 +25,10 @@ import com.angcyo.canvas2.laser.pecker.engrave.SingleFlowLayoutHelper
 import com.angcyo.canvas2.laser.pecker.manager.dslitem.LpbFileItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.showIn
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dialog.normalDialog
+import com.angcyo.dsladapter.data.updateAdapterState
 import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
 import com.angcyo.fragment.AbsLifecycleFragment
@@ -157,10 +162,24 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
 
     override fun onLoadData() {
         super.onLoadData()
-        if (currentFileType == TYPE_SD) {
-            loadSdFileList()
-        } else if (currentFileType == TYPE_USB) {
-            loadUsbFileList()
+
+        if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+            if (vmApp<LaserPeckerModel>().isHaveUsbProduct()) {
+                if (currentFileType == TYPE_SD) {
+                    loadSdFileList()
+                } else if (currentFileType == TYPE_USB) {
+                    loadUsbFileList()
+                } else {
+                    finishRefresh()
+                    _adapter.updateAdapterState()
+                }
+            } else {
+                finishRefresh()
+                _adapter.updateAdapterState()
+            }
+        } else {
+            finishRefresh()
+            _adapter.updateAdapterState(error = NoDeviceException())
         }
     }
 

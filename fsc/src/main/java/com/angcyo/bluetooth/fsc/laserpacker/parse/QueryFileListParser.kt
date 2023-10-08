@@ -78,7 +78,8 @@ fun listenerFileList(
             val parser = bean?.parse<QueryFileListParser>()
             action(parser, error)
         } catch (e: Exception) {
-            //no op
+            e.printStackTrace()
+            action(null, e)
         }
     }.apply {
         dataHead = LaserPeckerHelper.PACKET_HEAD_BIG

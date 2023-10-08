@@ -197,6 +197,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**具有wifi功能的产品*/
     fun isWifiProduct() = LaserPeckerHelper.isWifiDevice(productInfoData.value?.deviceName)
 
+    /**具有usb存储功能的产品*/
+    fun isHaveUsbProduct() = LaserPeckerHelper.isHaveUsbDevice(productInfoData.value?.deviceName)
+
     //<editor-fold desc="Command">
 
     /**发送更新预览范围指令, 支持Z轴判断

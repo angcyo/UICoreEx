@@ -267,11 +267,21 @@ object LaserPeckerHelper {
         }
     }
 
-    /**指定的蓝牙设备名, 是否是wifi设备*/
+    /**指定的蓝牙设备名, 是否是wifi设备
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isWifiProduct]
+     * */
     fun isWifiDevice(deviceName: String?): Boolean {
         //LP5 LX2 才有WIFI模块
         return deviceName?.startsWith(LV) == true ||
                 deviceName?.startsWith(CII) == true
+    }
+
+    /**指定的蓝牙设备名, 是否具有USB存储功能
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isHaveUsbProduct]
+     * */
+    fun isHaveUsbDevice(deviceName: String?): Boolean {
+        //LP5 才有USB模块
+        return deviceName?.startsWith(LV) == true
     }
 
     //PxInfo(dpi ?: DPI_254, vmApp<LaserPeckerModel>().productInfoData.value ?.widthPhys ?: 100)
@@ -780,7 +790,7 @@ object LaserPeckerHelper {
         if (deviceAddress.isNullOrEmpty() && !WifiApiModel.useWifi()) {
             deviceAddress = apiModel.lastDeviceAddress()
             if (deviceAddress.isNullOrBlank()) {
-                action?.invoke(null, NoDeviceException(_string(R.string.blue_no_device_connected)))
+                action?.invoke(null, NoDeviceException())
                 return null
             }
         }
