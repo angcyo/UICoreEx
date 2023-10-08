@@ -15,5 +15,7 @@ data class AddDeviceConfigBean(
      * [com.hingin.flutter.FlutterHelper#PAGE_BLE_SCAN]
      * [com.hingin.flutter.FlutterHelper#PAGE_DEVICE_DISCOVERY]
      * */
-    val channelPage: String //, MethodChannelParam.deviceDiscovery,
+    val channelPage: String, //, MethodChannelParam.deviceDiscovery
+    /**是否只在debug模式下显示*/
+    val debug: Boolean = false,
 )

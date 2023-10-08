@@ -132,6 +132,7 @@
       "name": "LP5",
       "type": 5,
       "url": "assets/images/device_l5.png",
+      "debug": true,
       "channelPage": "deviceDiscovery"
     },
     {
