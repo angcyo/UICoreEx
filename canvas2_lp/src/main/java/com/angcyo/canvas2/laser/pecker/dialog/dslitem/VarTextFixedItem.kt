@@ -69,7 +69,7 @@ class VarTextFixedItem : BaseVarItem(), IEditItem {
         itemHolder.flow(R.id.lib_flow_layout)?.apply {
             resetChild(
                 inputHistoryList,
-                R.layout.lib_input_history_layout
+                R.layout.app_input_history_layout
             ) { itemView, item, itemIndex ->
                 itemView.dslViewHolder().apply {
                     tv(R.id.lib_text_view)?.text = item

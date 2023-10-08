@@ -52,7 +52,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
         canInputEmpty = false
         trimInputText = false
         dialogLayoutId = R.layout.dialog_add_text_layout
-
+        inputHistoryLayoutId = R.layout.app_input_history_layout
         onInputResult = { dialog, inputText ->
             onAddTextAction(inputText, dataType)
             false

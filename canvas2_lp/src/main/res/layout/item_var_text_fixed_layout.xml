@@ -33,7 +33,7 @@
         app:r_flow_item_vertical_space="@dimen/lib_hdpi"
         app:r_flow_preview_item_layout_id="@layout/lib_input_history_layout"
         tools:layoutDirection="rtl"
-        tools:visibility="invisible">
+        tools:visibility="visible">
 
     </com.angcyo.widget.layout.DslFlowLayout>
 
