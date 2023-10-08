@@ -185,7 +185,8 @@ data class DeviceSettingBean(
     var showVariableElementIco: Boolean = true,
     /**复制元素时, 是否需要偏移位置*/
     var copyElementOffset: Boolean = true,
-
+    /**添加的设备列表*/
+    var addDeviceList: List<AddDeviceConfigBean>? = null,
     //endregion---Android端设置项---
 
     //region---Ble UUID---

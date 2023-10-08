@@ -102,5 +102,43 @@
       "label": "使用旧的抖动算法",
       "value": "@useNewDithering#b=false"
     }
+  ],
+  "addDeviceList": [
+    {
+      "name": "LP1",
+      "type": 1,
+      "url": "assets/images/device_l1.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP2",
+      "type": 2,
+      "url": "assets/images/device_l2.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP3",
+      "type": 3,
+      "url": "assets/images/device_l3.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP4",
+      "type": 4,
+      "url": "assets/images/device_l4.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP5",
+      "type": 5,
+      "url": "assets/images/device_l5.png",
+      "channelPage": "deviceDiscovery"
+    },
+    {
+      "name": "LX1",
+      "type": 11,
+      "url": "assets/images/device_lx1.png",
+      "channelPage": "bleScan"
+    }
   ]
 }
