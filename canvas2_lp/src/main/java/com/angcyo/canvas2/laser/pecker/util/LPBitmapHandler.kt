@@ -73,9 +73,9 @@ object LPBitmapHandler {
             bitmap,
             blackThreshold.toInt(),
             inverse,
-            alphaBgColor = if (HawkEngraveKeys.enableRemoveBWAlpha) if (inverse) Color.BLACK else Color.WHITE else Color.TRANSPARENT,
+            alphaBgColor = if (HawkEngraveKeys.enableRemoveBWAlpha) if (inverse) Color.BLACK else LibHawkKeys.bgAlphaColor else Color.TRANSPARENT,
             alphaThreshold = LibHawkKeys.alphaThreshold,
-            whiteReplaceColor = if (HawkEngraveKeys.enableBitmapHandleBgAlpha) Color.TRANSPARENT else Color.WHITE
+            whiteReplaceColor = if (HawkEngraveKeys.enableBitmapHandleBgAlpha) Color.TRANSPARENT else LibHawkKeys.bgAlphaColor
         )
     }
 
@@ -96,7 +96,7 @@ object LPBitmapHandler {
             invert,
             contrast,
             brightness,
-            Color.WHITE,
+            LibHawkKeys.bgAlphaColor,
             LibHawkKeys.bgAlphaThreshold
         )
     }
@@ -1026,7 +1026,6 @@ object LPBitmapHandler {
                     val bitmap = if (HawkEngraveKeys.enableRemoveBWAlpha) result
                     else result.addBgColor(if (bean.imageFilter == LPDataConstant.DATA_MODE_SEAL) Color.BLACK else Color.WHITE)
                     owner.engraveLoadingAsync({
-                        //剪切完之后, 默认黑白处理
                         element.updateOriginBitmap(bitmap, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
                         bitmap
@@ -1062,14 +1061,17 @@ object LPBitmapHandler {
 
             onMagicResultAction = { result ->
                 result?.let {
+                    val elementBean = element.elementBean
                     owner.engraveLoadingAsync({
-                        //魔棒完之后, 默认黑白处理
                         element.updateOriginBitmap(result, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
-                        if (element.elementBean.imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
-                            element.elementBean.imageFilter == LPDataConstant.DATA_MODE_GREY
+                        if (elementBean.imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
+                            elementBean.imageFilter == LPDataConstant.DATA_MODE_GREY
                         ) {
-                            element.renderBitmap = result//2023-6-15 透明图片, 障眼法
+                            if (!elementBean.inverse) {
+                                //2023-10-10 如果没有反色, 则使用障眼法
+                                element.renderBitmap = result //2023-6-15 透明图片, 障眼法
+                            }
                         }
                         result
                     }) {
