@@ -9,6 +9,7 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
+import com.angcyo.laserpacker.device.ensurePrintPrecision
 import com.angcyo.laserpacker.device.initLayerDpi
 import com.angcyo.library.L
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -152,7 +153,8 @@ class EngraveConfigProvider : IEngraveConfigProvider {
         element.apply {
             printPower = printPower ?: HawkEngraveKeys.lastPower
             printDepth = printDepth ?: HawkEngraveKeys.lastDepth
-            printPrecision = printPrecision ?: HawkEngraveKeys.lastPrecision
+            printPrecision =
+                (printPrecision ?: HawkEngraveKeys.lastPrecision).ensurePrintPrecision()
             printType = printType ?: DeviceHelper.getProductLaserType().toInt()
             printCount = printCount ?: 1
 

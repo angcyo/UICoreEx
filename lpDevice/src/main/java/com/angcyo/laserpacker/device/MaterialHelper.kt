@@ -371,3 +371,12 @@ fun MaterialEntity.initLayerDpi(layerId: String, dpi: Float) {
     this.dpi = layerId.filterLayerDpi(dpi)
     this.dpiScale = this.dpi.toDpiScale()
 }
+
+/**确保加速级别数据正确
+ * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.precision]*/
+fun Int?.ensurePrintPrecision(def: Int = HawkEngraveKeys.lastPrecision): Int {
+    if (this == null || this < 1 || this > 5) {
+        return def
+    }
+    return this
+}

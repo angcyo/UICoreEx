@@ -12,6 +12,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
+import com.angcyo.laserpacker.device.ensurePrintPrecision
 import com.angcyo.laserpacker.device.toLayerId
 import com.angcyo.laserpacker.toAlignString
 import com.angcyo.laserpacker.toPaintStyleInt
@@ -759,8 +760,8 @@ data class LPElementBean(
         //光源
         printType = (material?.type ?: last?.type ?: customMaterial?.type
         ?: DeviceHelper.getProductLaserType()).toInt()
-        printPrecision = material?.precision ?: last?.precision ?: customMaterial?.precision
-                ?: HawkEngraveKeys.lastPrecision
+        printPrecision = (material?.precision ?: last?.precision ?: customMaterial?.precision
+        ?: HawkEngraveKeys.lastPrecision).ensurePrintPrecision()
     }
 
     //region ---variable----

@@ -12,6 +12,7 @@ import com.angcyo.dialog2.dslitem.itemWheelUnit
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.device.ensurePrintPrecision
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -64,7 +65,8 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         printType = materialEntity?.type ?: printType
                         printPower = materialEntity?.power ?: printPower
                         printDepth = materialEntity?.depth ?: printDepth
-                        printPrecision = materialEntity?.precision ?: printPrecision
+                        printPrecision =
+                            (materialEntity?.precision ?: printPrecision).ensurePrintPrecision()
                         materialCode = materialEntity?.code
                         materialKey = materialEntity?.key
                         materialName = materialEntity?.name
@@ -138,11 +140,10 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                     }
                     //单文件雕刻参数
                     itemEngraveItemBean?.apply {
-                        HawkEngraveKeys.lastPrecision =
-                            getSelectedWheelIntData(
-                                index,
-                                printPrecision ?: HawkEngraveKeys.lastPrecision
-                            )
+                        HawkEngraveKeys.lastPrecision = getSelectedWheelIntData(
+                            index,
+                            printPrecision ?: HawkEngraveKeys.lastPrecision
+                        ).ensurePrintPrecision()
                         printPrecision = HawkEngraveKeys.lastPrecision
                     }
                 }
