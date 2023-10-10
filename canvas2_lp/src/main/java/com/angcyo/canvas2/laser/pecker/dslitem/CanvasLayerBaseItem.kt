@@ -173,6 +173,9 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
                         append(it); append(" ")
                     }
 
+                    //换行分割
+                    appendLine()
+
                     bean.dpi?.let {
                         val findPxInfo = LaserPeckerHelper.findPxInfo(
                             bean._layerId ?: LaserPeckerHelper.LAYER_LINE, it
@@ -186,7 +189,6 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
                         append(bean.printPrecision ?: HawkEngraveKeys.lastPrecision); append(" ")
                     }
 
-                    appendLine()
                     appendDrawable(R.drawable.engrave_config_power_svg, drawableSize)
                     append(bean.printPower ?: HawkEngraveKeys.lastPower);append("% ")
 
