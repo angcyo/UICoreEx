@@ -972,12 +972,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     private fun initDefaultEngraveConfigInfo(entity: EngraveConfigEntity) {
         //保存外接设备名
         entity.exDevice = laserPeckerModel.getExDevice()
-        //使用的模块
+        //使用的雕刻模块
         entity.moduleState =
             deviceStateModel.deviceStateData.value?.moduleState ?: entity.moduleState
-        //固件版本
+        //固件的软件版本
         entity.softwareVersion =
-            laserPeckerModel.productInfoData.value?.softwareVersion ?: entity.softwareVersion//固件版本
+            laserPeckerModel.productInfoData.value?.softwareVersion ?: entity.softwareVersion
+        //固件的硬件版本
         entity.hardwareVersion =
             laserPeckerModel.productInfoData.value?.hardwareVersion ?: entity.hardwareVersion
 
