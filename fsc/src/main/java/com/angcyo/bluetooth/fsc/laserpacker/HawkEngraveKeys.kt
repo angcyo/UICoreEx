@@ -317,7 +317,7 @@ object HawkEngraveKeys {
     var enableImportGroup: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**当SVG文本字符小于此值时自动激活[enableImportGroup]*/
-    var autoEnableImportGroupLength: Long by HawkPropertyValue<Any, Long>(20000)
+    var autoEnableImportGroupLength: Long by HawkPropertyValue<Any, Long>(20_000)
 
     /**2次间隔同步延迟时长*/
     var syncDelay: Long by HawkPropertyValue<Any, Long>(10 * 60 * 1000)
