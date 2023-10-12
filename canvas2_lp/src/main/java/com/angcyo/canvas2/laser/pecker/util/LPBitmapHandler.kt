@@ -1062,16 +1062,18 @@ object LPBitmapHandler {
             onMagicResultAction = { result ->
                 result?.let {
                     val elementBean = element.elementBean
+                    //2023-10-12 清除相关属性数据
+                    elementBean.inverse = false
+                    elementBean.brightness = 0f
+                    elementBean.contrast = 0f
+
                     owner.engraveLoadingAsync({
                         element.updateOriginBitmap(result, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
                         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
                             elementBean.imageFilter == LPDataConstant.DATA_MODE_GREY
                         ) {
-                            if (!elementBean.inverse) {
-                                //2023-10-10 如果没有反色, 则使用障眼法
-                                element.renderBitmap = result //2023-6-15 透明图片, 障眼法
-                            }
+                            element.renderBitmap = result //2023-6-15 透明图片, 障眼法
                         }
                         result
                     }) {
