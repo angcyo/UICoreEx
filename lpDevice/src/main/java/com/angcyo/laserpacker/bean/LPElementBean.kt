@@ -561,11 +561,11 @@ data class LPElementBean(
     /**是否配置了雕刻参数*/
     val _isConfigEngraveParams: Boolean
         get() = printType != null &&
-                printPrecision != null &&
                 printPower != null &&
                 printDepth != null &&
                 printCount != null &&
-                dpi != null
+                dpi != null /*&&
+                printPrecision != null*/
 
     /**[com.angcyo.canvas2.laser.pecker.element.LPPathElement]*/
     val isPathElement: Boolean
