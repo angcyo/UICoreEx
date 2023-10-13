@@ -1195,6 +1195,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     EngraveFlowDataHelper.againEngrave(taskId) //清除缓存状态数据
                     engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
                     renderFlowItems()
+
+                    if (HawkEngraveKeys.enableAgainEngravePreview) {
+                        //触发预览指令
+                        startPreviewOnlY()
+                    }
                 }
                 itemContinueAction = {
                     //继续雕刻, 重新传输数据, 并且自动发送数据

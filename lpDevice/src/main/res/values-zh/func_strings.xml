@@ -15,4 +15,6 @@
     <string name="item_engrave_params_des">激活后,每个元素都可以单独设置雕刻参数.</string>
     <string name="single_item_transfer_label">激活单元素传输雕刻</string>
     <string name="single_item_transfer_des">激活后,一个元素一个元素传输并雕刻.</string>
+    <string name="again_engrave_preview_label">激活再雕一次时预览</string>
+    <string name="again_engrave_preview_des">激活后,点击雕刻完成界面中的再雕一次按钮,会触发预览指令.</string>
 </resources>

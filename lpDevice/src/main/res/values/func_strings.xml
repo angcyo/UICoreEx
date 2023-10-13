@@ -15,4 +15,6 @@
     <string name="item_engrave_params_des">Once activated, engraving parameters can be set individually for each element.</string>
     <string name="single_item_transfer_label">Activate single-element transfer engraving</string>
     <string name="single_item_transfer_des">After activation, element by element is transmitted and engraved.</string>
+    <string name="again_engrave_preview_label">Preview when activating and carving again</string>
+    <string name="again_engrave_preview_des">After activation, click the Engraving Again button in the engraving completion interface to trigger the preview command.</string>
 </resources>

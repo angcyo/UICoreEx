@@ -107,6 +107,16 @@ class EngraveExperimentalFragment : DebugFragment() {
                 })
             }
 
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableAgainEngravePreview.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.again_engrave_preview_label)
+                    des = _string(R.string.again_engrave_preview_des)
+                    key = HawkEngraveKeys::enableAgainEngravePreview.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableAgainEngravePreview
+                })
+            }
+
             if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableItemEngraveParams.name)) {
                 renderDebugAction(DebugAction().apply {
                     label = _string(R.string.item_engrave_params_label)

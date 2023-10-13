@@ -177,6 +177,9 @@ object HawkEngraveKeys {
     /**激活雕刻时的信息渲染*/
     var enableRenderEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**激活再雕一次时,先预览的功能*/
+    var enableAgainEngravePreview: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     /**激活雕刻时雕刻图层的信息渲染*/
     var enableLayerEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(true)
 

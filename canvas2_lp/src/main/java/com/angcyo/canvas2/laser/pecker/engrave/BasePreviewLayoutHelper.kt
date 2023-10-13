@@ -258,6 +258,18 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         deviceStateModel.startLoopCheckState(reason = "预览界面")
     }
 
+    /**仅触发开始预览指令*/
+    fun startPreviewOnlY() {
+        if (_isSingleFlow) {
+            //简单流程信息
+            startFileNamePreview()
+        } else {
+            engraveCanvasFragment?.renderDelegate?.let {
+                previewModel.startPreview(LPPreviewHelper.createPreviewInfo(it))
+            }
+        }
+    }
+
     /**改变状态到传输配置*/
     open fun changeToTransferConfig() {
         syncQueryDeviceState()
