@@ -101,6 +101,10 @@
     {
       "label": "使用旧的抖动算法",
       "value": "@useNewDithering#b=false"
+    },
+    {
+      "label": "显示设备搜索过滤",
+      "value": "@showDeviceFilterCount#i=2"
     }
   ],
   "addDeviceList": [
