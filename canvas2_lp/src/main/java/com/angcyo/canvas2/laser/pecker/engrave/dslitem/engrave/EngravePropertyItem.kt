@@ -14,6 +14,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.updateAdapterItem
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.library.ex.ViewAction
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
@@ -51,6 +52,9 @@ class EngravePropertyItem : DslAdapterItem() {
     /**是否要显示速度参考值*/
     var itemShowRefVelocity: Boolean = _showRefVelocity
 
+    /**Label的点击事件*/
+    var itemLabelClickAction: ViewAction? = null
+
     private val nightModel = vmApp<NightModel>()
 
     init {
@@ -66,7 +70,9 @@ class EngravePropertyItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         val context = itemHolder.context
 
+        //label
         itemHolder.tv(R.id.lib_label_view)?.text = itemLabelText
+        itemHolder.click(R.id.lib_label_view, itemLabelClickAction)
 
         //属性, 功率
         val powerLabel = _string(R.string.custom_power)

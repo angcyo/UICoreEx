@@ -682,6 +682,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     itemEngraveItemBean = elementItemBean
                     itemEngraveConfigEntity = engraveConfigEntity
 
+                    itemLabelClickAction = {
+                        startPreviewOnlY()
+                    }
+
                     observeItemChange {
                         engraveConfigProvider.onSaveEngraveElementConfig(
                             this@BaseEngraveLayoutHelper,
@@ -927,6 +931,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     //功率/深度/次数
                     EngravePropertyItem()() {
                         itemEngraveConfigEntity = engraveConfigEntity
+
+                        itemLabelClickAction = {
+                            startPreviewOnlY()
+                        }
+
                         observeItemChange {
                             engraveConfigProvider.onSaveEngraveConfig(
                                 this@BaseEngraveLayoutHelper,
