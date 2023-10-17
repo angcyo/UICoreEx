@@ -26,6 +26,7 @@ import com.angcyo.library.ex.getScaleX
 import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.getSkewX
 import com.angcyo.library.ex.getSkewY
+import com.angcyo.library.ex.getTranslateY
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDegrees
@@ -198,7 +199,12 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         data = drawElement.data
-                        (drawElement.element as? Path)?.let {
+
+                        (drawElement.element as? Path)?.run {
+                            if (matrix != null)
+                                Path(this).apply { transform(matrix) }
+                            else this
+                        }?.let {
                             val rect = acquireTempRectF()
                             it.computePathBounds(rect, true)
                             width = rect.width().toMm()
@@ -214,6 +220,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                                 top = rect.top.toMm()
                             }
                         }
+
                         qrElement(this, matrix)
                     }
 
@@ -241,7 +248,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                 return true
             }
         })
-        val sharpPicture = sharp.sharpPicture
+        val sharpPicture = sharp.sharpPicture //触发解析
         if (BuildConfig.DEBUG) {
             val bitmap = sharpPicture.drawable.toBitmap()
             L.d("svg size:${bitmap?.width}x${bitmap?.height}")
