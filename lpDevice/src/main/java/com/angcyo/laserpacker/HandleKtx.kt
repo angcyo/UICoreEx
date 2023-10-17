@@ -26,7 +26,6 @@ import com.angcyo.library.ex.getScaleX
 import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.getSkewX
 import com.angcyo.library.ex.getSkewY
-import com.angcyo.library.ex.getTranslateY
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDegrees
