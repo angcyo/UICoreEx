@@ -51,7 +51,7 @@ data class ProjectSyncEntity(
     /**用户id*/
     var userId: String? = null,
 
-    /**数据显示的名称*/
+    /**数据显示的名称,  重命名也是修改此字段*/
     var name: String? = null,
 
     /**数据对应的本地路径, 用于上传*/

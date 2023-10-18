@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
 import com.angcyo.base.removeThis
-import com.angcyo.laserpacker.project.dslitem.ProjectListItem
+import com.angcyo.behavior.refresh.IRefreshContentBehavior
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.core.appendIconItem
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.fragment.BaseDslFragment
@@ -17,6 +18,7 @@ import com.angcyo.item.component.initSearchAdapterFilter
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.open.CanvasOpenModel
+import com.angcyo.laserpacker.project.dslitem.ProjectListItem
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.file
@@ -99,6 +101,19 @@ class ProjectListFragment : BaseDslFragment() {
         initSearchAdapterFilter(_string(R.string.project_filter_tip))
     }
 
+    private var isFirstRefresh = true
+
+    override fun onRefresh(refreshContentBehavior: IRefreshContentBehavior?) {
+        super.onRefresh(refreshContentBehavior)
+        if (!isFirstRefresh) {
+            //不是第一次刷新, 时立即触发同步
+            if (HawkEngraveKeys.enableCloudStorage) {
+                HawkEngraveKeys.enableCloudStorage = true //触发回调, 同步数据
+            }
+        }
+        isFirstRefresh = false
+    }
+
     override fun onLoadData() {
         super.onLoadData()
 
@@ -120,7 +135,7 @@ class ProjectListFragment : BaseDslFragment() {
             entityList.forEach { entity ->
                 entity.filePath?.file()?.readProjectBean()?.let {
                     it.entityId = entity.entityId
-                    it.file_name = entity.name//换一下名称
+                    it.file_name = entity.name ?: it.file_name //换一下名称
                     projectList.add(it)
                 }
             }
