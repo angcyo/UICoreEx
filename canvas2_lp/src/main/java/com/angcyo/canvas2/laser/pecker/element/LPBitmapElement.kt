@@ -73,7 +73,8 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    /**原始图片改变后, 更新bean的宽高*/
+    /**原始图片改变后, 更新bean的宽高
+     * [updateImageFilter]*/
     fun updateBeanWidthHeightFromBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
         val bean = elementBean
         if (bean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
@@ -210,14 +211,18 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         }
     }
 
-    /**更新图片滤镜算法*/
+    /**更新图片滤镜算法
+     * [com.angcyo.canvas2.laser.pecker.element.LPBitmapElement.updateBeanWidthHeightFromBitmap]*/
     fun updateImageFilter(imageFilter: Int) {
         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
             if (imageFilter != LPDataConstant.DATA_MODE_GCODE) {
                 //之前是GCode数据, 则此时需要缩放比例, 以达到显示效果
                 originBitmap?.let {
-                    val sx = elementBean._width.toPixel() / it.width.toFloat()
-                    val sy = elementBean._height.toPixel() / it.height.toFloat()
+                    /*val sx = elementBean._width.toPixel() / it.width.toFloat()
+                    val sy = elementBean._height.toPixel() / it.height.toFloat()*/
+
+                    val sx = it.width.toPixel() / it.width.toFloat()
+                    val sy = it.height.toPixel() / it.height.toFloat()
 
                     renderProperty.scaleX /= sx
                     renderProperty.scaleY /= sy
