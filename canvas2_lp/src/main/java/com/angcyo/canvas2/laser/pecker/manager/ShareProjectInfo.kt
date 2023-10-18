@@ -9,7 +9,12 @@ import java.io.File
  */
 data class ShareProjectInfo(
     val taskId: String?,
+    /**工程文件路径*/
     val projectFile: File,
+    /**工程预览文件路径*/
     val previewFile: File,
-    val bean: LPProjectBean
+    /**工程内容结构数据*/
+    val bean: LPProjectBean,
+    /**工程名称, 如果有*/
+    val projectName: CharSequence? = null
 )
