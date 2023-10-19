@@ -15,20 +15,27 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.item.component.initSearchAdapterFilter
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.open.CanvasOpenModel
 import com.angcyo.laserpacker.project.dslitem.ProjectListItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.deleteFileSafe
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.encode
+import com.angcyo.library.ex.ensureName
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.gone
+import com.angcyo.library.ex.lastName
 import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.zip
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.isChildClassOf
+import com.angcyo.library.utils.writeToFile
 import com.angcyo.objectbox.findAll
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EntitySync
@@ -76,14 +83,25 @@ class ProjectListFragment : BaseDslFragment() {
                 return@longClick
             }
 
+            val nameList = mutableListOf<String>() //重命名文件列表
             val projectPathList = mutableListOf<String>()
             allEntityList.forEach { entity ->
                 entity.filePath?.let {
-                    projectPathList.add(it)
+                    var fileName = entity.name ?: it.lastName()
+                    while (nameList.contains(fileName)) {
+                        fileName = "${fileName}(1)"
+                    }
+                    val cacheFile =
+                        libCacheFile(fileName.ensureName(LPDataConstant.PROJECT_EXT2).encode())
+                    it.file().writeToFile(cacheFile, false, false)
+                    projectPathList.add(cacheFile.absolutePath)
                 }
             }
-            projectPathList.zip(libCacheFile("LP_All_Project_${userId}.zip").absolutePath)?.file()
+            projectPathList.zip(libCacheFile("LP_All_Project_${projectPathList.size()}_${userId}.zip").absolutePath)
+                ?.file()
                 ?.shareFile()
+
+            projectPathList.deleteFileSafe()
         }
 
         //监听同步更新的状态
