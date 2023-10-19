@@ -23,6 +23,7 @@ import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex.ensure
 import com.angcyo.library.ex.scaleToSize
 import com.angcyo.library.ex.toColorInt
 import com.angcyo.library.ex.toRadians
@@ -388,8 +389,8 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         val height = elementBean.height?.toPixel()
         if (!pathList.isNullOrEmpty() && width != null && height != null) {
             val bounds = RenderHelper.computePathBounds(pathList)
-            val scaleX = width / bounds.width()
-            var scaleY = height / bounds.height()
+            val scaleX = (width / bounds.width()).ensure(1f)
+            var scaleY = (height / bounds.height()).ensure(1f)
 
             if (elementBean.isLineShape) {
                 scaleY = scaleX

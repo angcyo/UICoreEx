@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PointF
 import android.graphics.RectF
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bitmap.handle.BuildConfig
@@ -26,6 +27,7 @@ import com.angcyo.library.ex.getScaleX
 import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.getSkewX
 import com.angcyo.library.ex.getSkewY
+import com.angcyo.library.ex.mapPoint
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDegrees
@@ -246,6 +248,36 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             top = rect.top.toMm()
                         }
                         qrElement(this, matrix)
+                    }
+
+                    DrawElement.DrawType.IMAGE -> LPElementBean().apply {
+                        val matrix = drawElement.matrix
+                        mtype = LPDataConstant.DATA_TYPE_BITMAP
+                        name = drawElement.dataName
+                        imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+                        blackThreshold = HawkEngraveKeys.DEFAULT_THRESHOLD
+
+                        val bitmapMatrix = Matrix()
+                        (drawElement.element as? Bitmap)?.let { bitmap ->
+                            val wF = bitmap.width.toFloat()
+                            val hF = bitmap.height.toFloat()
+                            imageOriginal = bitmap.toBase64Data()
+                            _imageOriginalBitmap = bitmap
+                            val rect = RectF(0f, 0f, wF, hF)
+                            _sizeRect = rect.translate(matrix)
+                            val anchor = PointF(0f, 0f)
+                            matrix?.mapPoint(anchor)
+                            left = anchor.x.toMm()
+                            top = anchor.y.toMm()
+                            bitmapMatrix.setScale(
+                                wF / wF.toPixel(),
+                                hF / hF.toPixel(),
+                                anchor.x,
+                                anchor.y
+                            )
+                        }
+                        bitmapMatrix.preConcat(matrix)
+                        qrElement(this, bitmapMatrix)
                     }
 
                     else -> null

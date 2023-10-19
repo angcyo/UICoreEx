@@ -305,7 +305,7 @@ data class LPElementBean(
 
     //region ---图片数据---
 
-    /** 原图数据 (data:image/xxx;base64,xxx) */
+    /** 原图数据 (data:image/xxx;base64,xxx) 需要协议头*/
     var imageOriginal: String? = null,
 
     /**[LPDataConstant.PROJECT_V2_BASE_URI]*/
@@ -453,8 +453,8 @@ data class LPElementBean(
     //region ---私有属性---
 
     /**V2中直接使用图片对象, 而不是转换成base64损耗性能*/
-    @Transient var _srcBitmap: Bitmap? = null,
-    @Transient var _imageOriginalBitmap: Bitmap? = null,
+    @Transient var _imageOriginalBitmap: Bitmap? = null, //原图
+    @Transient var _srcBitmap: Bitmap? = null, //滤镜后的图
     /**临时存储的元素大小矩形*/
     @Pixel
     @Transient var _sizeRect: RectF? = null,
@@ -671,8 +671,12 @@ data class LPElementBean(
 
     //---
 
+    /**2023-10-19
+     * 高度为0的svg也视为线条
+     * */
     val isLineShape: Boolean
-        get() = mtype == LPDataConstant.DATA_TYPE_LINE
+        get() = mtype == LPDataConstant.DATA_TYPE_LINE ||
+                (mtype == LPDataConstant.DATA_TYPE_SVG && _height == 0f)
 
     /**是否是时间变量文本*/
     val isDateTimeVariable: Boolean

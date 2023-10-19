@@ -197,6 +197,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                     itemFilePath = path
                     var beanList: List<LPElementBean>? = null
                     itemDrawable = if (HawkEngraveKeys.enableImportGroup ||
+                        text?.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
                         (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
                     ) {
                         beanList = parseSvgElementList(text)

@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
@@ -87,25 +88,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
             if (isSvgExt) {
                 //.svg后缀
                 val text = file.readText()
-
-                if (HawkEngraveKeys.enableImportGroup ||
-                    (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
-                ) {
-                    val elementList = parseSvgElementList(text)
-                    if (elementList.isNullOrEmpty()) {
-                        //no op
-                        return false
-                    } else {
-                        LPElementHelper.addElementList(itemRenderDelegate, elementList)
-                    }
-                } else {
-                    LPElementHelper.addPathElement(
-                        itemRenderDelegate,
-                        LPDataConstant.DATA_TYPE_SVG,
-                        text,
-                        null
-                    )
-                }
+                addSvgElement(itemRenderDelegate, text)
             } else if (isGCodeExt) {
                 //.gcode后缀
                 val text = file.readText()
@@ -141,12 +124,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                     val text = file.readText()
                     if (text?.isSvgContent() == true) {
                         //svg内容
-                        LPElementHelper.addPathElement(
-                            itemRenderDelegate,
-                            LPDataConstant.DATA_TYPE_SVG,
-                            text,
-                            null
-                        )
+                        addSvgElement(itemRenderDelegate, text)
                     } else if (text?.isGCodeContent() == true) {
                         //gcode内容
                         LPElementHelper.addPathElement(
@@ -178,6 +156,31 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                     return false
                 }
             }
+        }
+        return true
+    }
+
+    private fun addSvgElement(renderDelegate: CanvasRenderDelegate?, text: String?): Boolean {
+        renderDelegate ?: return false
+        text ?: return false
+        if (HawkEngraveKeys.enableImportGroup ||
+            text.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
+            text.length <= HawkEngraveKeys.autoEnableImportGroupLength
+        ) {
+            val elementList = parseSvgElementList(text)
+            if (elementList.isNullOrEmpty()) {
+                //no op
+                return false
+            } else {
+                LPElementHelper.addElementList(itemRenderDelegate, elementList)
+            }
+        } else {
+            LPElementHelper.addPathElement(
+                itemRenderDelegate,
+                LPDataConstant.DATA_TYPE_SVG,
+                text,
+                null
+            )
         }
         return true
     }
