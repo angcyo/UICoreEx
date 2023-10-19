@@ -143,13 +143,16 @@ class SimpleTransition : ITransition {
             gCodeHandler.cutGCodeWidth = params.cutGCodeWidth ?: gCodeHandler.cutGCodeWidth
             gCodeHandler.cutGCodeHeight = params.cutGCodeHeight ?: gCodeHandler.cutGCodeHeight
             gCodeHandler.cutLimitRect = EngravePreviewCmd.getBoundsPath()?.computePathBounds()
+            //2023-10-19
+            val pathStep = LibHawkKeys.pathAcceptableError
+            gCodeHandler.updatePathStepByPixel(pathStep)
             gCodeHandler.pathStrokeToVector(
                 targetPathList,
                 true,
                 true,
                 0f,
                 0f,
-                LibHawkKeys.pathAcceptableError
+                pathStep
             )
         }
         return outputFile

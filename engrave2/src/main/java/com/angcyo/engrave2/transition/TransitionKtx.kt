@@ -473,6 +473,7 @@ fun Bitmap.toGCode(
         gCodeWriteHandler.gapValue = gapValue
         gCodeWriteHandler.gapMaxValue = gCodeWriteHandler.gapValue
     }
+    gCodeWriteHandler.updatePathStepByPixel(pixelStep.toFloat())
 
     val width = bitmap.width
     val height = bitmap.height
