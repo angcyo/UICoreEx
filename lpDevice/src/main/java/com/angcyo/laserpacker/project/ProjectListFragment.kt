@@ -24,7 +24,12 @@ import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.gone
+import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.zip
+import com.angcyo.library.libCacheFile
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.isChildClassOf
+import com.angcyo.objectbox.findAll
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EntitySync
 import com.angcyo.objectbox.laser.pecker.entity.ProjectSyncEntity
@@ -56,6 +61,30 @@ class ProjectListFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
         _recycler.resetLayoutManager("SV2")
+
+        //长按标题打包用户所有工程
+        _vh.longClick(R.id.lib_title_text_view) {
+            toastQQ(_string(R.string.ui_wait_tip))
+
+            val userId = "${EntitySync.userId ?: "Default"}"
+            val allEntityList = ProjectSyncEntity::class.findAll(LPBox.PACKAGE_NAME) {
+                apply(ProjectSyncEntity_.userId.equal(userId))
+            }
+
+            if (allEntityList.isEmpty()) {
+                toastQQ(_string(R.string.adapter_no_data))
+                return@longClick
+            }
+
+            val projectPathList = mutableListOf<String>()
+            allEntityList.forEach { entity ->
+                entity.filePath?.let {
+                    projectPathList.add(it)
+                }
+            }
+            projectPathList.zip(libCacheFile("LP_All_Project_${userId}.zip").absolutePath)?.file()
+                ?.shareFile()
+        }
 
         //监听同步更新的状态
         vmApp<DataShareModel>().shareUpdateAdapterItemOnceData.observe(this) {
