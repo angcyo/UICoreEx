@@ -17,6 +17,8 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.component.pool.acquireTempMatrix
+import com.angcyo.library.component.pool.acquireTempPointF
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.abs
@@ -128,6 +130,29 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
             bean.skewY = skewY
         }
 
+        /**处理线条元素
+         * 因为编辑器不支持竖线, 所有如果是竖线, 要处理成横线
+         * */
+        fun handleLineElement(bean: LPElementBean) {
+            /*if (bean._width == 0f && bean._height > 0) {
+                //竖线
+                val rotateMatrix = acquireTempMatrix()
+                val anchorPoint = acquireTempPointF()
+                anchorPoint.set(bean.left, bean.top)
+                rotateMatrix.setRotate(-90f, bean.left, bean.top)
+                rotateMatrix.mapPoint(anchorPoint)
+                bean.left = anchorPoint.x
+                bean.top = anchorPoint.y
+
+                bean.width = bean.height
+                bean.height = 0f
+                bean.angle += 90f
+
+                rotateMatrix.release()
+                anchorPoint.release()
+            }*/
+        }
+
         var svrRect: RectF? = null
         sharp.setOnElementListener(object : SvgElementListener() {
             override fun onCanvasDraw(canvas: Canvas, drawElement: DrawElement): Boolean {
@@ -135,6 +160,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                 when (drawElement.type) {
                     DrawElement.DrawType.ROUND_RECT -> LPElementBean().apply {
                         val matrix = drawElement.matrix
+                        qrElement(this, matrix)
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
@@ -147,11 +173,11 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         }
                         rx = drawElement.rx.toMm()
                         ry = drawElement.ry.toMm()
-                        qrElement(this, matrix)
                     }
 
                     DrawElement.DrawType.LINE -> LPElementBean().apply {
                         val matrix = drawElement.matrix
+                        qrElement(this, matrix)
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         mtype = LPDataConstant.DATA_TYPE_SVG
                         name = drawElement.dataName
@@ -181,12 +207,14 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             height = rect.height().abs().toMm()
                             left = l.toMm()
                             top = t.toMm()
+
+                            handleLineElement(this)
                         }
-                        qrElement(this, matrix)
                     }
 
                     DrawElement.DrawType.OVAL -> LPElementBean().apply {
                         val matrix = drawElement.matrix
+                        qrElement(this, matrix)
                         mtype = LPDataConstant.DATA_TYPE_OVAL
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
@@ -197,11 +225,11 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             left = rect.left.toMm()
                             top = rect.top.toMm()
                         }
-                        qrElement(this, matrix)
                     }
 
                     DrawElement.DrawType.PATH -> LPElementBean().apply {
                         val matrix = drawElement.matrix
+                        qrElement(this, matrix)
                         mtype = LPDataConstant.DATA_TYPE_SVG
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
@@ -219,6 +247,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             height = rect.height().toMm()
                             left = rect.left.toMm()
                             top = rect.top.toMm()
+                            handleLineElement(this)
                             rect.release()
                         }.elseNull {
                             drawElement.pathBounds?.let { rect ->
@@ -227,14 +256,14 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                                 height = rect.height().toMm()
                                 left = rect.left.toMm()
                                 top = rect.top.toMm()
+                                handleLineElement(this)
                             }
                         }
-
-                        qrElement(this, matrix)
                     }
 
                     DrawElement.DrawType.TEXT -> LPElementBean().apply {
                         val matrix = drawElement.matrix
+                        qrElement(this, matrix)
                         mtype = LPDataConstant.DATA_TYPE_TEXT
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
@@ -247,7 +276,6 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             left = rect.left.toMm()
                             top = rect.top.toMm()
                         }
-                        qrElement(this, matrix)
                     }
 
                     DrawElement.DrawType.IMAGE -> LPElementBean().apply {
