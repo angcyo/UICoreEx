@@ -137,7 +137,7 @@ object CanvasDataHandleOperate {
         writeLast: Boolean = true,
         offsetLeft: Float = 0f, //偏移的像素
         offsetTop: Float = 0f,
-        pathStep: Float = LibHawkKeys.pathAcceptableError,
+        pathStep: Float = LibHawkKeys._pathAcceptableError,
         autoCnc: Boolean = false,
         append: Boolean = false,
     ): File {
