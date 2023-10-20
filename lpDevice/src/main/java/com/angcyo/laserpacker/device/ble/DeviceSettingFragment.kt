@@ -15,6 +15,7 @@ import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker._productName
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.component.model.LanguageModel
@@ -25,6 +26,7 @@ import com.angcyo.dialog.normalDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
+import com.angcyo.dsladapter.toError
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.DslTextInfoItem
@@ -32,9 +34,9 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemDes
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemLabel
-import com.angcyo.item.style.itemTabSelectIndexChangeAction
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
+import com.angcyo.item.style.itemTabSelectIndexChangeAction
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.HelpPropertySwitchItem
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
@@ -75,7 +77,7 @@ class DeviceSettingFragment : BaseDslFragment() {
         /**每个产品提醒一次*/
         val thirdAxisFlagPromptKey: String
             get() = "thirdAxisFlagPromptKey_${_productName}"
-        
+
         /**旋转轴帮助链接*/
         val rotateFlagHelpUrl: String?
             get() = getFlagHelpUrl("aor")
@@ -188,8 +190,12 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
         }
 
-        //读取设置
-        LaserPeckerHelper.initDeviceSetting()
+        if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+            //读取设置
+            LaserPeckerHelper.initDeviceSetting()
+        } else {
+            _adapter.toError(NoDeviceException())
+        }
     }
 
     fun renderData() {
