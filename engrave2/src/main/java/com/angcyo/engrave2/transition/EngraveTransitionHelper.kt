@@ -578,12 +578,14 @@ object EngraveTransitionHelper {
                             write(len, 2)
                             logBuilder?.append("${len}:")
                             line.pointList.forEach { section ->
-                                val x = (section.x * 10).roundToInt()
-                                val y = (section.y * 10).roundToInt()
-                                write(x)
-                                write(y)
+                                val x = (section.x * 10 - transferDataEntity.x).roundToInt()
+                                val y = (section.y * 10 - transferDataEntity.y).roundToInt()
+                                write(x, 2)
+                                write(y, 2)
                                 logBuilder?.append("(${x},${y})")
                             }
+                            write(0x7f)
+                            write(0xfa)
                             logBuilder?.appendLine()
                         }
                     }
@@ -721,7 +723,7 @@ object EngraveTransitionHelper {
         //雕刻数据坐标
         val engraveDataType = transferDataEntity.engraveDataType
         if (engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
-            //mm单位
+            //mm单位, 乘以10保证精度
             transferDataEntity.x = (originX * 10).floor().toInt()
             transferDataEntity.y = (originY * 10).floor().toInt()
             transferDataEntity.width = (originWidth * 10).ceil().toInt()
