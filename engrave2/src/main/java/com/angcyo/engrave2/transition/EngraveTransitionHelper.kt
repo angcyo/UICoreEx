@@ -32,6 +32,7 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
+import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -66,6 +67,7 @@ import com.angcyo.widget.span.span
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * 雕刻数据转换助手工具类
@@ -545,18 +547,58 @@ object EngraveTransitionHelper {
             val gcodeText = provider.getEngraveGCode()
             val adjust = !HawkEngraveKeys.enableGCodeTransform && !gcodeText.isNullOrBlank()
 
-            val gCodeFile = if (adjust && !params.enableGCodeCutData) {
+            val fileWrap = if (adjust && !params.enableGCodeCutData) {
                 //使用GCode原始数据调整
                 transition.adjustGCode(gcodeText!!, provider.getEngraveGCodeMatrix(), params)
             } else {
+                transferConfigEntity.gcodeUsePathData = params.gcodeUsePathData
                 transition.covertPathStroke2GCode(pathList, params)
             }
 
-            val fileSize = gCodeFile.length()
+            val gCodeFile = fileWrap.targetFile
+
+            var fileSize = gCodeFile.length()
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
+            if (transferConfigEntity.gcodeUsePathData) {
+                //2023-10-23
+                fileWrap.collectPointList?.apply {
+                    transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_PATH
+
+                    val targetList = filter { it.pointList.isNotEmpty() }
+                    transferDataEntity.lines = targetList.size()
+
+                    val logBuilder =
+                        if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) StringBuilder() else null
+                    val bytes = byteWriter {
+                        targetList.forEach { line ->
+                            write(0x7f)
+                            write(0xfe)
+                            val len = line.pointList.size()
+                            write(len, 2)
+                            logBuilder?.append("${len}:")
+                            line.pointList.forEach { section ->
+                                val x = (section.x * 10).roundToInt()
+                                val y = (section.y * 10).roundToInt()
+                                write(x)
+                                write(y)
+                                logBuilder?.append("(${x},${y})")
+                            }
+                            logBuilder?.appendLine()
+                        }
+                    }
+                    fileSize = bytes.size().toLong()
+                    transferDataEntity.dataPath = bytes.writeTransferDataPath("$index")
+
+                    logBuilder?.let { log ->
+                        EngraveHelper.saveEngraveData(index, log, LPDataConstant.EXT_PATH)
+                    }
+                }
+            }
+
             span {
-                append("${if (adjust) "调整" else "转"}GCode") {
+                val type = if (transferConfigEntity.gcodeUsePathData) "PathData" else "GCode"
+                append("${if (adjust) "调整" else "转"}${type}") {
                     foregroundColor = accentColor
                 }
                 append("[$index]->")

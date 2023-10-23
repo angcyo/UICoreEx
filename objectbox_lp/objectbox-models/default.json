@@ -197,7 +197,7 @@
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "14:9126991989353531874",
+      "lastPropertyId": "15:3496087554388721860",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -260,6 +260,11 @@
           "id": "14:9126991989353531874",
           "name": "index",
           "type": 9
+        },
+        {
+          "id": "15:3496087554388721860",
+          "name": "gcodeUsePathData",
+          "type": 1
         }
       ],
       "relations": []

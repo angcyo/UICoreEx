@@ -12,6 +12,8 @@ import io.objectbox.annotation.Id
  *
  * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity]
  *
+ * [com.angcyo.engrave2.model.TransferModel.Companion.getTransferDataCmd]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/09
  */
@@ -55,10 +57,11 @@ data class TransferDataEntity(
     var dataPath: String? = null,
 
     /**下位机雕刻的数据类型
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_GCODE]
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_GCODE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_PATH]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
      * */
     var engraveDataType: Int = -1,
 

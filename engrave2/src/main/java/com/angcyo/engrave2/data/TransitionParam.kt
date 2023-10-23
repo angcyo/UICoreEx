@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeWidth
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutLoopCount
 import com.angcyo.bluetooth.fsc.laserpacker.bean._gcodeLineSpace
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
+import com.angcyo.bluetooth.fsc.laserpacker.bean._isGCodeUsePathData
 import com.angcyo.bluetooth.fsc.laserpacker.bean._sliceCount
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -52,6 +53,9 @@ data class TransitionParam(
 
     /**转GCode时, 是否要自动开关激光*/
     val isAutoCnc: Boolean = _isAutoCnc,
+
+    /**[_isGCodeUsePathData]*/
+    val gcodeUsePathData: Boolean = _isGCodeUsePathData,
 
     /**图片转GCode时, 是否是简单的线生成的图片.
      * 如果是线条生成的图片, 则开启此开关, 会有优化处理. 尤其是虚线

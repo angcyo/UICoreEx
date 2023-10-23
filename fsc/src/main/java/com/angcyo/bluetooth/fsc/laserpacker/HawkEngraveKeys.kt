@@ -289,6 +289,9 @@ object HawkEngraveKeys {
     /**支持自动激光雕刻的固件范围*/
     var autoCncEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
 
+    /**GCode转换成0x30路径数据的固件范围*/
+    var gcodeUsePathDataSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
+
     /**是否激活雕刻参数配置信息使用icon*/
     var enableConfigIcon: Boolean by HawkPropertyValue<Any, Boolean>(true)
 

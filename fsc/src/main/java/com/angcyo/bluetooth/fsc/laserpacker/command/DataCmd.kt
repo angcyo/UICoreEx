@@ -4,6 +4,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.ex.high16Bit
+import com.angcyo.library.ex.low16Bit
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.trimAndPad
@@ -61,7 +63,6 @@ data class DataCmd(
         const val ENGRAVE_TYPE_GCODE = 0x20
 
         /**路径数据*/
-        @Implementation
         const val ENGRAVE_TYPE_PATH = 0x30
 
         /**图片转路径数据格式*/
@@ -267,7 +268,7 @@ data class DataCmd(
             return DataCmd(head, data, logBuilder.toString())
         }
 
-        /**图片转路径数据
+        /**图片转路径数据, 黑白线段数据
          * [index] 数据索引
          * [name] 文件名
          * [lines] 路径的线段数量
@@ -424,6 +425,81 @@ data class DataCmd(
                 logBuilder.append(" y:$y")
                 logBuilder.append(" dpi:$dpi")
                 logBuilder.append(" dir:$dataDir")
+            }
+            //数据
+            val data = byteWriter {
+                write(bytes)
+            }
+            return DataCmd(head, data, logBuilder.toString())
+        }
+
+        /**路径数据, 类似GCode的数据, 具有更快的解析速度
+         * [index] 数据索引
+         * [name] 文件名
+         * [lines] 路径的线段数量
+         * [x] [y] 图片的起始坐标, 相对于坐标原点, 2字节
+         * [width] [height] 图片的宽高, 2字节
+         *
+         * 0x30时为路径数据
+         * */
+        fun pathData(
+            index: Int,
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            name: String?,
+            lines: Int,
+            bytes: ByteArray?,
+            dpi: Float
+        ): DataCmd {
+            val logBuilder = StringBuilder()
+            //数据头
+            val head = byteWriter {
+                //0x30时为图片路径数据
+                write(ENGRAVE_TYPE_PATH)
+
+                //宽,2字节
+                write(width, 2)
+                //高,2字节
+                write(height, 2)
+
+                //数据索引，占用4个字节
+                write(index, 4)
+
+                //线段数
+                write(lines.low16Bit(), 2)
+
+                write(x, 2)
+                write(y, 2)
+
+                //d15 px
+                write(1)
+                write(lines.high16Bit(), 2)
+
+                write(lines, 4) //线段数 2023-9-19
+
+                //塞满34个
+                padLength(DEFAULT_NAME_BYTE_START)
+                //第21个字节开始 共36个字节的文件名
+                val nameBytes =
+                    (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
+                write(nameBytes)
+                write(0x00) //写入文件结束字节
+
+                //垫满
+                padLength(64) //需要64个字节
+
+                //日志
+                logBuilder.append("0x30 Path->")
+                logBuilder.append(" index:$index")
+                logBuilder.append(" lines:$lines")
+                logBuilder.append(" name:$name")
+                logBuilder.append(" w:$width")
+                logBuilder.append(" h:$height")
+                logBuilder.append(" x:$x")
+                logBuilder.append(" y:$y")
+                logBuilder.append(" dpi:$dpi")
             }
             //数据
             val data = byteWriter {

@@ -218,6 +218,21 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
                 }
             }
         })
+        itemList.add(CanvasIconItem().apply {
+            itemIco = R.drawable.canvas_bitmap_gcode
+            itemText = "转路径数据"
+            paddingHorizontal(padding)
+            itemNewHawkKeyStr = "use_path_data"
+            itemClick = {
+                wrapLoading {
+                    EngraveTransitionHelper.transitionToGCode(
+                        renderElement,
+                        transferConfigEntity,
+                        TransitionParam(gcodeUsePathData = true)
+                    )
+                }
+            }
+        })
         dialogViewHolder.flow(R.id.lib_flow_layout)?.resetDslItem(itemList)
     }
 

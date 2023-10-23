@@ -10,6 +10,8 @@ import io.objectbox.annotation.Id
 /**
  * 用来存储生成机器数据所需要的参数配置信息
  *
+ * [com.angcyo.engrave2.model.TransferModel.Companion.getTransferDataCmd]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/09
  */
@@ -62,6 +64,11 @@ data class TransferConfigEntity(
      * [android.widget.LinearLayout.VERTICAL]   :1
      * */
     var dataDir: Int = 0,
+
+    /**[_isGCodeUsePathData]
+     * [com.angcyo.gcode.GCodeWriteHandler.isCollectPoint]
+     * */
+    var gcodeUsePathData: Boolean = false,
 
     //---
 

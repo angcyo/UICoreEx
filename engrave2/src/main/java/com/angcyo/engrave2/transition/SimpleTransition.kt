@@ -122,11 +122,15 @@ class SimpleTransition : ITransition {
         )
     }
 
-    override fun covertPathStroke2GCode(pathList: List<Path>, params: TransitionParam): File {
+    override fun covertPathStroke2GCode(
+        pathList: List<Path>,
+        params: TransitionParam
+    ): PathDataFile {
         //转换成GCode
         val gCodeHandler = GCodeWriteHandler()
         gCodeHandler.unit = IValueUnit.MM_UNIT
         gCodeHandler.isAutoCnc = params.isAutoCnc
+        gCodeHandler.isCollectPoint = params.gcodeUsePathData
 
         //平移
         var targetPathList = pathList
@@ -148,13 +152,21 @@ class SimpleTransition : ITransition {
             gCodeHandler.updatePathStepByPixel(pathStep)
             gCodeHandler.pathStrokeToVector(targetPathList, true, true, 0f, 0f, pathStep)
         }
-        return outputFile
+        val result = PathDataFile(outputFile)
+        if (gCodeHandler.isCollectPoint) {
+            result.collectPointList = gCodeHandler._collectPointList
+        }
+        return result
     }
 
     /**调整GCode
      * 会强制将G21英寸单位转换成G20毫米单位
      * */
-    override fun adjustGCode(gcodeText: String, @MM matrix: Matrix, params: TransitionParam): File {
+    override fun adjustGCode(
+        gcodeText: String,
+        @MM matrix: Matrix,
+        params: TransitionParam
+    ): PathDataFile {
         val outputFile = _defaultGCodeOutputFile()
         var targetMatrix = matrix
         params.translateMatrix?.let {
@@ -168,7 +180,7 @@ class SimpleTransition : ITransition {
             outputFile.absolutePath,
             params.enableGCodeShrink
         )
-        return outputFile
+        return PathDataFile(outputFile)
     }
 
     /**GCode数据坐标平移
@@ -184,7 +196,7 @@ class SimpleTransition : ITransition {
     ): File {
         val matrix = Matrix()
         matrix.setTranslate(offsetLeft.toMm(), offsetTop.toMm())
-        return adjustGCode(gCode, matrix, params)
+        return adjustGCode(gCode, matrix, params).targetFile
         /*val gCodeAdjust = GCodeAdjust()
         val outputFile = _defaultGCodeOutputFile()
         outputFile.writer().use { writer ->

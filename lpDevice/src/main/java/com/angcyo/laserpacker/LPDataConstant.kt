@@ -209,6 +209,9 @@ object LPDataConstant {
     /**图片路径数据*/
     const val EXT_BP = ".bp"
 
+    /**路径数据*/
+    const val EXT_PATH = ".path"
+
     /**抖动数据*/
     const val EXT_DT = ".dt"
 
@@ -373,10 +376,11 @@ fun Int.toDataModeStr() = when (this) {
 
 /**将雕刻类型字符串化*/
 fun Int.toEngraveDataTypeStr() = when (this) {
-    DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING -> "抖动"
-    DataCmd.ENGRAVE_TYPE_GCODE -> "GCode"
-    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> "图片线段"
     DataCmd.ENGRAVE_TYPE_BITMAP -> "图片"
+    DataCmd.ENGRAVE_TYPE_GCODE -> "GCode"
+    DataCmd.ENGRAVE_TYPE_PATH -> "路径"
+    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> "图片线段"
+    DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING -> "抖动"
     else -> "未知"
 }
 

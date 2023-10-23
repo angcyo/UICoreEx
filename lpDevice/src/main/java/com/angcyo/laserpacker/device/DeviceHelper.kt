@@ -171,6 +171,12 @@ object DeviceHelper {
         if (path.isFileExist()) {
             result.add(path)
         }
+        //.path
+        path =
+            appFilePath("$index${LPDataConstant.EXT_PATH}", LPDataConstant.ENGRAVE_FILE_FOLDER)
+        if (path.isFileExist()) {
+            result.add(path)
+        }
         return result
     }
 

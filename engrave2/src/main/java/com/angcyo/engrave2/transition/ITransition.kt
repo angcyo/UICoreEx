@@ -58,8 +58,8 @@ interface ITransition {
 
     /**将路径[pathList]转换成的GCode数据
      * [pathList] 数据应该是所有缩放/旋转/倾斜之后的数据*/
-    fun covertPathStroke2GCode(pathList: List<Path>, params: TransitionParam): File
+    fun covertPathStroke2GCode(pathList: List<Path>, params: TransitionParam): PathDataFile
 
     /**调整原始的GCode数据, 单位会被强制转换成mm单位*/
-    fun adjustGCode(gcodeText: String, matrix: Matrix, params: TransitionParam): File
+    fun adjustGCode(gcodeText: String, matrix: Matrix, params: TransitionParam): PathDataFile
 }

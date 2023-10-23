@@ -53,6 +53,8 @@ data class DeviceSettingBean(
     var autoCncRange: String? = null,
     /**显示速度参考的固件范围*/
     var showRefVelocityRange: String? = null,
+    /**GCode转换成0x30路径数据的固件范围*/
+    var gcodeUsePathDataRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/
@@ -222,3 +224,9 @@ val _isAutoCnc: Boolean
 
 val _showRefVelocity: Boolean
     get() = _deviceSettingBean?.showRefVelocityRange?.matchesProductVersion() == true
+
+/**GCode数据是否使用0x30路径数据
+ * [com.angcyo.gcode.GCodeWriteHandler.isCollectPoint]*/
+val _isGCodeUsePathData: Boolean
+    get() = HawkEngraveKeys.gcodeUsePathDataSupportFirmware.matchesProductVersion() ||
+            _deviceSettingBean?.gcodeUsePathDataRange?.matchesProductVersion() == true
