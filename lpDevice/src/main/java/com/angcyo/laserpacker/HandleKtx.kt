@@ -41,7 +41,6 @@ import com.pixplicity.sharp.Sharp
 import com.pixplicity.sharp.SharpDrawable
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
-import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -118,8 +117,8 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
             val skewY = 0.0f//y倾斜的角度, 弧度单位
 
             bean.angle = (angle + 360) % 360
-            bean.flipX = scaleX < 0
-            bean.flipY = scaleY < 0
+            bean.flipX = scaleX < 0 || bean.flipX == true
+            bean.flipY = scaleY < 0 || bean.flipY == true
             bean.scaleX = scaleX.absoluteValue  //flip单独控制
             bean.scaleY = scaleY.absoluteValue  //flip单独控制
             bean.skewX = skewX.toDegrees()
@@ -127,6 +126,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
         }
 
         fun initSizeFromRect(bean: LPElementBean, rect: RectF, matrix: Matrix?) {
+            rect.sort()
             bean.width = rect.width().toMm()
             bean.height = rect.height().toMm()
             if (matrix == null) {
@@ -206,9 +206,6 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             height = 0f
                             left = rect.left.toMm()
                             top = rect.top.toMm()*/
-                            val l = min(rect.left, rect.right)
-                            val t = min(rect.top, rect.bottom)
-
                             path = "M${rect.left},${rect.top}L${rect.right},${rect.bottom}"
                             initSizeFromRect(this, rect, matrix)
                             handleLineElement(this)
