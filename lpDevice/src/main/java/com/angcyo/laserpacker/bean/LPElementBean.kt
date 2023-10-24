@@ -2,7 +2,6 @@ package com.angcyo.laserpacker.bean
 
 import android.graphics.Bitmap
 import android.graphics.Paint
-import android.graphics.RectF
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -455,9 +454,6 @@ data class LPElementBean(
     /**V2中直接使用图片对象, 而不是转换成base64损耗性能*/
     @Transient var _imageOriginalBitmap: Bitmap? = null, //原图
     @Transient var _srcBitmap: Bitmap? = null, //滤镜后的图
-    /**临时存储的元素大小矩形*/
-    @Pixel
-    @Transient var _sizeRect: RectF? = null,
 
     /**强行指定要雕刻的数据模式
      * [_layerMode]

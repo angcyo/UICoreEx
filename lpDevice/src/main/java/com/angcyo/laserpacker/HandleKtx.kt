@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.PointF
 import android.graphics.RectF
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bitmap.handle.BuildConfig
@@ -17,11 +16,9 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.lastContext
-import com.angcyo.library.component.pool.acquireTempMatrix
 import com.angcyo.library.component.pool.acquireTempPointF
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
-import com.angcyo.library.ex.abs
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.createPaint
 import com.angcyo.library.ex.elseNull
@@ -34,7 +31,6 @@ import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDegrees
 import com.angcyo.library.ex.toDrawable
-import com.angcyo.library.ex.translate
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
@@ -130,6 +126,22 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
             bean.skewY = skewY
         }
 
+        fun initSizeFromRect(bean: LPElementBean, rect: RectF, matrix: Matrix?) {
+            bean.width = rect.width().toMm()
+            bean.height = rect.height().toMm()
+            if (matrix == null) {
+                bean.left = rect.left.toMm()
+                bean.top = rect.top.toMm()
+            } else {
+                val anchor = acquireTempPointF()
+                anchor.set(rect.left, rect.top)
+                matrix.mapPoint(anchor)
+                bean.left = anchor.x.toMm()
+                bean.top = anchor.y.toMm()
+                anchor.release()
+            }
+        }
+
         /**处理线条元素
          * 因为编辑器不支持竖线, 所有如果是竖线, 要处理成横线
          * */
@@ -165,11 +177,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         (drawElement.element as? RectF)?.let { rect ->
-                            _sizeRect = rect.translate(matrix)
-                            width = rect.width().toMm()
-                            height = rect.height().toMm()
-                            left = rect.left.toMm()
-                            top = rect.top.toMm()
+                            initSizeFromRect(this, rect, matrix)
                         }
                         rx = drawElement.rx.toMm()
                         ry = drawElement.ry.toMm()
@@ -183,7 +191,6 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         name = drawElement.dataName
                         /*mtype = LPDataConstant.DATA_TYPE_LINE*/
                         (drawElement.element as? RectF)?.let { rect ->
-                            _sizeRect = rect.translate(matrix)
                             /*angle = VectorHelper.angle(
                                 rect.left,
                                 rect.top,
@@ -203,11 +210,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             val t = min(rect.top, rect.bottom)
 
                             path = "M${rect.left},${rect.top}L${rect.right},${rect.bottom}"
-                            width = rect.width().abs().toMm()
-                            height = rect.height().abs().toMm()
-                            left = l.toMm()
-                            top = t.toMm()
-
+                            initSizeFromRect(this, rect, matrix)
                             handleLineElement(this)
                         }
                     }
@@ -219,11 +222,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         (drawElement.element as? RectF)?.let { rect ->
-                            _sizeRect = rect.translate(matrix)
-                            width = rect.width().toMm()
-                            height = rect.height().toMm()
-                            left = rect.left.toMm()
-                            top = rect.top.toMm()
+                            initSizeFromRect(this, rect, matrix)
                         }
                     }
 
@@ -242,20 +241,12 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         }?.let {
                             val rect = acquireTempRectF()
                             it.computePathBounds(rect, true)
-                            _sizeRect = RectF(rect)
-                            width = rect.width().toMm()
-                            height = rect.height().toMm()
-                            left = rect.left.toMm()
-                            top = rect.top.toMm()
+                            initSizeFromRect(this, rect, matrix)
                             handleLineElement(this)
                             rect.release()
                         }.elseNull {
                             drawElement.pathBounds?.let { rect ->
-                                _sizeRect = rect.translate(matrix)
-                                width = rect.width().toMm()
-                                height = rect.height().toMm()
-                                left = rect.left.toMm()
-                                top = rect.top.toMm()
+                                initSizeFromRect(this, rect, matrix)
                                 handleLineElement(this)
                             }
                         }
@@ -272,9 +263,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         (drawElement.element as? Sharp.SvgHandler.SvgText)?.let { text ->
                             this.text = text.text
                             val rect = text.bounds
-                            _sizeRect = rect.translate(matrix)
-                            left = rect.left.toMm()
-                            top = rect.top.toMm()
+                            initSizeFromRect(this, rect, matrix)
                         }
                     }
 
@@ -291,9 +280,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                             val hF = bitmap.height.toFloat()
                             imageOriginal = bitmap.toBase64Data()
                             _imageOriginalBitmap = bitmap
-                            val rect = RectF(0f, 0f, wF, hF)
-                            _sizeRect = rect.translate(matrix)
-                            val anchor = PointF(0f, 0f)
+                            val anchor = acquireTempPointF()
                             matrix?.mapPoint(anchor)
                             left = anchor.x.toMm()
                             top = anchor.y.toMm()
@@ -303,6 +290,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                                 anchor.x,
                                 anchor.y
                             )
+                            anchor.release()
                         }
                         bitmapMatrix.preConcat(matrix)
                         qrElement(this, bitmapMatrix)
