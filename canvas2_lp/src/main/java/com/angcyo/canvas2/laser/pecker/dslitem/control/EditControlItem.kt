@@ -1,11 +1,11 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
+import android.graphics.RectF
 import android.view.Gravity
 import android.widget.TextView
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
@@ -25,6 +25,7 @@ import com.angcyo.item.style.NewItemConfig
 import com.angcyo.item.style.itemDefaultNew
 import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex.gone
 import com.angcyo.library.unit.IRenderUnit
@@ -58,6 +59,8 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
 
     override var newItemConfig: NewItemConfig = NewItemConfig()
 
+    private val tempBounds = RectF()
+
     init {
         itemLayoutId = R.layout.item_render_edit_control_layout
         itemNewHawkKeyStr = "direction_edit_rotate"
@@ -90,7 +93,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
 
             //宽高
             boundsProperty?.let { property ->
-                val bounds = property.getRenderBounds()
+                val bounds = property.getRenderBounds(tempBounds)
 
                 //w/h
                 val widthValue = unit.convertPixelToValue(bounds.width()).canvasDecimal(2)
@@ -114,11 +117,11 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
             //enable/support
             itemHolder.enable(
                 R.id.item_width_view,
-                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_WIDTH)
+                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_WIDTH) && tempBounds.width() > 0
             )
             itemHolder.enable(
                 R.id.item_height_view,
-                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_HEIGHT)
+                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_HEIGHT) && tempBounds.height() > 0
             )
             itemHolder.enable(
                 R.id.item_lock_view,
