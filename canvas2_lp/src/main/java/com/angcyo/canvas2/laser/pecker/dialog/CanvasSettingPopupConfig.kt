@@ -28,10 +28,12 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
 import com.angcyo.library.unit.PxRenderUnit
+import com.angcyo.library.unit.toPixelUnit
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
@@ -142,7 +144,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
             if (HawkEngraveKeys.enablePixelUnit || enableFun.have("_PixelUnit_")) {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"
-                    itemInfoText = _string(R.string.canvas_pixel_unit)
+                    itemInfoText = if (isDebugType()) {
+                        _string(R.string.canvas_pixel_unit) + " " + 1f.toPixelUnit()
+                    } else {
+                        _string(R.string.canvas_pixel_unit)
+                    }
                     itemSwitchChecked = delegate?.axisManager?.renderUnit is PxRenderUnit
                     drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                     itemExtendLayoutId = R.layout.canvas_extent_switch_item
