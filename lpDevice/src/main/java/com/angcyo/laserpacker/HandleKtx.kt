@@ -49,6 +49,20 @@ import kotlin.math.sqrt
  * @since 2023/04/12
  */
 
+typealias ElementApplyMatrix = (elementList: List<LPElementBean>?, matrix: Matrix?) -> Unit
+
+object HandleKtx {
+
+    /**作用矩阵*/
+    var onElementApplyMatrix: ElementApplyMatrix? = null
+}
+
+/**导入svg文件时, 需要放大的倍数
+ * svg 中默认是像素单位 283px = 100mm
+ * */
+val svgScale: Float
+    get() = 0.354f.toPixel()
+
 /**扩展*/
 @Deprecated("请使用性能更好的Jni方法:[String.toGCodePath]")
 fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
@@ -89,8 +103,21 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
     return bitmap?.toBase64Data()
 }
 
-/**将SVG数据, 拆成一组[LPElementBean]*/
-fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
+/**将SVG数据, 拆成一组[LPElementBean]
+ * [svgBounds] 返回svg的bounds
+ *
+ * ```
+ * val beanList: List<LPElementBean>? = parseSvgElementList(text)
+ * HandleKtx.onElementApplyMatrix?.invoke(
+ *     beanList,
+ *     Matrix().apply {
+ *         val scale = svgScale
+ *         setScale(scale, scale)
+ *     }
+ * )
+ * ```
+ * */
+fun parseSvgElementList(svgText: String?, svgBounds: RectF? = null): List<LPElementBean>? {
     return if (svgText.isNullOrEmpty()) {
         null
     } else {
@@ -165,10 +192,10 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
             }*/
         }
 
-        var svrRect: RectF? = null
+        var svgRect: RectF? = null
         sharp.setOnElementListener(object : SvgElementListener() {
             override fun onCanvasDraw(canvas: Canvas, drawElement: DrawElement): Boolean {
-                svrRect = drawElement.svgRect ?: svrRect
+                svgRect = drawElement.svgRect ?: svgRect
                 when (drawElement.type) {
                     DrawElement.DrawType.ROUND_RECT -> LPElementBean().apply {
                         val matrix = drawElement.matrix
@@ -306,6 +333,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
             val bitmap = sharpPicture.drawable.toBitmap()
             L.d("svg size:${bitmap?.width}x${bitmap?.height}")
         }
+        svgRect?.let { svgBounds?.set(it) }
         result
     }
 }

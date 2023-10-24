@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
+import android.graphics.Matrix
 import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -9,9 +10,11 @@ import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.component.getFiles
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.laserpacker.HandleKtx
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.isGCodeType
 import com.angcyo.laserpacker.parseSvgElementList
+import com.angcyo.laserpacker.svgScale
 import com.angcyo.laserpacker.toBitmapElementBeanListV2
 import com.angcyo.laserpacker.toElementBean
 import com.angcyo.laserpacker.toElementBeanList
@@ -172,6 +175,13 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                 //no op
                 return false
             } else {
+                HandleKtx.onElementApplyMatrix?.invoke(
+                    elementList,
+                    Matrix().apply {
+                        val scale = svgScale
+                        setScale(scale, scale)
+                    }
+                )
                 LPElementHelper.addElementList(itemRenderDelegate, elementList)
             }
         } else {

@@ -2,12 +2,15 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.canvas.CanvasRenderView
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
+import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.dsladapter.DslAdapter
@@ -17,6 +20,7 @@ import com.angcyo.dsladapter.drawLeft
 import com.angcyo.dsladapter.drawRight
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.app
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.ex.*
 import com.angcyo.svg.Svg
 import com.angcyo.widget.DslViewHolder
@@ -159,3 +163,16 @@ fun List<LPElementBean>.updateGroupId(groupId: String?) {
 }
 
 fun List<LPElementBean>.toRendererList() = LPRendererHelper.parseElementRendererList(this, false)
+
+/**整体作用一次[matrix]*/
+fun List<LPElementBean>.applyMatrix(matrix: Matrix?) {
+    matrix ?: return
+    val groupRenderer = CanvasGroupRenderer()
+    groupRenderer.resetGroupRendererList(toRendererList(), Reason.code, null)
+    groupRenderer.applyScaleMatrix(matrix, Reason.code, null)
+    for (element in groupRenderer.getSingleElementList()) {
+        if (element is ILaserPeckerElement) {
+            element.updateBeanFromElement(null)
+        }
+    }
+}
