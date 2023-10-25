@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.manager
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.RectF
 import android.net.Uri
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
@@ -23,6 +24,7 @@ import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.CanvasOpenDataType
+import com.angcyo.laserpacker.HandleKtx
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPLaserOptionsBean
@@ -32,7 +34,9 @@ import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
+import com.angcyo.laserpacker.parseSvgElementList
 import com.angcyo.laserpacker.project.readProjectBean
+import com.angcyo.laserpacker.svgScale
 import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.laserpacker.toGCodeElementBean
@@ -61,6 +65,7 @@ import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.save
 import com.angcyo.library.ex.saveTo
 import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toBitmapOfBase64
@@ -976,7 +981,24 @@ fun String?.toElementBeanOfFile(bmpThreshold: Int? = null): CanvasOpenDataType? 
         return text.toGCodeElementBean()
     } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
         val text = file.readText()
-        return text.toSvgElementBean()
+        if (HawkEngraveKeys.enableImportGroup ||
+            text?.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
+            (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
+        ) {
+            val beanList = parseSvgElementList(text)
+            if (HawkEngraveKeys.enableImportSvgScale) {
+                HandleKtx.onElementApplyMatrix?.invoke(
+                    beanList,
+                    Matrix().apply {
+                        val scale = svgScale
+                        setScale(scale, scale)
+                    }
+                )
+            }
+            return beanList
+        } else {
+            return text.toSvgElementBean()
+        }
     } else if (path.isImageType() || file.fileType().isImageType()) {
         val bitmap = path.toBitmap()
         return bitmap.toBitmapElementBeanV2(bmpThreshold)

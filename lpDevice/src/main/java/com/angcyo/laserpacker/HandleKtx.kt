@@ -357,6 +357,18 @@ fun String?.toSvgElementBean(): LPElementBean? {
     bean.mtype = LPDataConstant.DATA_TYPE_SVG
     bean.data = this
     bean.paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+
+    if (HawkEngraveKeys.enableImportSvgScale) {
+        val beanList = listOf(bean)
+        HandleKtx.onElementApplyMatrix?.invoke(
+            beanList,
+            Matrix().apply {
+                val scale = svgScale
+                setScale(scale, scale)
+            }
+        )
+    }
+
     return bean
 }
 
