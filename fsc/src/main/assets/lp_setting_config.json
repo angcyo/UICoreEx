@@ -91,6 +91,10 @@
   ],
   "quickTextInputAction": [
     {
+      "label": "激活LX1设置雕刻完成不归位",
+      "value": "@enableFactoryPCT#b=true"
+    },
+    {
       "label": "分享日志",
       "value": "@shareLog#b=true"
     },
