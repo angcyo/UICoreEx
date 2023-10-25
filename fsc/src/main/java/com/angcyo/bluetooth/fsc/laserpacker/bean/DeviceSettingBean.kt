@@ -228,5 +228,6 @@ val _showRefVelocity: Boolean
 /**GCode数据是否使用0x30路径数据
  * [com.angcyo.gcode.GCodeWriteHandler.isCollectPoint]*/
 val _isGCodeUsePathData: Boolean
-    get() = HawkEngraveKeys.gcodeUsePathDataSupportFirmware.matchesProductVersion() ||
-            _deviceSettingBean?.gcodeUsePathDataRange?.matchesProductVersion() == true
+    get() = !vmApp<LaserPeckerModel>().haveExDevice() /*普通模式才支持0x30数据*/ &&
+            (HawkEngraveKeys.gcodeUsePathDataSupportFirmware.matchesProductVersion() ||
+                    _deviceSettingBean?.gcodeUsePathDataRange?.matchesProductVersion() == true)
