@@ -175,13 +175,15 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                 //no op
                 return false
             } else {
-                HandleKtx.onElementApplyMatrix?.invoke(
-                    elementList,
-                    Matrix().apply {
-                        val scale = svgScale
-                        setScale(scale, scale)
-                    }
-                )
+                if (HawkEngraveKeys.enableImportSvgScale) {
+                    HandleKtx.onElementApplyMatrix?.invoke(
+                        elementList,
+                        Matrix().apply {
+                            val scale = svgScale
+                            setScale(scale, scale)
+                        }
+                    )
+                }
                 LPElementHelper.addElementList(itemRenderDelegate, elementList)
             }
         } else {

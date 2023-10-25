@@ -202,13 +202,15 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                         (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
                     ) {
                         beanList = parseSvgElementList(text)
-                        HandleKtx.onElementApplyMatrix?.invoke(
-                            beanList,
-                            Matrix().apply {
-                                val scale = svgScale
-                                setScale(scale, scale)
-                            }
-                        )
+                        if (HawkEngraveKeys.enableImportSvgScale) {
+                            HandleKtx.onElementApplyMatrix?.invoke(
+                                beanList,
+                                Matrix().apply {
+                                    val scale = svgScale
+                                    setScale(scale, scale)
+                                }
+                            )
+                        }
                         convertElementBeanListToDrawable?.invoke(beanList)
                     } else {
                         parseSvg(text)
