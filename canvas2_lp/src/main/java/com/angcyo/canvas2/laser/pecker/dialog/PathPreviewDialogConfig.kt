@@ -33,6 +33,7 @@ import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.component._delay
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
@@ -157,27 +158,30 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                     layerJson = LayerHelper.getProductLayerSupportPxJson()
                 }
 
-                LPTransferHelper.transitionRenderer(renderer, transferConfigEntity)
-                    .let { transferDataEntity ->
-                        if (transferDataEntity == null) {
-                            toast(_string(R.string.data_exception))
-                            loadEnd(null, null)
-                        } else {
-                            //开始传输数据
-                            transferModel.transferData(TransferState(uuid), transferDataEntity) {
-                                loadEnd(transferDataEntity, null)
-                                if (it != null) {
-                                    toast(_string(R.string.transfer_data_exception))
-                                } else {
-                                    _transferDataEntity = transferDataEntity
-                                    sendPreviewFlashBitmapCmd(
-                                        dialogViewHolder,
-                                        transferDataEntity.index
-                                    )
-                                }
+                LPTransferHelper.transitionRenderer(
+                    renderer,
+                    transferConfigEntity,
+                    LibHawkKeys.pathPreviewAcceptableErrorMM
+                ).let { transferDataEntity ->
+                    if (transferDataEntity == null) {
+                        toast(_string(R.string.data_exception))
+                        loadEnd(null, null)
+                    } else {
+                        //开始传输数据
+                        transferModel.transferData(TransferState(uuid), transferDataEntity) {
+                            loadEnd(transferDataEntity, null)
+                            if (it != null) {
+                                toast(_string(R.string.transfer_data_exception))
+                            } else {
+                                _transferDataEntity = transferDataEntity
+                                sendPreviewFlashBitmapCmd(
+                                    dialogViewHolder,
+                                    transferDataEntity.index
+                                )
                             }
                         }
                     }
+                }
             }
         }
     }

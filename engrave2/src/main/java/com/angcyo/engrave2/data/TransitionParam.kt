@@ -85,6 +85,10 @@ data class TransitionParam(
     @Pixel
     val pixelGCodeGapValue: Float = LibHawkKeys.pathPixelGapValue.toPixel(),
 
+    /**路径采样步长*/
+    @MM
+    var pathStep: Float? = null,
+
     /**是否激活压缩输出GCode
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
     val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,

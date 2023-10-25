@@ -30,6 +30,7 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.classHash
 import com.angcyo.library.ex.postDelay
@@ -196,7 +197,9 @@ object LPTransferHelper {
      * */
     fun transitionRenderer(
         renderer: BaseRenderer?,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        @MM
+        pathStep: Float? = null
     ): TransferDataEntity? {
         renderer ?: return null
         val element = renderer.lpElement() ?: return null
@@ -212,7 +215,8 @@ object LPTransferHelper {
                     gcodeOffsetTop = GCodeDataOffsetItem.offsetTop,
                     enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData,
                     enableSlice = bean.isNeedSlice,
-                    sliceCount = bean.sliceCount
+                    sliceCount = bean.sliceCount,
+                    pathStep = pathStep
                 )
 
                 if (bean.isLineShape || bean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
