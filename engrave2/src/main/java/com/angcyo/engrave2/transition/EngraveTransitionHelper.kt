@@ -2,6 +2,7 @@ package com.angcyo.engrave2.transition
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import com.angcyo.bitmap.handle.BitmapHandle
@@ -20,6 +21,7 @@ import com.angcyo.engrave2.BuildConfig
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.R
 import com.angcyo.engrave2.data.TransitionParam
+import com.angcyo.gcode.CollectPoint
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper
@@ -565,7 +567,24 @@ object EngraveTransitionHelper {
                 fileWrap.collectPointList?.apply {
                     transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_PATH
 
-                    val targetList = filter { it.pointList.isNotEmpty() }
+                    val targetList = mutableListOf<CollectPoint>()
+                    forEach { line ->
+                        if (line.pointList.isNotEmpty()) {
+                            //每N个数据, 生成一组新的集合
+                            var pointList = mutableListOf<PointF>()
+                            line.pointList.forEachIndexed { index, point ->
+                                pointList.add(point)
+                                if ((index + 1) % HawkEngraveKeys.pathDataPointLimit == 0) {
+                                    targetList.add(CollectPoint(pointList))
+                                    pointList = mutableListOf()
+                                }
+                            }
+                            if (pointList.isNotEmpty()) {
+                                targetList.add(CollectPoint(pointList))
+                            }
+                        }
+                    }
+
                     transferDataEntity.lines = targetList.size()
 
                     val logBuilder =

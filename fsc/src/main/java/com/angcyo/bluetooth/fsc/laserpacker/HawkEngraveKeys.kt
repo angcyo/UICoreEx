@@ -292,6 +292,9 @@ object HawkEngraveKeys {
     /**GCode转换成0x30路径数据的固件范围*/
     var gcodeUsePathDataSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
 
+    /**[gcodeUsePathDataSupportFirmware] 0x30数据一段数据最多多少个点, 超过后下一段*/
+    var pathDataPointLimit: Int by HawkPropertyValue<Any, Int>(3000)
+
     /**是否激活雕刻参数配置信息使用icon*/
     var enableConfigIcon: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
