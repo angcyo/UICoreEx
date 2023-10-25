@@ -189,6 +189,10 @@ data class DeviceSettingBean(
     var copyElementOffset: Boolean = true,
     /**添加的设备列表*/
     var addDeviceList: List<AddDeviceConfigBean>? = null,
+
+    /**支持的后缀扩展名, 不包含图片.*/
+    var supportFileExt: List<String>? = null,
+
     //endregion---Android端设置项---
 
     //region---Ble UUID---
@@ -231,3 +235,11 @@ val _isGCodeUsePathData: Boolean
     get() = !vmApp<LaserPeckerModel>().haveExDevice() /*普通模式才支持0x30数据*/ &&
             (HawkEngraveKeys.gcodeUsePathDataSupportFirmware.matchesProductVersion() ||
                     _deviceSettingBean?.gcodeUsePathDataRange?.matchesProductVersion() == true)
+
+/**当前的文件扩展名是否支持打包
+ * [com.angcyo.laserpacker.LPDataConstant.PROJECT_EXT2]
+ * [com.angcyo.laserpacker.LPDataConstant.GCODE_EXT]
+ * [com.angcyo.laserpacker.LPDataConstant.SVG_EXT]
+ * */
+val String.isSupportFileExt: Boolean
+    get() = _deviceSettingBean?.supportFileExt?.contains(this) == true

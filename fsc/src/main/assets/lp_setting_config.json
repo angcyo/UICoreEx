@@ -89,6 +89,16 @@
     "CODE_128",
     "EAN_13"
   ],
+  "supportFileExt": [
+    ".xcs",
+    ".lp",
+    ".lp2",
+    ".txt",
+    ".svg",
+    ".pdf",
+    ".gcode",
+    ".gc"
+  ],
   "quickTextInputAction": [
     {
       "label": "激活LX1设置雕刻完成不归位",
