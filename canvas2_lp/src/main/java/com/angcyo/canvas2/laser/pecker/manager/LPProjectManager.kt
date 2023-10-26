@@ -74,6 +74,7 @@ import com.angcyo.library.ex.writeEntry
 import com.angcyo.library.ex.writeText
 import com.angcyo.library.ex.zipFileRead
 import com.angcyo.library.ex.zipFileWrite
+import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.toMm
@@ -169,7 +170,7 @@ class LPProjectManager {
                 create_time = nowTime()
                 update_time = nowTime()
                 version = 2
-                platform = "Android"
+                platform = "Android ${getAppVersionCode()}"
                 swVersion = productInfo?.softwareVersion ?: swVersion
                 hwVersion = productInfo?.hardwareVersion ?: hwVersion
 
