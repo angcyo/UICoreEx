@@ -119,6 +119,11 @@ class LPProjectManager {
             return result
         }
 
+        /**保存图层对应的参数信息
+         * [configProjectBean]
+         * [saveProjectLastParams]
+         * [saveProjectLaserOptions]
+         * */
         fun saveProjectLaserOptions(
             bean: LPProjectBean,
             taskId: String?,
@@ -158,7 +163,11 @@ class LPProjectManager {
             projectBean.lastLayerDpi = HawkEngraveKeys.lastDpiLayerJson
         }
 
-        /**基础配置项目结构信息*/
+        /**基础配置项目结构信息
+         * [configProjectBean]
+         * [saveProjectLastParams]
+         * [saveProjectLaserOptions]
+         * */
         fun configProjectBean(
             bean: LPProjectBean,
             taskId: String?,
