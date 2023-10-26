@@ -26,6 +26,7 @@ import com.angcyo.library.unit.toPixel
 import com.angcyo.opencv.OpenCV
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.roundToInt
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -81,7 +82,10 @@ class SimpleTransition : ITransition {
             0.0,
             type = params.bitmapToGCodeType, //只获取轮廓
             isLast = params.bitmapToGCodeIsLast,
-            boundFirst = params.bitmapToGCodeBoundFirst
+            boundFirst = params.bitmapToGCodeBoundFirst,
+            /*1~10*/
+            numPixel = (params.pathStep?.toPixel()
+                ?: LibHawkKeys._pathAcceptableError).roundToInt(),
         )
         val gCodeText = file.readText()
         file.deleteSafe()
