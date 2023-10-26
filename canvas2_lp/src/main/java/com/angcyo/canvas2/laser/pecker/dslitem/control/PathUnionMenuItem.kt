@@ -77,6 +77,12 @@ class PathUnionMenuItem : CanvasIconItem() {
                 renderAdapterAction = {
                     PathOpItem()() {
                         itemIco = R.drawable.canvas_path_union
+                        itemText = _string(R.string.canvas_union)
+                        this@PathUnionMenuItem.initSubItem(this)
+                        itemOp = null
+                    }
+                    PathOpItem()() {
+                        itemIco = R.drawable.canvas_path_union
                         itemText = _string(R.string.canvas_op_union)
                         this@PathUnionMenuItem.initSubItem(this)
                         itemOp = Path.Op.UNION

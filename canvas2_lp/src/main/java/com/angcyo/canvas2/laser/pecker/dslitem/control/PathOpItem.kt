@@ -34,7 +34,7 @@ class PathOpItem : CanvasIconItem() {
     companion object {
         /**合并元素*/
         fun opElement(
-            op: Path.Op,
+            op: Path.Op?,
             originBounds: RectF?, //用来定位中点的bounds
             rendererList: List<BaseRenderer>,
             delegate: CanvasRenderDelegate?
@@ -99,7 +99,7 @@ class PathOpItem : CanvasIconItem() {
     }
 
     /**op*/
-    var itemOp: Path.Op = Path.Op.UNION
+    var itemOp: Path.Op? = Path.Op.UNION
 
     init {
         itemLayoutId = R.layout.item_canvas_icon_horizontal_layout
