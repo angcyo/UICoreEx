@@ -244,4 +244,14 @@
     <string name="canvas_2d_relief">2D relief</string>
     <string name="canvas_relief_strength">Strength</string>
 
+    <string name="canvas_tracer">Bitmap tracer</string>
+    <string name="canvas_tracer_filter">Noise ignores</string>
+    <string name="canvas_tracer_filter_tip">Remove spots that are smaller than the smell value, and the image will become smoother when the noise is ignored</string>
+    <string name="canvas_tracer_corner">Threshold</string>
+    <string name="canvas_tracer_corner_tip">The higher the threshold, the more corners</string>
+    <string name="canvas_tracer_length">Segment length</string>
+    <string name="canvas_tracer_length_tip">The larger the segment length, the fewer the segments</string>
+    <string name="canvas_tracer_splice">Splicing</string>
+    <string name="canvas_tracer_splice_tip">The larger the splicing value, the less splicing</string>
+
 </resources>

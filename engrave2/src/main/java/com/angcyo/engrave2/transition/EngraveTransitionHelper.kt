@@ -9,7 +9,6 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.bean.toSliceLevelList
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writeErrorLog
@@ -49,6 +48,7 @@ import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.lines
+import com.angcyo.library.ex.low8Bit
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.save
 import com.angcyo.library.ex.size
@@ -461,32 +461,52 @@ object EngraveTransitionHelper {
                 val sliceGcodeFile = libCacheFile("slice_output.gcode")
                 sliceGcodeFile.deleteSafe()
 
-                val colors = (params.sliceCount ?: 1).toSliceLevelList()
+                //val colors = (params.sliceCount ?: 1).toSliceLevelList()
+                val colors = BitmapHandle.getChannelValueList(bitmap)
+                var lastLevel = (colors.firstOrNull() ?: 255).low8Bit()
 
                 DeviceHelper.tempEngraveLogPathList.clear()
-                colors.forEachIndexed { index, threshold ->
+                val controlHeight = "\nM3021S${HawkEngraveKeys.sliceGcodeControlHeight}\n"
+                colors.forEachIndexed { levelIndex, threshold ->
                     //单切片, 防止一下子内存占用过高
-                    BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
-                        val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
-                        bitmap.save(cacheBitmapFile)
-                        DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
+                    val threshold = threshold.low8Bit()
+                    if (threshold != 255) { //不是白色
+                        BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
+                            val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
+                            bitmap.save(cacheBitmapFile)
+                            L.i("切片[$levelIndex/${colors.size}]:$threshold->${cacheBitmapFile.absolutePath}")
+                            DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
 
-                        params.bitmapToGCodeType = 1
-                        params.bitmapToGCodeIsLast = index == colors.size - 1
-                        val bounds = provider.getEngraveDataBounds(RectF())
-                        val gCodeFile = if (params.useOpenCvHandleGCode) {
-                            transition.covertBitmap2GCode(bitmap, bounds, params)
-                        } else {
-                            transition.covertBitmapPixel2GCode(bitmap, bounds, params)
-                        }
-                        gCodeFile.readText()?.let { sliceGcodeFile.appendText(it) }
+                            params.bitmapToGCodeType = 1
+                            params.bitmapToGCodeIsLast = levelIndex == colors.size - 1
+                            val bounds = provider.getEngraveDataBounds(RectF())
+                            val gCodeFile = if (params.useOpenCvHandleGCode) {
+                                transition.covertBitmap2GCode(bitmap, bounds, params)
+                            } else {
+                                transition.covertBitmapPixel2GCode(bitmap, bounds, params)
+                            }
+                            gCodeFile.readText()?.let {
+                                if (levelIndex != 0) {
+                                    //不是第一层, 则需要下降支架高度
+                                    sliceGcodeFile.appendText(controlHeight)
+                                }
+                                sliceGcodeFile.appendText(it)
+                                //循环的次数
+                                for (i in (threshold + 1) until lastLevel) {
+                                    //每一层下降高度
+                                    sliceGcodeFile.appendText(controlHeight)
+                                    sliceGcodeFile.appendText(it)
+                                }
+                            }
 
-                        val cacheGCodeFile = libCacheFile("slice_${threshold}.gcode")
-                        if (gCodeFile.renameTo(cacheGCodeFile)) {
-                            DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
+                            val cacheGCodeFile = libCacheFile("slice_${threshold}.gcode")
+                            if (gCodeFile.renameTo(cacheGCodeFile)) {
+                                DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
+                            }
+                            bitmap.recycle()
                         }
-                        bitmap.recycle()
                     }
+                    lastLevel = threshold
                 }
 
                 val fileSize = sliceGcodeFile.length()

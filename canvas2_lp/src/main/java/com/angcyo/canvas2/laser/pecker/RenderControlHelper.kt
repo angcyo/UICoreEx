@@ -405,10 +405,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                         }
                     }
                 }
-                if (closeImageEditItemsFun.have("_outline_") && closeImageEditItemsFun.have("_crop_")) {
-                    //右边线
-                    drawCanvasRight()
-                }
             }
         }
         //偏移
@@ -429,9 +425,26 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                         }
                     }
                 }
-                if (closeImageEditItemsFun.have("_crop_")) {
-                    //右边线
-                    drawCanvasRight()
+            }
+        }
+        //位图临摹
+        if (!closeImageEditItemsFun.have("_tracer_")) {
+            CanvasIconItem()() {
+                itemIco = R.drawable.canvas_bitmap_tracer
+                itemText = _string(R.string.canvas_tracer)
+                initItem(renderer)
+                itemNewHawkKeyStr = "tracer"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                //itemEnable = _elementBean?.isSupportSliceElement == true
+                itemClick = {
+                    itemHaveNew = false
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        UMEvent.CANVAS_IMAGE_TRACER.umengEventValue()
+                        LPBitmapHandler.handleTracer(renderDelegate, it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                    }
                 }
             }
         }

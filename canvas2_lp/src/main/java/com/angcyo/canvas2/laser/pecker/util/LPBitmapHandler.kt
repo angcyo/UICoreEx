@@ -715,14 +715,18 @@ object LPBitmapHandler {
         val element = renderer.lpBitmapElement() ?: return
         val operateBitmap = element.getEngraveBitmapData() ?: return
         val context = anchor.context
-        var outlineSpan = 2f
-        var keepHole = true
 
         var svgRenderer: CanvasElementRenderer? = null
 
         context.canvasRegulateWindow(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET, outlineSpan)
-            addRegulate(CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE, keepHole)
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET,
+                HawkEngraveKeys.lastOutlineSpan
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE,
+                HawkEngraveKeys.lastOutlineKeepHole
+            )
             addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
             firstApply = true
             realTimeApply = true
@@ -751,20 +755,20 @@ object LPBitmapHandler {
                     }
                 } else {
                     owner.engraveLoadingAsync({
-                        outlineSpan = getFloatOrDef(
+                        HawkEngraveKeys.lastOutlineSpan = getFloatOrDef(
                             CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET,
-                            outlineSpan
+                            HawkEngraveKeys.lastOutlineSpan
                         )
-                        keepHole = getBooleanOrDef(
+                        HawkEngraveKeys.lastOutlineKeepHole = getBooleanOrDef(
                             CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE,
-                            keepHole
+                            HawkEngraveKeys.lastOutlineKeepHole
                         )
                         operateBitmap.let { bitmap ->
                             LTime.tick()
                             val svgPath = RustBitmapHandle.bitmapOutline(
                                 bitmap,
-                                outlineSpan.toInt(),
-                                keepHole
+                                HawkEngraveKeys.lastOutlineSpan.toInt(),
+                                HawkEngraveKeys.lastOutlineKeepHole
                             )
                             "图片[${
                                 bitmap.byteCount.toSizeString()
@@ -797,6 +801,7 @@ object LPBitmapHandler {
                                 targetCenterX = rendererBounds?.left ?: 0f
                                 targetCenterY = rendererBounds?.top ?: 0f
 
+                                val outlineSpan = HawkEngraveKeys.lastOutlineSpan
                                 if (outlineSpan > 0) {
                                     targetCenterX += it.centerX() - outlineSpan * 2
                                     targetCenterY += it.centerY() - outlineSpan * 2
@@ -808,6 +813,137 @@ object LPBitmapHandler {
                                 }
                             }
 
+                            svgRenderer?.translateCenterTo(
+                                targetCenterX,
+                                targetCenterY,
+                                Reason.code,
+                                Strategy.preview,
+                                null
+                            )
+                            svgRenderer
+                        }
+                    }) {
+                        it?.let {
+                            delegate?.renderManager?.addAfterRendererList(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**位图临摹*/
+    fun handleTracer(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.getEngraveBitmapData() ?: return
+        val context = anchor.context
+
+        var svgRenderer: CanvasElementRenderer? = null
+
+        context.canvasRegulateWindow(anchor) {
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_TRACER_FILTER,
+                HawkEngraveKeys.lastTracerFilter
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_TRACER_CORNER,
+                HawkEngraveKeys.lastTracerCorner
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_TRACER_LENGTH,
+                HawkEngraveKeys.lastTracerLength
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_TRACER_SPLICE,
+                HawkEngraveKeys.lastTracerSplice
+            )
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
+            firstApply = true
+            realTimeApply = true
+            onSubmitAction = { dismiss, submit ->
+                if (dismiss) {
+                    onDismissAction()
+                    svgRenderer?.let { svgRenderer ->
+                        delegate?.renderManager?.removeAfterRendererList(svgRenderer)
+                    }
+                } else if (submit) {
+                    svgRenderer?.let { svgRenderer ->
+                        val elementBean = svgRenderer.lpElementBean()
+                        delegate?.renderManager?.removeAfterRendererList(svgRenderer)
+                        if (elementBean?.data.isNullOrBlank()) {
+                            //空数据
+                        } else {
+                            //有效数据
+                            elementBean?.stroke = null // 清空颜色
+                            delegate?.renderManager?.addElementRenderer(
+                                svgRenderer,
+                                false,
+                                Reason.user,
+                                Strategy.normal
+                            )
+                        }
+                    }
+                } else {
+                    owner.engraveLoadingAsync({
+                        HawkEngraveKeys.lastTracerFilter = getIntOrDef(
+                            CanvasRegulatePopupConfig.KEY_TRACER_FILTER,
+                            HawkEngraveKeys.lastTracerFilter
+                        )
+                        HawkEngraveKeys.lastTracerCorner = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_TRACER_CORNER,
+                            HawkEngraveKeys.lastTracerCorner
+                        )
+                        HawkEngraveKeys.lastTracerLength = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_TRACER_LENGTH,
+                            HawkEngraveKeys.lastTracerLength
+                        )
+                        HawkEngraveKeys.lastTracerSplice = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_TRACER_SPLICE,
+                            HawkEngraveKeys.lastTracerSplice
+                        )
+                        operateBitmap.let { bitmap ->
+                            LTime.tick()
+                            val svgPath = RustBitmapHandle.bitmapTracer(
+                                bitmap,
+                                HawkEngraveKeys.lastTracerFilter,
+                                HawkEngraveKeys.lastTracerCorner,
+                                HawkEngraveKeys.lastTracerLength,
+                                HawkEngraveKeys.lastTracerSplice
+                            )
+                            "图片[${
+                                bitmap.byteCount.toSizeString()
+                            }]位图临摹廓耗时:${LTime.time()}".writePerfLog()
+
+                            if (svgRenderer == null) {
+                                val elementBean = LPElementBean().apply {
+                                    mtype = LPDataConstant.DATA_TYPE_SVG
+                                    this.data = svgPath
+                                    paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+                                    layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
+                                        LaserPeckerHelper.LAYER_CUT
+                                    } else {
+                                        LaserPeckerHelper.LAYER_LINE
+                                    }
+                                    stroke = Color.MAGENTA.toHexColorString()
+                                }
+                                svgRenderer =
+                                    LPRendererHelper.parseElementRenderer(elementBean, false)
+                            } else {
+                                svgRenderer?.lpPathElement()
+                                    ?.updateElementPathData(svgPath, svgRenderer)
+                            }
+                            //需要移动到的目标中心
+                            val rendererBounds = renderer.getRendererBounds()
+                            val targetCenterX = rendererBounds?.centerX() ?: 0f
+                            val targetCenterY = rendererBounds?.centerY() ?: 0f
+
+                            //移动中点位置到指定的坐标
                             svgRenderer?.translateCenterTo(
                                 targetCenterX,
                                 targetCenterY,

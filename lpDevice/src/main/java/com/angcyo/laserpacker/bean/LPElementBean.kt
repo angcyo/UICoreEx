@@ -287,7 +287,7 @@ data class LPElementBean(
 
     //region ---SVG path数据---
 
-    /**SVG数据
+    /**SVG路径数据
      * "M0,0L100,100Z"
      * */
     var path: String? = null,

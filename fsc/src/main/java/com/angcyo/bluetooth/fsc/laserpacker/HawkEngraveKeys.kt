@@ -440,4 +440,16 @@ object HawkEngraveKeys {
     var minReliefStrength: Int by HawkPropertyValue<Any, Int>(1)
     var maxReliefStrength: Int by HawkPropertyValue<Any, Int>(20)
 
+    /**切片浮雕, 每一层需要下降/上升的高度*/
+    @MM
+    var sliceGcodeControlHeight: Float by HawkPropertyValue<Any, Float>(0.1f)
+
+    var lastOutlineSpan: Float by HawkPropertyValue<Any, Float>(2f)
+    var lastOutlineKeepHole: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
+    var lastTracerFilter: Int by HawkPropertyValue<Any, Int>(4)
+    var lastTracerCorner: Float by HawkPropertyValue<Any, Float>(180f)
+    var lastTracerLength: Float by HawkPropertyValue<Any, Float>(4f)
+    var lastTracerSplice: Float by HawkPropertyValue<Any, Float>(0.5f)
+
 }

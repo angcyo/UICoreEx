@@ -244,4 +244,14 @@
     <string name="canvas_2d_relief">2D浮雕</string>
     <string name="canvas_relief_strength">强度</string>
 
+    <string name="canvas_tracer">位图临摹</string>
+    <string name="canvas_tracer_filter">噪点忽略</string>
+    <string name="canvas_tracer_filter_tip">清除小于闻值的斑点,噪点忽略后图片会变得更加平滑</string>
+    <string name="canvas_tracer_corner">阈值</string>
+    <string name="canvas_tracer_corner_tip">阈值越大,角点越多</string>
+    <string name="canvas_tracer_length">线段长度</string>
+    <string name="canvas_tracer_length_tip">线段长度越大,线段越少</string>
+    <string name="canvas_tracer_splice">拼接闻值</string>
+    <string name="canvas_tracer_splice_tip">拼接闻值越大,拼接越少</string>
+
 </resources>

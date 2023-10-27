@@ -104,7 +104,10 @@ object UMEvent {
     /**创作图片-2D浮雕*/
     const val CANVAS_IMAGE_2D_RELIEF = "canvas_image_2d_relief"
 
-    /**创作扸-浮雕*/
+    /**创作图片-位图临摹*/
+    const val CANVAS_IMAGE_TRACER = "canvas_image_tracer"
+
+    /**创作扸-切片浮雕*/
     const val CANVAS_IMAGE_SLICE = "canvas_image_slice"
 
     /**创作图片-剪裁*/

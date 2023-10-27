@@ -129,6 +129,18 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
         /**2D浮雕强度*/
         const val KEY_RELIEF_STRENGTH = "key_relief_strength"
+
+        /**位图临摹-噪点忽略*/
+        const val KEY_TRACER_FILTER = "key_tracer_filter"
+
+        /**位图临摹-阈值*/
+        const val KEY_TRACER_CORNER = "key_tracer_corner"
+
+        /**位图临摹-线段长度*/
+        const val KEY_TRACER_LENGTH = "key_tracer_length"
+
+        /**位图临摹-拼接闻值*/
+        const val KEY_TRACER_SPLICE = "key_tracer_splice"
     }
 
     /**需要调整的项目, 需要啥就添加对应的项
@@ -453,6 +465,48 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                 )
             }
 
+            //位图临摹
+            if (regulateList.contains(KEY_TRACER_FILTER)) {
+                renderSeekBarItem(
+                    KEY_TRACER_FILTER,
+                    _string(R.string.canvas_tracer_filter),
+                    getIntOrDef(KEY_TRACER_FILTER, HawkEngraveKeys.lastTracerFilter),
+                    0,
+                    128,
+                    _string(R.string.canvas_tracer_filter_tip)
+                )
+            }
+            if (regulateList.contains(KEY_TRACER_CORNER)) {
+                renderSeekBarItem(
+                    KEY_TRACER_CORNER,
+                    _string(R.string.canvas_tracer_corner),
+                    getFloatOrDef(KEY_TRACER_CORNER, HawkEngraveKeys.lastTracerCorner),
+                    0f,
+                    180f,
+                    _string(R.string.canvas_tracer_corner_tip)
+                )
+            }
+            if (regulateList.contains(KEY_TRACER_LENGTH)) {
+                renderSeekBarItem(
+                    KEY_TRACER_LENGTH,
+                    _string(R.string.canvas_tracer_length),
+                    getFloatOrDef(KEY_TRACER_LENGTH, HawkEngraveKeys.lastTracerLength),
+                    1f,
+                    10f,
+                    _string(R.string.canvas_tracer_length_tip)
+                )
+            }
+            if (regulateList.contains(KEY_TRACER_SPLICE)) {
+                renderSeekBarItem(
+                    KEY_TRACER_SPLICE,
+                    _string(R.string.canvas_tracer_splice),
+                    getFloatOrDef(KEY_TRACER_SPLICE, HawkEngraveKeys.lastTracerSplice),
+                    0f,
+                    180f,
+                    _string(R.string.canvas_tracer_splice_tip)
+                )
+            }
+
             //---last---
 
             //确认按钮
@@ -556,10 +610,12 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         defValue: Float = 0f,
         minValue: Float = 0f,
         maxValue: Float = 100f,
+        tooltip: CharSequence? = label,
         init: CanvasSeekBarItem.() -> Unit = {}
     ) {
         CanvasSeekBarItem()() { //路径填充的角度
             itemInfoText = label
+            itemInfoTooltipText = tooltip
             initItem()
             val sum = maxValue - minValue
 
@@ -587,10 +643,13 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         defValue: Int = 0,
         minValue: Int = 0,
         maxValue: Int = 100,
+        tooltip: CharSequence? = label,
         init: CanvasSeekBarItem.() -> Unit = {}
     ) {
         CanvasSeekBarItem()() { //路径填充的角度
             itemInfoText = label
+            itemInfoTooltipText = tooltip
+
             initItem()
             val sum = maxValue - minValue
 
