@@ -65,7 +65,7 @@ object LPEngraveHelper {
         layerInfo: EngraveLayerInfo? = null, /*需要获取的图层*/
         sort: Boolean = false
     ): List<BaseRenderer> {
-        val rendererList = delegate.getSelectorOrAllElementRendererList(true, false)
+        val rendererList = delegate.getSelectorOrAllElementRendererList(true, false, false)
         val haveCutLayer = vmApp<DeviceStateModel>().haveCutLayer()
         val resultList = rendererList.filter { it.isVisible && it.renderElement != null }.filter {
             val elementBean = it.lpElementBean()
