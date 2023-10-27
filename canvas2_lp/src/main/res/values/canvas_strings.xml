@@ -252,6 +252,6 @@
     <string name="canvas_tracer_length">Segment length</string>
     <string name="canvas_tracer_length_tip">The larger the segment length, the fewer the segments</string>
     <string name="canvas_tracer_splice">Splicing</string>
-    <string name="canvas_tracer_splice_tip">The larger the splicing value, the less splicing</string>
+    <string name="canvas_tracer_splice_tip">The larger the splice threshold, the fewer splices</string>
 
 </resources>

@@ -139,7 +139,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         /**位图临摹-线段长度*/
         const val KEY_TRACER_LENGTH = "key_tracer_length"
 
-        /**位图临摹-拼接闻值*/
+        /**位图临摹-拼接阈值*/
         const val KEY_TRACER_SPLICE = "key_tracer_splice"
     }
 

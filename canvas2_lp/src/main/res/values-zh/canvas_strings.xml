@@ -251,7 +251,7 @@
     <string name="canvas_tracer_corner_tip">阈值越大,角点越多</string>
     <string name="canvas_tracer_length">线段长度</string>
     <string name="canvas_tracer_length_tip">线段长度越大,线段越少</string>
-    <string name="canvas_tracer_splice">拼接闻值</string>
-    <string name="canvas_tracer_splice_tip">拼接闻值越大,拼接越少</string>
+    <string name="canvas_tracer_splice">拼接阈值</string>
+    <string name="canvas_tracer_splice_tip">拼接阈值越大,拼接越少</string>
 
 </resources>
