@@ -1,7 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.manager
 
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.graphics.RectF
 import android.net.Uri
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
@@ -26,6 +25,7 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.CanvasOpenDataType
 import com.angcyo.laserpacker.HandleKtx
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.SvgBoundsData
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPLaserOptionsBean
 import com.angcyo.laserpacker.bean.LPProjectBean
@@ -36,7 +36,6 @@ import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
 import com.angcyo.laserpacker.parseSvgElementList
 import com.angcyo.laserpacker.project.readProjectBean
-import com.angcyo.laserpacker.svgScale
 import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.laserpacker.toGCodeElementBean
@@ -995,15 +994,10 @@ fun String?.toElementBeanOfFile(bmpThreshold: Int? = null): CanvasOpenDataType? 
             text?.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
             (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
         ) {
-            val beanList = parseSvgElementList(text)
-            if (HawkEngraveKeys.enableImportSvgScale) {
-                HandleKtx.onElementApplyMatrix?.invoke(
-                    beanList,
-                    Matrix().apply {
-                        val scale = svgScale
-                        setScale(scale, scale)
-                    }
-                )
+            val svgBoundsData = SvgBoundsData()
+            val beanList = parseSvgElementList(text, svgBoundsData)
+            svgBoundsData.getBoundsScaleMatrix()?.let {
+                HandleKtx.onElementApplyMatrix?.invoke(beanList, it)
             }
             return beanList
         } else {

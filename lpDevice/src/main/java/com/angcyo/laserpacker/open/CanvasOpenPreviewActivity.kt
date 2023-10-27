@@ -1,6 +1,5 @@
 package com.angcyo.laserpacker.open
 
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -201,15 +200,10 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                         text?.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
                         (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
                     ) {
-                        beanList = parseSvgElementList(text)
-                        if (HawkEngraveKeys.enableImportSvgScale) {
-                            HandleKtx.onElementApplyMatrix?.invoke(
-                                beanList,
-                                Matrix().apply {
-                                    val scale = svgScale
-                                    setScale(scale, scale)
-                                }
-                            )
+                        val svgBoundsData = SvgBoundsData()
+                        beanList = parseSvgElementList(text, svgBoundsData)
+                        svgBoundsData.getBoundsScaleMatrix()?.let {
+                            HandleKtx.onElementApplyMatrix?.invoke(beanList, it)
                         }
                         convertElementBeanListToDrawable?.invoke(beanList)
                     } else {

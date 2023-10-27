@@ -1,6 +1,5 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
-import android.graphics.Matrix
 import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -12,9 +11,9 @@ import com.angcyo.component.getFiles
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.laserpacker.HandleKtx
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.SvgBoundsData
 import com.angcyo.laserpacker.isGCodeType
 import com.angcyo.laserpacker.parseSvgElementList
-import com.angcyo.laserpacker.svgScale
 import com.angcyo.laserpacker.toBitmapElementBeanListV2
 import com.angcyo.laserpacker.toElementBean
 import com.angcyo.laserpacker.toElementBeanList
@@ -170,19 +169,14 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
             text.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
             text.length <= HawkEngraveKeys.autoEnableImportGroupLength
         ) {
-            val elementList = parseSvgElementList(text)
+            val svgBoundsData = SvgBoundsData()
+            val elementList = parseSvgElementList(text, svgBoundsData)
             if (elementList.isNullOrEmpty()) {
                 //no op
                 return false
             } else {
-                if (HawkEngraveKeys.enableImportSvgScale) {
-                    HandleKtx.onElementApplyMatrix?.invoke(
-                        elementList,
-                        Matrix().apply {
-                            val scale = svgScale
-                            setScale(scale, scale)
-                        }
-                    )
+                svgBoundsData.getBoundsScaleMatrix()?.let {
+                    HandleKtx.onElementApplyMatrix?.invoke(elementList, it)
                 }
                 LPElementHelper.addElementList(itemRenderDelegate, elementList)
             }

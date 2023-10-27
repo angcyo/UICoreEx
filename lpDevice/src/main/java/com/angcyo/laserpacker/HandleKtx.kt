@@ -116,8 +116,19 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
  *     }
  * )
  * ```
+ *
+ * ```
+ * val svgBoundsData = SvgBoundsData()
+ * val beanList = parseSvgElementList(text, svgBoundsData)
+ * svgBoundsData.getBoundsScaleMatrix()?.let {
+ *     HandleKtx.onElementApplyMatrix?.invoke(beanList, it)
+ * }
+ * ```
  * */
-fun parseSvgElementList(svgText: String?, svgBounds: RectF? = null): List<LPElementBean>? {
+fun parseSvgElementList(
+    svgText: String?,
+    svgBoundsData: SvgBoundsData? = null
+): List<LPElementBean>? {
     return if (svgText.isNullOrEmpty()) {
         null
     } else {
@@ -192,10 +203,12 @@ fun parseSvgElementList(svgText: String?, svgBounds: RectF? = null): List<LPElem
             }*/
         }
 
-        var svgRect: RectF? = null
         sharp.setOnElementListener(object : SvgElementListener() {
             override fun onCanvasDraw(canvas: Canvas, drawElement: DrawElement): Boolean {
-                svgRect = drawElement.svgRect ?: svgRect
+                svgBoundsData?.svgRect = drawElement.svgRect ?: svgBoundsData?.svgRect
+                svgBoundsData?.viewBoxStr = drawElement.viewBoxStr ?: svgBoundsData?.viewBoxStr
+                svgBoundsData?.widthStr = drawElement.widthStr ?: svgBoundsData?.widthStr
+                svgBoundsData?.heightStr = drawElement.heightStr ?: svgBoundsData?.heightStr
                 when (drawElement.type) {
                     DrawElement.DrawType.ROUND_RECT -> LPElementBean().apply {
                         val matrix = drawElement.matrix
@@ -333,7 +346,6 @@ fun parseSvgElementList(svgText: String?, svgBounds: RectF? = null): List<LPElem
             val bitmap = sharpPicture.drawable.toBitmap()
             L.d("svg size:${bitmap?.width}x${bitmap?.height}")
         }
-        svgRect?.let { svgBounds?.set(it) }
         result
     }
 }
