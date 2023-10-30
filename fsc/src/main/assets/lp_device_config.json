@@ -505,6 +505,7 @@
     "rMaxWidth": 628,
     "sMaxWidth": 300,
     "carMaxWidth": 2000,
+    "maxTransferDataSize": 480000000,
     "laserTypeList": [
       {
         "type": 1,

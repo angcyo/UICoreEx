@@ -132,6 +132,9 @@ data class DeviceConfigBean(
 
     /**出光频率设置列表*/
     var laserFrequencyList: List<Int>? = null,
+
+    /**最大支持的文件发送大小字节*/
+    var maxTransferDataSize: Long? = null,
 ) {
 
     /**是否有特殊图层配置*/

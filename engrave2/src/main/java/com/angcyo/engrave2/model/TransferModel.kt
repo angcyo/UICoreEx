@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._useCutCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -524,7 +525,9 @@ class TransferModel : ViewModel() {
                 action(transferState.error)
             }
             return
-        } else if (size > HawkEngraveKeys.maxTransferDataSize) {
+        } else if (size > (_deviceConfigBean?.maxTransferDataSize
+                ?: HawkEngraveKeys.maxTransferDataSize)
+        ) {
             "传输数据过大:${transferDataEntity.index}$sizeString".writeErrorLog()
             errorTransfer(transferState, OutOfSizeException())
             action(transferState.error)
