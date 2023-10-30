@@ -204,8 +204,15 @@ fun parseSvgElementList(
             }*/
         }
 
+        var lastElementHashCode: Int? = null
         sharp.setOnElementListener(object : SvgElementListener() {
             override fun onCanvasDraw(canvas: Canvas, drawElement: DrawElement): Boolean {
+                //2023-10-30 同一个元素, 只处理一次. 修复 fill / stroke有2组数据的问题
+                if (lastElementHashCode == drawElement.hashCode()) {
+                    return true
+                }
+                lastElementHashCode = drawElement.hashCode()
+
                 svgBoundsData?.svgRect = drawElement.svgRect ?: svgBoundsData?.svgRect
                 svgBoundsData?.viewBoxStr = drawElement.viewBoxStr ?: svgBoundsData?.viewBoxStr
                 svgBoundsData?.widthStr = drawElement.widthStr ?: svgBoundsData?.widthStr
