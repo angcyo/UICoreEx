@@ -131,7 +131,8 @@ data class LPProjectBean(
         }
     }
 
-    /**获取工程对应的材质描述信息, 没有入库*/
+    /**获取工程对应的材质描述信息, 没有入库
+     * [toLaserOptionsBean]*/
     fun getProjectMaterialList(): List<MaterialEntity> {
         val options = _laserOptions
         if (options.isNullOrEmpty()) {
@@ -161,6 +162,7 @@ data class LPProjectBean(
                 entity.power = printPower
                 entity.depth = printDepth
                 entity.count = printCount
+                entity.laserFrequency = laserFrequency
             }
         }
 
@@ -181,6 +183,7 @@ data class LPProjectBean(
             printCount = configEntity.time
             precision = configEntity.precision
             lightSource = configEntity.type.toInt()
+            laserFrequency = configEntity.laserFrequency
         }
 
         if (!options.isNullOrEmpty()) {

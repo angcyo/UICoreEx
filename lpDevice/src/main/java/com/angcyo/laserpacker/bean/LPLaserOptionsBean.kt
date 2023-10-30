@@ -67,8 +67,13 @@ data class LPLaserOptionsBean(
 
     /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.dpi]*/
     var dpi: Float = 0f,
+
+    /** [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.laserFrequency]
+     * */
+    var laserFrequency: Int? = null,
 )
 
+/**[getProjectMaterialList]*/
 fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     val bean = LPLaserOptionsBean()
 
@@ -88,6 +93,7 @@ fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     bean.precision = precision
     bean.printPower = power
     bean.printDepth = depth
+    bean.laserFrequency = laserFrequency
 
     TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
         apply(TransferConfigEntity_.taskId.equal("$taskId"))
