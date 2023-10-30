@@ -215,7 +215,7 @@ object LPTransferHelper {
                     gcodeOffsetTop = GCodeDataOffsetItem.offsetTop,
                     enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData,
                     enableSlice = bean.isNeedSlice,
-                    sliceCount = bean.sliceCount,
+                    sliceGranularity = bean.sliceGranularity,
                     pathStep = pathStep
                 )
 

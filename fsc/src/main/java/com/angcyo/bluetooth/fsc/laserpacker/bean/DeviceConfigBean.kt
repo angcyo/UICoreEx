@@ -102,8 +102,8 @@ data class DeviceConfigBean(
     /**是否使用批量雕刻属性*/
     var useBatchEngraveCmd: Boolean? = null,
 
-    /**切片的数量*/
-    var sliceCount: Int? = 10,
+    /**切片的粒度*/
+    var sliceGranularity: Int? = 1,
 
     /**GCode切片填充的线距*/
     var gcodeLineSpace: Double? = null,
@@ -166,8 +166,8 @@ val _cutGCodeWidth: Float?
 
 val _cutGCodeHeight: Float?
     get() = _deviceConfigBean?.cutGCodeHeight
-val _sliceCount: Int?
-    get() = _deviceConfigBean?.sliceCount
+val _sliceGranularity: Int?
+    get() = _deviceConfigBean?.sliceGranularity
 val _gcodeLineSpace: Double
     get() = _deviceConfigBean?.gcodeLineSpace ?: 0.125
 

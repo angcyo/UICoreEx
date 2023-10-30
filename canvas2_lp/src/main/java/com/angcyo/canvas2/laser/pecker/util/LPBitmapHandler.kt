@@ -1059,15 +1059,15 @@ object LPBitmapHandler {
         val context = anchor.context
 
         context.canvasRegulateWindow(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceGranularity)
             firstApply = false
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
-                    val sliceCount =
-                        getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
-                    bean.sliceCount = sliceCount
+                    val sliceGranularity =
+                        getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceGranularity)
+                    bean.sliceGranularity = sliceGranularity
                     renderer.requestUpdatePropertyFlag(Reason.user.apply {
                         controlType = BaseControlPoint.CONTROL_TYPE_DATA
                     }, delegate)

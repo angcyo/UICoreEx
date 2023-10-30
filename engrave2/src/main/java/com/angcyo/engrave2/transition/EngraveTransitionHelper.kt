@@ -461,7 +461,7 @@ object EngraveTransitionHelper {
                 val sliceGcodeFile = libCacheFile("slice_output.gcode")
                 sliceGcodeFile.deleteSafe()
 
-                //val colors = (params.sliceCount ?: 1).toSliceLevelList()
+                val sliceGranularity = max(1, params.sliceGranularity ?: 1)
                 val colors = BitmapHandle.getChannelValueList(bitmap)
                 var lastLevel = (colors.firstOrNull() ?: 255).low8Bit()
 
@@ -492,7 +492,7 @@ object EngraveTransitionHelper {
                                 }
                                 sliceGcodeFile.appendText(it)
                                 //循环的次数
-                                for (i in (threshold + 1) until lastLevel) {
+                                for (i in (threshold + sliceGranularity) until lastLevel step sliceGranularity) {
                                     //每一层下降高度
                                     sliceGcodeFile.appendText(controlHeight)
                                     sliceGcodeFile.appendText(it)

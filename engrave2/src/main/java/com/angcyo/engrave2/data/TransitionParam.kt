@@ -8,7 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.bean._cutLoopCount
 import com.angcyo.bluetooth.fsc.laserpacker.bean._gcodeLineSpace
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isGCodeUsePathData
-import com.angcyo.bluetooth.fsc.laserpacker.bean._sliceCount
+import com.angcyo.bluetooth.fsc.laserpacker.bean._sliceGranularity
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -121,8 +121,8 @@ data class TransitionParam(
     /**是否要激活图片的切片*/
     val enableSlice: Boolean = false,
 
-    /**切片的数量*/
-    val sliceCount: Int? = _sliceCount,
+    /**切片的粒度*/
+    val sliceGranularity: Int? = _sliceGranularity,
 ) {
 
     /**需要平移的矩阵信息*/

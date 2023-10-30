@@ -46,8 +46,8 @@ class LPBitmapStateStack : BitmapStateStack() {
     var maxDiameter: Float? = null
     var isMesh = false
 
-    /**切片的数量*/
-    var sliceCount: Int = 0
+    /**切片的粒度*/
+    var sliceGranularity: Int = 0
 
     /**2d浮雕强度[1~20]*/
     var reliefStrength: Int = 1
@@ -83,7 +83,7 @@ class LPBitmapStateStack : BitmapStateStack() {
             maxDiameter = elementBean.maxDiameter
             isMesh = elementBean.isMesh
 
-            sliceCount = elementBean.sliceCount
+            sliceGranularity = elementBean.sliceGranularity
             reliefStrength = elementBean.reliefStrength
         }
     }
@@ -120,7 +120,7 @@ class LPBitmapStateStack : BitmapStateStack() {
             elementBean.meshShape = meshShape
             elementBean.isMesh = isMesh
 
-            elementBean.sliceCount = sliceCount
+            elementBean.sliceGranularity = sliceGranularity
             elementBean.reliefStrength = reliefStrength
         }
 

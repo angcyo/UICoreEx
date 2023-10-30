@@ -388,8 +388,11 @@ data class LPElementBean(
      * */
     var meshShape: String? = null,
 
-    /**切片的数量*/
-    var sliceCount: Int = 0,
+    /**切片的粒度,
+     * 1:每1个色阶1层,
+     * 10:每10个色阶1层,
+     * */
+    var sliceGranularity: Int = 0,
 
     /**2d浮雕强度[1~20]*/
     var reliefStrength: Int = 1,
@@ -609,7 +612,7 @@ data class LPElementBean(
 
     /**当前数据是否需要切片*/
     val isNeedSlice: Boolean
-        get() = isSupportSliceElement && sliceCount > 0
+        get() = isSupportSliceElement && sliceGranularity > 0
 
     /**是否要显示条码字符*/
     val isShowBarcodeText: Boolean
