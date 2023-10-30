@@ -1036,6 +1036,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             return it
         }
 
+        //LP4 C系列, 都支持批量雕刻
         if (laserPeckerModel.isL4() || laserPeckerModel.isCSeries()) {
             return true
         }
