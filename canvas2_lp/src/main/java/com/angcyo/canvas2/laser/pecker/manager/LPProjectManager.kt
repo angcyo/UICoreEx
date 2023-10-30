@@ -18,6 +18,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
+import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.json
 import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
@@ -29,25 +30,32 @@ import com.angcyo.laserpacker.SvgBoundsData
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPLaserOptionsBean
 import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.bean.XCSBean
+import com.angcyo.laserpacker.bean.toElementBeanList
 import com.angcyo.laserpacker.bean.toLaserOptionsBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
+import com.angcyo.laserpacker.isGCodeType
 import com.angcyo.laserpacker.parseSvgElementList
 import com.angcyo.laserpacker.project.readProjectBean
+import com.angcyo.laserpacker.toBitmapElementBeanListV2
 import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.laserpacker.toGCodeElementBean
 import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.laserpacker.toSvgElementBean
+import com.angcyo.laserpacker.toTextElementBean
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.component.pdf.Pdf
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.extName
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.getShowName
 import com.angcyo.library.ex.isFileExist
@@ -79,9 +87,13 @@ import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.fileType
+import com.angcyo.library.utils.isGCodeContent
+import com.angcyo.library.utils.isSvgContent
 import com.angcyo.library.utils.writeTo
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV.toBitmap
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -984,32 +996,65 @@ fun deleteProjectFileV2Folder() {
  * */
 fun String?.toElementBeanOfFile(bmpThreshold: Int? = null): CanvasOpenDataType? {
     val path = this?.lowercase() ?: return null
+    val extName = path.extName()
+    if (extName.isNotEmpty()) {
+        UMEvent.OPEN_FILE.umengEventValue {
+            put(UMEvent.KEY_FILE_EXT, extName)
+        }
+    }
+
     val file = path.file()
-    if (path.endsWith(LPDataConstant.GCODE_EXT)) {
+    if (path.isGCodeType()) {
         val text = file.readText()
         return text.toGCodeElementBean()
-    } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
+    } else if (path.endsWith(LPDataConstant.SVG_EXT, true)) {
         val text = file.readText()
-        if (HawkEngraveKeys.enableImportGroup ||
-            text?.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
-            (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
-        ) {
-            val svgBoundsData = SvgBoundsData()
-            val beanList = parseSvgElementList(text, svgBoundsData)
-            svgBoundsData.getBoundsScaleMatrix()?.let {
-                HandleKtx.onElementApplyMatrix?.invoke(beanList, it)
-            }
-            return beanList
+        return text.toSvgElementBeanData()
+    } else if (path.endsWith(LPDataConstant.TXT_EXT, true)) {
+        val text = file.readText()
+        if (text?.isSvgContent() == true) {
+            //svg内容
+            return text.toSvgElementBeanData()
+        } else if (text?.isGCodeContent() == true) {
+            //gcode内容
+            return text.toGCodeElementBean()
         } else {
-            return text.toSvgElementBean()
+            //文本内容
+            return text.toTextElementBean()
         }
     } else if (path.isImageType() || file.fileType().isImageType()) {
         val bitmap = path.toBitmap()
         return bitmap.toBitmapElementBeanV2(bmpThreshold)
-    } else if (path.endsWith(LPDataConstant.PROJECT_EXT) || path.endsWith(LPDataConstant.PROJECT_EXT2)) {
+    } else if (path.endsWith(LPDataConstant.PROJECT_EXT, true) ||
+        path.endsWith(LPDataConstant.PROJECT_EXT2, true)
+    ) {
         return LPProjectManager().openProjectFile(null, file)
+    } else if (path.endsWith(LPDataConstant.PDF_EXT, true)) {
+        val bitmapList = Pdf.readPdfToBitmap(file)
+        return bitmapList.toBitmapElementBeanListV2()
+    } else if (path.endsWith(LPDataConstant.XCS_EXT, true)) {
+        val text = file.readText()
+        val xcsBean = text.fromJson<XCSBean>()
+        return xcsBean?.toElementBeanList()
     } else {
         L.w("无法处理的文件路径:${path}")
     }
     return null
+}
+
+private fun String?.toSvgElementBeanData(): CanvasOpenDataType? {
+    val text = this
+    if (HawkEngraveKeys.enableImportGroup ||
+        text?.lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
+        (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
+    ) {
+        val svgBoundsData = SvgBoundsData()
+        val beanList = parseSvgElementList(text, svgBoundsData)
+        svgBoundsData.getBoundsScaleMatrix()?.let {
+            HandleKtx.onElementApplyMatrix?.invoke(beanList, it)
+        }
+        return beanList
+    } else {
+        return text.toSvgElementBean()
+    }
 }

@@ -71,6 +71,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
 
     /**直接打开文件
      * [com.angcyo.laserpacker.open.CanvasOpenPreviewActivity.handleFilePath]
+     * [String.toElementBeanOfFile]
      * */
     private fun addUri(uri: Uri?): Boolean {
         val filePath = ROpenFileHelper.parseData(uri)

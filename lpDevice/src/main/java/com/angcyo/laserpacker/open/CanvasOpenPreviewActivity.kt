@@ -104,6 +104,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
      *
      * 相册内选择文件
      * [com.angcyo.canvas2.laser.pecker.dslitem.item.AddBitmapItem.addUri]
+     * [String.toElementBeanOfFile]
      * */
     @ThreadDes("耗时方法, 请在子线程中调用")
     @Throws(OutOfSizeException::class)
@@ -400,7 +401,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             }
             return true
         } else if (innerFileManageModel.isSupportImportFile(file)) {
-            //支持导入的文件
+            //支持导入的文件, 但不是创作支持的文件
             adapter?.render {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {

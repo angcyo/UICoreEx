@@ -96,6 +96,7 @@
     ".txt",
     ".svg",
     ".pdf",
+    ".nc",
     ".gcode",
     ".gc"
   ],

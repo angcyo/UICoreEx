@@ -215,7 +215,9 @@ object LPDataConstant {
     /**抖动数据*/
     const val EXT_DT = ".dt"
 
-    /**gcode数据*/
+    /**gcode数据
+     * [String.isGCodeType]
+     * */
     const val EXT_GCODE = ".gcode"
 
     /**svg数据*/
@@ -261,7 +263,7 @@ fun String?.isGCodeType(): Boolean {
 /**
  * 支持[com.angcyo.laserpacker.bean.LPElementBean]
  * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
- * 支持[List<com.angcyo.laserpacker.bean.LPElementBean>]
+ * 支持[List<LPElementBean>]
  * */
 typealias CanvasOpenDataType = Any
 

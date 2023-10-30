@@ -27,6 +27,7 @@ import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.getSkewX
 import com.angcyo.library.ex.getSkewY
 import com.angcyo.library.ex.mapPoint
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDegrees
@@ -352,6 +353,16 @@ fun parseSvgElementList(
 
 //---
 
+/**文本数据转[LPElementBean]*/
+fun String?.toTextElementBean(): LPElementBean? {
+    this ?: return null
+    val bean = LPElementBean()
+    bean.mtype = LPDataConstant.DATA_TYPE_TEXT
+    bean.text = this
+    bean.paintStyle = Paint.Style.FILL.toPaintStyleInt()
+    return bean
+}
+
 /**GCode数据转[LPElementBean]*/
 fun String?.toGCodeElementBean(): LPElementBean? {
     this ?: return null
@@ -362,7 +373,8 @@ fun String?.toGCodeElementBean(): LPElementBean? {
     return bean
 }
 
-/**SVG数据转[LPElementBean]*/
+/**SVG数据转[LPElementBean]
+ * [String.toSvgElementBeanData]*/
 fun String?.toSvgElementBean(): LPElementBean? {
     this ?: return null
     val bean = LPElementBean()
@@ -370,17 +382,16 @@ fun String?.toSvgElementBean(): LPElementBean? {
     bean.data = this
     bean.paintStyle = Paint.Style.STROKE.toPaintStyleInt()
 
-    if (HawkEngraveKeys.enableImportSvgScale) {
+    if (HawkEngraveKeys.enableImportGroup ||
+        lines().size() <= HawkEngraveKeys.autoEnableImportGroupLines ||
+        length <= HawkEngraveKeys.autoEnableImportGroupLength
+    ) {
+        val svgBoundsData = SvgBoundsData()
         val beanList = listOf(bean)
-        HandleKtx.onElementApplyMatrix?.invoke(
-            beanList,
-            Matrix().apply {
-                val scale = svgScale
-                setScale(scale, scale)
-            }
-        )
+        svgBoundsData.getBoundsScaleMatrix()?.let {
+            HandleKtx.onElementApplyMatrix?.invoke(beanList, it)
+        }
     }
-
     return bean
 }
 
