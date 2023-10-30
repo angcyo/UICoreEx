@@ -27,9 +27,6 @@ class GridCountItem : DslAdapterItem() {
     /**行数*/
     var itemRows: Int = 10
 
-    /**阈值*/
-    var itemPowerDepthThreshold: Float = 2400f
-
     /**回调*/
     var onItemChangeAction: Action = {}
 
@@ -46,7 +43,10 @@ class GridCountItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.tv(R.id.columns_text_view)?.text = "$itemColumns"
         itemHolder.tv(R.id.rows_text_view)?.text = "$itemRows"
-        itemHolder.tv(R.id.threshold_text_view)?.text = "${itemPowerDepthThreshold.toInt()}"
+        itemHolder.tv(R.id.min_threshold_text_view)?.text =
+            "${ParameterComparisonTableDialogConfig.minPowerDepthThreshold.toInt()}"
+        itemHolder.tv(R.id.threshold_text_view)?.text =
+            "${ParameterComparisonTableDialogConfig.powerDepthThreshold.toInt()}"
         itemHolder.tv(R.id.hide_fun_view)?.text =
             "${ParameterComparisonTableDialogConfig.hideFunInt}"
 
@@ -82,6 +82,22 @@ class GridCountItem : DslAdapterItem() {
             }
         }
 
+        itemHolder.click(R.id.min_threshold_text_view) {
+            lastContext.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
+                onDismiss = this@GridCountItem::onPopupDismiss
+                keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
+                onNumberResultAction = { value ->
+                    val count = clamp(value, 0f, 99999f)
+                    ParameterComparisonTableDialogConfig.minPowerDepthThreshold = count
+                    onItemChangeAction()
+                }
+            }
+        }
+
         itemHolder.click(R.id.threshold_text_view) {
             lastContext.keyboardNumberWindow(it) {
                 numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
@@ -92,7 +108,7 @@ class GridCountItem : DslAdapterItem() {
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
                     val count = clamp(value, 1f, 99999f)
-                    itemPowerDepthThreshold = count
+                    ParameterComparisonTableDialogConfig.powerDepthThreshold = count
                     onItemChangeAction()
                 }
             }

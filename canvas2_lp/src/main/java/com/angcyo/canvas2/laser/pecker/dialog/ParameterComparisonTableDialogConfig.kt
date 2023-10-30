@@ -86,6 +86,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**功率深度阈值, 小于值才需要绘制格子*/
         internal var powerDepthThreshold: Float by HawkPropertyValue<Any, Float>(2400f)
 
+        /**最小阈值*/
+        internal var minPowerDepthThreshold: Float by HawkPropertyValue<Any, Float>(0f)
+
         /**网格格子的大小*/
         @MM
         internal var gridItemSize: Float by HawkPropertyValue<Any, Float>(14f)
@@ -346,12 +349,10 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             GridCountItem()() {
                 itemColumns = horizontalGridCount
                 itemRows = verticalGridCount
-                itemPowerDepthThreshold = powerDepthThreshold
 
                 onItemChangeAction = {
                     horizontalGridCount = itemColumns
                     verticalGridCount = itemRows
-                    powerDepthThreshold = itemPowerDepthThreshold
                 }
             }
 
@@ -665,7 +666,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
 
                 //格子数据
-                if (powerValue * depthValue <= powerDepthThreshold ||
+                val refPDValue = powerValue * depthValue
+                if ((refPDValue > minPowerDepthThreshold && refPDValue <= powerDepthThreshold) ||
                     RowsColumnsRangeItem.isRowColumnInRange(depthIndex + 1, powerIndex + 1)
                 ) {
                     gridBeanList.add(LPElementBean().apply {
