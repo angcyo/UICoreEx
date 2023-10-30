@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._showLaserFrequencyConfig
 import com.angcyo.bluetooth.fsc.laserpacker._showPumpConfig
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -18,6 +19,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishCont
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishTopItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLabelItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserFrequencyItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLayerConfigItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveMaterialWheelItem
@@ -650,6 +652,21 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
             }
 
+            //LP5 白光 出光频率
+            val laserFrequencyList = _deviceConfigBean?.laserFrequencyList
+            if (_showLaserFrequencyConfig &&
+                laserPeckerModel.isL5() &&
+                (engraveConfigEntity?.type == LaserPeckerHelper.LASER_TYPE_WHITE) &&
+                !laserFrequencyList.isNullOrEmpty()
+            ) {
+                EngraveLaserFrequencyItem()() {
+                    itemEngraveConfigEntity = engraveConfigEntity
+                    initLaserFrequencyIfNeed()
+                    itemWheelList = laserFrequencyList
+                    itemUpdateAction(EngraveLaserFrequencyItem.PAYLOAD_UPDATE_LASER_FREQUENCY)
+                }
+            }
+
             //雕刻参数
             if (deviceStateModel.isPenMode()) {
                 //雕刻速度, 非雕刻深度
@@ -897,6 +914,21 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             itemSegmentList = pumpList
                             itemUpdateAction(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
                         }
+                    }
+                }
+
+                //LP5 白光 出光频率
+                val laserFrequencyList = _deviceConfigBean?.laserFrequencyList
+                if (_showLaserFrequencyConfig &&
+                    laserPeckerModel.isL5() &&
+                    engraveConfigEntity.type == LaserPeckerHelper.LASER_TYPE_WHITE &&
+                    !laserFrequencyList.isNullOrEmpty()
+                ) {
+                    EngraveLaserFrequencyItem()() {
+                        itemEngraveConfigEntity = engraveConfigEntity
+                        initLaserFrequencyIfNeed()
+                        itemWheelList = laserFrequencyList
+                        itemUpdateAction(EngraveLaserFrequencyItem.PAYLOAD_UPDATE_LASER_FREQUENCY)
                     }
                 }
 

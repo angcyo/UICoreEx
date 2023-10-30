@@ -68,7 +68,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "32:4916825263226491239",
+      "lastPropertyId": "33:1357139114764173431",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -191,6 +191,11 @@
           "id": "32:4916825263226491239",
           "name": "localDataVersion",
           "type": 6
+        },
+        {
+          "id": "33:1357139114764173431",
+          "name": "laserFrequency",
+          "type": 5
         }
       ],
       "relations": []
@@ -271,7 +276,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "24:1129924034729661515",
+      "lastPropertyId": "25:22312609557711571",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -383,6 +388,11 @@
         {
           "id": "24:1129924034729661515",
           "name": "pump",
+          "type": 5
+        },
+        {
+          "id": "25:22312609557711571",
+          "name": "laserFrequency",
           "type": 5
         }
       ],

@@ -70,6 +70,8 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         materialCode = materialEntity?.code
                         materialKey = materialEntity?.key
                         materialName = materialEntity?.name
+
+                        laserFrequency = materialEntity?.laserFrequency
                     }
                 }
 

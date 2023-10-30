@@ -443,6 +443,8 @@ data class LPElementBean(
     var printCount: Int? = null,
     //风速级别
     var pump: Int? = null,
+    //白光出光频率
+    var laserFrequency: Int? = null,
 
     /**是否是切割*/
     var isCut: Boolean = false,

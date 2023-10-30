@@ -498,6 +498,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val depthList = mutableListOf<Byte>()
         val timeList = mutableListOf<Byte>()
         val typeList = mutableListOf<Byte>()
+        val laserFrequencyList = mutableListOf<Int?>()
 
         var precision = 0
         var diameter = 0
@@ -526,6 +527,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     depthList.add(engraveConfigEntity.depth.toByte())
                     timeList.add(engraveConfigEntity.time.toByte())
                     typeList.add(engraveConfigEntity.type)
+                    laserFrequencyList.add(engraveConfigEntity.laserFrequency)
 
                     //保存外接设备名
                     initDefaultEngraveConfigInfo(engraveConfigEntity)
@@ -576,7 +578,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             pumpFill,
             pumpPicture,
             pumpLine,
-            pumpCut
+            pumpCut,
+            laserFrequencyList.find { it != null } ?: HawkEngraveKeys.defaultLaserFrequency
         ).enqueue { bean, error ->
             "批量雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error
@@ -912,6 +915,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             pumpPicture = engraveConfigEntity.pump,
             pumpLine = engraveConfigEntity.pump,
             pumpCut = engraveConfigEntity.pump,
+            laserFrequency = engraveConfigEntity.laserFrequency
+                ?: HawkEngraveKeys.defaultLaserFrequency
         ) else EngraveCmd.filenameEngrave(
             fileName, (transferDataEntity?.mount ?: QueryCmd.TYPE_SD).toByte(),
             engraveConfigEntity.power.toByte(),
@@ -919,7 +924,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             max(1, engraveConfigEntity.time).toByte(),
             engraveConfigEntity.type,
             diameter,
-            engraveConfigEntity.precision
+            engraveConfigEntity.precision,
+            laserFrequency = engraveConfigEntity.laserFrequency
+                ?: HawkEngraveKeys.defaultLaserFrequency
         )
 
         engraveCmd.enqueue { bean, error ->

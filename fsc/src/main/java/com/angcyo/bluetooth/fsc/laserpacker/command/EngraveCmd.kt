@@ -69,6 +69,8 @@ data class EngraveCmd(
      * */
     val mount: Byte = QueryCmd.TYPE_SD.toByte(),
     val filename: String? = null,//文件名
+    //2023-10-30
+    val laserFrequency: Int = -1, //白光激光出光频率
 ) : BaseCommand() {
 
     companion object {
@@ -111,7 +113,8 @@ data class EngraveCmd(
             pumpFill: Int,
             pumpPicture: Int,
             pumpLine: Int,
-            pumpCut: Int
+            pumpCut: Int,
+            laserFrequency: Int
         ): EngraveCmd {
             return EngraveCmd(
                 state = 0x05,
@@ -128,7 +131,8 @@ data class EngraveCmd(
                 pumpFill = pumpFill,
                 pumpPicture = pumpPicture,
                 pumpLine = pumpLine,
-                pumpCut = pumpCut
+                pumpCut = pumpCut,
+                laserFrequency = laserFrequency,
             )
         }
 
@@ -144,6 +148,7 @@ data class EngraveCmd(
             type: Byte,
             precision: Int,
             diameter: Int,
+            laserFrequency: Int
         ): EngraveCmd {
             return EngraveCmd(
                 state = 0x06,
@@ -156,6 +161,7 @@ data class EngraveCmd(
                 type = type,
                 precision = precision,
                 diameter = diameter,
+                laserFrequency = laserFrequency,
             )
         }
     }
@@ -180,7 +186,7 @@ data class EngraveCmd(
                 write(state)
                 write(custom)
                 write(mount)
-                write(0)//占位
+                write(laserFrequency)//2023-10-30 白光激光出光频率
 
                 write(power)
                 write(depthToSpeed(depth.toInt()))
@@ -225,6 +231,8 @@ data class EngraveCmd(
                 write(pumpPicture)
                 write(pumpLine)
                 write(pumpCut)
+                //2023-10-30 白光激光出光频率
+                write(laserFrequency)
             }
             val size = bytes.size()
             data = bytes.toHexString(false)
@@ -236,7 +244,7 @@ data class EngraveCmd(
             cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         } else {
             //正常雕刻指令
-            dataLength = 0x15 //18 //数据长度
+            dataLength = 0x16 //18 //数据长度
             data = buildString {
                 append(commandFunc().toHexString())
                 append(state.toHexString())
@@ -252,6 +260,7 @@ data class EngraveCmd(
                 append(diameter.toByteArray(2).toHexString(false))
                 append(precision.toHexString())
                 append(pumpLine.toHexString())//所有图层的气泵参数都一样
+                append(laserFrequency.toHexString())//白光激光出光频率
             }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
             check = data.checksum() //“功能码”和“数据内容”在内的校验和
             cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
@@ -270,7 +279,8 @@ data class EngraveCmd(
                 append(" 功率:$power")
                 append(" 深度:$depth")
                 append(" 次数:$time")
-                append(" state:$state x:$x y:$y type:$type 直径:${diameter} 加速级别:${precision} 气泵:${pumpLine}")
+                append(" state:$state x:$x y:$y type:$type 直径:${diameter}")
+                append(" 加速级别:${precision} 气泵:${pumpLine} Q:${laserFrequency}kHz")
             }
 
             0x02.toByte() -> append(" 继续雕刻!")
@@ -279,10 +289,17 @@ data class EngraveCmd(
             0x05.toByte() -> {
                 append(" 批量雕刻:大索引:$bigIndex :$indexNum")
                 append(" 索引:$indexList 功率:$powerList 深度:$depthList type:$typeList times:$timeList")
-                append(" 直径:${diameter} 加速级别:${precision}")
+                append(" 直径:${diameter} 加速级别:${precision} Q:${laserFrequency}kHz")
             }
 
-            0x06.toByte() -> append(" 文件名雕刻[$filename]")
+            0x06.toByte() -> {
+                append(" 文件名雕刻[$filename]")
+                append(" 功率:$power")
+                append(" 深度:$depth")
+                append(" 次数:$time")
+                append(" state:$state x:$x y:$y type:$type 直径:${diameter}")
+                append(" 加速级别:${precision} 气泵:${pumpLine} Q:${laserFrequency}kHz")
+            }
         }
     }
 }

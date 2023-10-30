@@ -26,6 +26,7 @@ import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.onMainOnce
 import com.angcyo.library.ex.add
 import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.remove
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.toastQQ
@@ -480,3 +481,9 @@ fun syncQueryDeviceState(
 val _showPumpConfig: Boolean
     get() = _deviceSettingBean?.showPumpRange?.matchesProductVersion() == true &&
             vmApp<DeviceStateModel>().getDeviceLaserModule(255.toByte())?.showPump == true
+
+/**是否要显示频率配置*/
+val _showLaserFrequencyConfig: Boolean
+    get() = isDebug() ||
+            _deviceSettingBean?.showLaserFrequencyRange?.matchesProductVersion() == true ||
+            HawkEngraveKeys.showLaserFrequencyRange?.matchesProductVersion() == true

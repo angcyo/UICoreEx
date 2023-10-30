@@ -61,6 +61,12 @@ object HawkEngraveKeys {
     /**最后一次的加速级别*/
     var lastPrecision: Int by HawkPropertyValue<Any, Int>(1)
 
+    /**默认的激光频率*/
+    var defaultLaserFrequency: Int by HawkPropertyValue<Any, Int>(60)
+
+    /**[defaultLaserFrequency]*/
+    var lastLaserFrequency: Int? by HawkPropertyValue<Any, Int?>(null)
+
     /**最后一次的激光类型*/
     var lastType: Int by HawkPropertyValue<Any, Int>(LaserPeckerHelper.LASER_TYPE_BLUE.toInt())
 
@@ -403,6 +409,9 @@ object HawkEngraveKeys {
      * ```
      * */
     var scanIpRange: String? by HawkPropertyValue<Any, String?>("1~254") //1~254
+
+    /**显示激光白光频率参数设置*/
+    var showLaserFrequencyRange: String? by HawkPropertyValue<Any, String?>(null)
 
     /**扫描成功的ip缓存, 方便下一次快速扫描*/
     private var _scanIpCache: String? by HawkPropertyValue<Any, String?>(null)

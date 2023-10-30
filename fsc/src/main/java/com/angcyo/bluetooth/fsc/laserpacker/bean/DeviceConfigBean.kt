@@ -127,6 +127,11 @@ data class DeviceConfigBean(
      * [key] 图层id
      * */
     var pumpMap: HashMap<String, List<PumpConfigBean>>? = null,
+
+    //2023-10-30
+
+    /**出光频率设置列表*/
+    var laserFrequencyList: List<Int>? = null,
 ) {
 
     /**是否有特殊图层配置*/

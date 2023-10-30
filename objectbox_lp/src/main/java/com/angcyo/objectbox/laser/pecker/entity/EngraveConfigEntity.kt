@@ -90,6 +90,14 @@ data class EngraveConfigEntity(
     @Px
     var diameterPixel: Float = -1f,
 
+    //---LP5专属---
+
+    /**2023-10-30
+     * 激光器出光频率，取值范围为26-60，单位kHz
+     * 默认60kHz
+     * */
+    var laserFrequency: Int? = null,
+
     //---C1专属---
 
     /**

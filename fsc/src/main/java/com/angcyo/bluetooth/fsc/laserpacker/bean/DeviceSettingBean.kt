@@ -55,6 +55,8 @@ data class DeviceSettingBean(
     var showRefVelocityRange: String? = null,
     /**GCode转换成0x30路径数据的固件范围*/
     var gcodeUsePathDataRange: String? = null,
+    /**显示白光频率配置的固件版本范围*/
+    var showLaserFrequencyRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/

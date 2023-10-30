@@ -143,6 +143,10 @@ data class MaterialEntity(
     /**打印次数*/
     var count: Int = 1,
 
+    /** [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.laserFrequency]
+     * */
+    var laserFrequency: Int? = null,
+
     ) : IToText, IToDrawable, IToRightDrawable, ISyncEntity {
 
     companion object {

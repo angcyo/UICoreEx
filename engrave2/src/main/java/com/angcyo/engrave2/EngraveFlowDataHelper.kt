@@ -607,6 +607,7 @@ object EngraveFlowDataHelper {
                 power = configEntity.power
                 depth = configEntity.depth
                 count = configEntity.time
+                laserFrequency = configEntity.laserFrequency
 
                 //自定义材质
                 materialType = MaterialEntity.MATERIAL_TYPE_CUSTOM
@@ -737,6 +738,9 @@ object EngraveFlowDataHelper {
             power = materialEntity?.power ?: HawkEngraveKeys.lastPower
             depth = materialEntity?.depth ?: HawkEngraveKeys.lastDepth
             time = max(1, materialEntity?.count ?: 1)
+
+            //2023-10-30
+            laserFrequency = materialEntity?.laserFrequency
         }
     }
 
