@@ -476,8 +476,8 @@ object EngraveTransitionHelper {
                         append("M05S0")
                     }
                     appendLine()
-                    append("S${HawkEngraveKeys.sliceGcodeControlHeight}")
                     append("M3021")
+                    append("S${HawkEngraveKeys.sliceGcodeControlHeight}")
                     appendLine()
                 }
                 colors.forEachIndexed { levelIndex, threshold ->
