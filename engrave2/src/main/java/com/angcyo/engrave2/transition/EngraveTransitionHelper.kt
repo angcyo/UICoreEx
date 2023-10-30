@@ -466,7 +466,7 @@ object EngraveTransitionHelper {
                 var lastLevel = (colors.firstOrNull() ?: 255).low8Bit()
 
                 DeviceHelper.tempEngraveLogPathList.clear()
-                val controlHeight = "\nM3021S${HawkEngraveKeys.sliceGcodeControlHeight}\n"
+                val controlHeight = "\nS${HawkEngraveKeys.sliceGcodeControlHeight}M3021\n"
                 colors.forEachIndexed { levelIndex, threshold ->
                     //单切片, 防止一下子内存占用过高
                     val threshold = threshold.low8Bit()
