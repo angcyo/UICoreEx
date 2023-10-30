@@ -25,7 +25,6 @@ import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -447,7 +446,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     _string(R.string.canvas_slice_count),
                     getIntOrDef(KEY_SLICE, 0),
                     0,
-                    LibHawkKeys.grayThreshold
+                    HawkEngraveKeys.maxSliceGranularity
                 )
             }
 

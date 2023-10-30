@@ -440,6 +440,9 @@ object HawkEngraveKeys {
     var minReliefStrength: Int by HawkPropertyValue<Any, Int>(1)
     var maxReliefStrength: Int by HawkPropertyValue<Any, Int>(20)
 
+    /**最大切片粒度*/
+    var maxSliceGranularity: Int by HawkPropertyValue<Any, Int>(100)
+
     /**切片浮雕, 每一层需要下降/上升的高度*/
     @MM
     var sliceGcodeControlHeight: Float by HawkPropertyValue<Any, Float>(0.1f)
