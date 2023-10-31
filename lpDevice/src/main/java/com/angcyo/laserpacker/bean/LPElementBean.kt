@@ -130,7 +130,7 @@ data class LPElementBean(
     /**相同id的视为在同一组 string `2023-1-6`*/
     var groupId: String? = null,
 
-    /**[groupId]*/
+    /**[groupId] 需要显示的名称*/
     var groupName: String? = null,
 
     /**填充颜色, 形状的颜色
