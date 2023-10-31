@@ -204,6 +204,20 @@ fun parseSvgElementList(
             }*/
         }
 
+        /**基础的数据初始化*/
+        fun LPElementBean.initBean(drawElement: DrawElement) {
+            name = drawElement.dataName
+            paintStyle = drawElement.paint.style.toPaintStyleInt()
+            val matrix = drawElement.matrix
+            qrElement(this, matrix)
+
+            val id = drawElement.svgGroup?.id
+            if (HawkEngraveKeys.enableImportSvgGroup && !id.isNullOrBlank()) {
+                this.groupId = id
+                groupName = this.groupId
+            }
+        }
+
         var lastElementHashCode: Int? = null
         sharp.setOnElementListener(object : SvgElementListener() {
             override fun onCanvasDraw(canvas: Canvas, drawElement: DrawElement): Boolean {
@@ -219,24 +233,18 @@ fun parseSvgElementList(
                 svgBoundsData?.heightStr = drawElement.heightStr ?: svgBoundsData?.heightStr
                 when (drawElement.type) {
                     DrawElement.DrawType.ROUND_RECT -> LPElementBean().apply {
-                        val matrix = drawElement.matrix
-                        qrElement(this, matrix)
+                        initBean(drawElement)
                         mtype = LPDataConstant.DATA_TYPE_RECT
-                        name = drawElement.dataName
-                        paintStyle = drawElement.paint.style.toPaintStyleInt()
                         (drawElement.element as? RectF)?.let { rect ->
-                            initSizeFromRect(this, rect, matrix)
+                            initSizeFromRect(this, rect, drawElement.matrix)
                         }
                         rx = drawElement.rx.toMm()
                         ry = drawElement.ry.toMm()
                     }
 
                     DrawElement.DrawType.LINE -> LPElementBean().apply {
-                        val matrix = drawElement.matrix
-                        qrElement(this, matrix)
-                        paintStyle = drawElement.paint.style.toPaintStyleInt()
+                        initBean(drawElement)
                         mtype = LPDataConstant.DATA_TYPE_SVG
-                        name = drawElement.dataName
                         /*mtype = LPDataConstant.DATA_TYPE_LINE*/
                         (drawElement.element as? RectF)?.let { rect ->
                             /*angle = VectorHelper.angle(
@@ -255,30 +263,25 @@ fun parseSvgElementList(
                             left = rect.left.toMm()
                             top = rect.top.toMm()*/
                             path = "M${rect.left},${rect.top}L${rect.right},${rect.bottom}"
-                            initSizeFromRect(this, rect, matrix)
+                            initSizeFromRect(this, rect, drawElement.matrix)
                             handleLineElement(this)
                         }
                     }
 
                     DrawElement.DrawType.OVAL -> LPElementBean().apply {
-                        val matrix = drawElement.matrix
-                        qrElement(this, matrix)
+                        initBean(drawElement)
                         mtype = LPDataConstant.DATA_TYPE_OVAL
-                        name = drawElement.dataName
-                        paintStyle = drawElement.paint.style.toPaintStyleInt()
                         (drawElement.element as? RectF)?.let { rect ->
-                            initSizeFromRect(this, rect, matrix)
+                            initSizeFromRect(this, rect, drawElement.matrix)
                         }
                     }
 
                     DrawElement.DrawType.PATH -> LPElementBean().apply {
-                        val matrix = drawElement.matrix
-                        qrElement(this, matrix)
+                        initBean(drawElement)
                         mtype = LPDataConstant.DATA_TYPE_SVG
-                        name = drawElement.dataName
-                        paintStyle = drawElement.paint.style.toPaintStyleInt()
                         data = drawElement.data
 
+                        val matrix = drawElement.matrix
                         (drawElement.element as? Path)?.run {
                             if (matrix != null)
                                 Path(this).apply { transform(matrix) }
@@ -298,27 +301,24 @@ fun parseSvgElementList(
                     }
 
                     DrawElement.DrawType.TEXT -> LPElementBean().apply {
-                        val matrix = drawElement.matrix
-                        qrElement(this, matrix)
+                        initBean(drawElement)
                         mtype = LPDataConstant.DATA_TYPE_TEXT
-                        name = drawElement.dataName
-                        paintStyle = drawElement.paint.style.toPaintStyleInt()
                         fontSize = drawElement.paint.textSize.toMm()
 
                         (drawElement.element as? Sharp.SvgHandler.SvgText)?.let { text ->
                             this.text = text.text
                             val rect = text.bounds
-                            initSizeFromRect(this, rect, matrix)
+                            initSizeFromRect(this, rect, drawElement.matrix)
                         }
                     }
 
                     DrawElement.DrawType.IMAGE -> LPElementBean().apply {
-                        val matrix = drawElement.matrix
                         mtype = LPDataConstant.DATA_TYPE_BITMAP
-                        name = drawElement.dataName
                         imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
                         blackThreshold = HawkEngraveKeys.DEFAULT_THRESHOLD
+                        initBean(drawElement)
 
+                        val matrix = drawElement.matrix
                         val bitmapMatrix = Matrix()
                         (drawElement.element as? Bitmap)?.let { bitmap ->
                             val wF = bitmap.width.toFloat()
@@ -343,7 +343,7 @@ fun parseSvgElementList(
 
                     else -> null
                 }?.apply {
-                    this.groupId = groupId
+                    this.groupId = this.groupId ?: groupId
                     result.add(this)
                 }
                 return true

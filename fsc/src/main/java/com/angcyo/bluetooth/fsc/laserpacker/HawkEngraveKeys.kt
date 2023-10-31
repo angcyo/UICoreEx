@@ -336,6 +336,9 @@ object HawkEngraveKeys {
     /**是否激活svg导入时1:1毫米还原*/
     var enableImportSvgScale: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**是否激活svg导入时, 内部的group属性*/
+    var enableImportSvgGroup: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
     /**当SVG文本字符小于此值时自动激活[enableImportGroup]
      * [autoEnableImportGroupLength]*/
     var autoEnableImportGroupLength: Long by HawkPropertyValue<Any, Long>(20_000)
