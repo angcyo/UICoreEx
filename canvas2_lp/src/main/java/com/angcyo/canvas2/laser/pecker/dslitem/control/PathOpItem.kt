@@ -42,14 +42,21 @@ class PathOpItem : CanvasIconItem() {
             delegate ?: return
             val pathList = mutableListOf<Path>()
             val list = delegate.getSingleElementRendererListIn(rendererList)
+            var haveFillElement = false
             for (renderer in list) {
                 val element = renderer.lpElement()
                 val renderProperty = renderer.renderProperty
                 if (element is LPPathElement) {
+                    haveFillElement = haveFillElement ||
+                            element.paint.style == Paint.Style.FILL ||
+                            element.paint.style == Paint.Style.FILL_AND_STROKE
                     RenderHelper.translateToRender(element.getDrawPathList(), renderProperty)?.let {
                         pathList.addAll(it)
                     }
                 } else if (element is LPBitmapElement) {
+                    haveFillElement = haveFillElement ||
+                            element.paint.style == Paint.Style.FILL ||
+                            element.paint.style == Paint.Style.FILL_AND_STROKE
                     RenderHelper.translateToRender(element.getDrawPathList(), renderProperty)?.let {
                         pathList.addAll(it)
                     }
@@ -70,11 +77,13 @@ class PathOpItem : CanvasIconItem() {
                 val elementBean = LPElementBean().apply {
                     mtype = LPDataConstant.DATA_TYPE_SVG
                     this.path = svgContent
-                    paintStyle = if (HawkEngraveKeys.enableXorFill && op == Path.Op.XOR) {
-                        Paint.Style.FILL.toPaintStyleInt()
-                    } else {
-                        Paint.Style.STROKE.toPaintStyleInt()
-                    }
+                    paintStyle =
+                        if ((HawkEngraveKeys.enableXorFill && op == Path.Op.XOR) /*xor操作时, 默认填充处理*/ ||
+                            (op == null && haveFillElement) /*合并path时, 检查是否填充处理*/) {
+                            Paint.Style.FILL.toPaintStyleInt()
+                        } else {
+                            Paint.Style.STROKE.toPaintStyleInt()
+                        }
                 }
                 LPRendererHelper.parseElementRenderer(elementBean, false)?.apply {
                     originBounds?.let {
