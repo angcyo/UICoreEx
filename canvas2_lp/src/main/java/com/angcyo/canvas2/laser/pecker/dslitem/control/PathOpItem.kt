@@ -70,7 +70,7 @@ class PathOpItem : CanvasIconItem() {
                 } else {
                     result.toSVGStrokeContent {
                         it.isSinglePath = true
-                        it.needClosePath = true
+                        it.needClosePath = false //不需要闭合
                     }
                 }
 
