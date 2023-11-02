@@ -179,6 +179,9 @@ object UMEvent {
     /**数据传输错误: value=原因*/
     const val KEY_TRANSFER_ERROR = "key_transfer"
 
+    /**是否是暗色主题*/
+    const val DARK_MODE = "dark_mode"
+
     //endregion ---origin---
 
     //region ---rn---
