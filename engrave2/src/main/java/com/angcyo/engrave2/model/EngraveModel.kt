@@ -33,6 +33,7 @@ import com.angcyo.library.annotation.Private
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.ex.toStr
@@ -566,6 +567,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task.lpSaveEntity()
 
         isSendEngraveCmd = false
+
+        //出光功率
+        val def = HawkEngraveKeys.lastLaserFrequency ?: HawkEngraveKeys.defaultLaserFrequency
+        val laserFrequency = if (laserFrequencyList.size() == 1) {
+            laserFrequencyList.find { it != null } ?: def
+        } else {
+            def
+        }
+
         EngraveCmd.batchEngrave(
             task.bigIndex!!,
             indexList,
@@ -579,7 +589,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             pumpPicture,
             pumpLine,
             pumpCut,
-            laserFrequencyList.find { it != null } ?: HawkEngraveKeys.defaultLaserFrequency
+            laserFrequency
         ).enqueue { bean, error ->
             "批量雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error

@@ -54,12 +54,14 @@ class EngraveLaserFrequencyItem : EngraveOptionWheelItem() {
                 laserFrequency =
                     HawkEngraveKeys.lastLaserFrequency ?: HawkEngraveKeys.defaultLaserFrequency
                 lpSaveEntity()
+                HawkEngraveKeys.lastLaserFrequency = laserFrequency
             }
         }
         itemEngraveItemBean?.apply {
             if (laserFrequency == null) {
                 laserFrequency =
                     HawkEngraveKeys.lastLaserFrequency ?: HawkEngraveKeys.defaultLaserFrequency
+                HawkEngraveKeys.lastLaserFrequency = laserFrequency
             }
         }
     }
@@ -75,9 +77,11 @@ class EngraveLaserFrequencyItem : EngraveOptionWheelItem() {
         itemEngraveConfigEntity?.apply {
             laserFrequency = value ?: HawkEngraveKeys.defaultLaserFrequency
             lpSaveEntity()
+            HawkEngraveKeys.lastLaserFrequency = laserFrequency
         }
         itemEngraveItemBean?.apply {
             laserFrequency = value ?: HawkEngraveKeys.defaultLaserFrequency
+            HawkEngraveKeys.lastLaserFrequency = laserFrequency
         }
     }
 }

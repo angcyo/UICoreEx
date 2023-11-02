@@ -496,7 +496,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
     //region ---雕刻参数配置---
 
-    /**单元素雕刻参数配置界面, 只能配置参数, 无法next*/
+    /**单元素雕刻参数配置界面, 只能配置参数, 无法next
+     *
+     * [renderEngraveConfig]
+     * */
     open fun renderEngraveItemParamsConfig() {
         val elementItemBean = _engraveItemRenderer?.lpElementBean()
         val fileName = elementItemBean?.name
@@ -718,7 +721,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     }
 
     /**渲染雕刻配置界面
-     *
+     * [renderEngraveItemParamsConfig] 单元素雕刻参数配置
      * 数据导出配置界面
      * [com.angcyo.canvas2.laser.pecker.dialog.ExportDataDialogConfig.onSelfRenderAdapter]
      * */
