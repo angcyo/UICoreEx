@@ -194,6 +194,8 @@ data class DeviceSettingBean(
 
     /**支持的后缀扩展名, 不包含图片.*/
     var supportFileExt: List<String>? = null,
+    /**是否要显示社区内容*/
+    var showCommunity: Boolean = false,
 
     //endregion---Android端设置项---
 
@@ -245,3 +247,7 @@ val _isGCodeUsePathData: Boolean
  * */
 val String.isSupportFileExt: Boolean
     get() = _deviceSettingBean?.supportFileExt?.contains(this) == true
+
+/**是否要显示社区*/
+val _showCommunity: Boolean
+    get() = _deviceSettingBean?.showCommunity == true
