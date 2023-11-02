@@ -50,7 +50,6 @@ import com.angcyo.laserpacker.toTextElementBean
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
-import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.pdf.Pdf
 import com.angcyo.library.ex._string
@@ -85,7 +84,6 @@ import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.toMm
-import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.fileType
 import com.angcyo.library.utils.isGCodeContent
 import com.angcyo.library.utils.isSvgContent
@@ -556,12 +554,10 @@ class LPProjectManager {
                                     val imageOriginalBitmap = sub.lpBitmapElement()?.originBitmap
                                         ?: elementBean.imageOriginal?.toBitmapOfBase64()
                                     if (imageOriginalBitmap != null) {
-                                        if (BuildHelper.isCpu64 || imageOriginalBitmap.width * imageOriginalBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
-                                            val uri =
-                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                            elementBean.imageOriginalUri = uri
-                                            writeEntry(uri, imageOriginalBitmap)
-                                        }
+                                        val uri =
+                                            LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                        elementBean.imageOriginalUri = uri
+                                        writeEntry(uri, imageOriginalBitmap)
                                     }
 
                                     //滤镜后的图
@@ -569,12 +565,10 @@ class LPProjectManager {
                                         val srcBitmap = sub.lpBitmapElement()?.renderBitmap
                                             ?: elementBean.src?.toBitmapOfBase64()
                                         if (srcBitmap != null) {
-                                            if (BuildHelper.isCpu64 || srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
-                                                val uri =
-                                                    LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                                elementBean.srcUri = uri
-                                                writeEntry(uri, srcBitmap)
-                                            }
+                                            val uri =
+                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                            elementBean.srcUri = uri
+                                            writeEntry(uri, srcBitmap)
                                         }
                                     }
 
@@ -795,8 +789,7 @@ class LPProjectManager {
 
                                 //gcode/svg
                                 if (!elementBean.data.isNullOrEmpty()) {
-                                    val uri =
-                                        LPDataConstant.PROJECT_V2_BASE_URI + uuid()
+                                    val uri = LPDataConstant.PROJECT_V2_BASE_URI + uuid()
                                     elementBean.dataUri = uri
                                     writeV2TempRes(uri, elementBean.data!!)
                                 }
@@ -805,12 +798,9 @@ class LPProjectManager {
                                 val imageOriginalBitmap = sub.lpBitmapElement()?.originBitmap
                                     ?: elementBean.imageOriginal?.toBitmapOfBase64()
                                 if (imageOriginalBitmap != null) {
-                                    if (BuildHelper.isCpu64 || imageOriginalBitmap.width * imageOriginalBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
-                                        val uri =
-                                            LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                        elementBean.imageOriginalUri = uri
-                                        writeV2TempRes(uri, imageOriginalBitmap)
-                                    }
+                                    val uri = LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                    elementBean.imageOriginalUri = uri
+                                    writeV2TempRes(uri, imageOriginalBitmap)
                                 }
 
                                 //滤镜后的图
@@ -818,12 +808,10 @@ class LPProjectManager {
                                     val srcBitmap = sub.lpBitmapElement()?.renderBitmap
                                         ?: elementBean.src?.toBitmapOfBase64()
                                     if (srcBitmap != null) {
-                                        if (BuildHelper.isCpu64 || srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
-                                            val uri =
-                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                            elementBean.srcUri = uri
-                                            writeV2TempRes(uri, srcBitmap)
-                                        }
+                                        val uri =
+                                            LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                        elementBean.srcUri = uri
+                                        writeV2TempRes(uri, srcBitmap)
                                     }
                                 }
 
