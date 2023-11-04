@@ -68,7 +68,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "33:1357139114764173431",
+      "lastPropertyId": "34:4416933359631188310",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -196,6 +196,11 @@
           "id": "33:1357139114764173431",
           "name": "laserFrequency",
           "type": 5
+        },
+        {
+          "id": "34:4416933359631188310",
+          "name": "useLaserFrequency",
+          "type": 1
         }
       ],
       "relations": []
@@ -276,7 +281,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "25:22312609557711571",
+      "lastPropertyId": "26:6164986946782892307",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -394,6 +399,11 @@
           "id": "25:22312609557711571",
           "name": "laserFrequency",
           "type": 5
+        },
+        {
+          "id": "26:6164986946782892307",
+          "name": "useLaserFrequency",
+          "type": 1
         }
       ],
       "relations": []

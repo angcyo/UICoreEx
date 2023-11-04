@@ -302,6 +302,8 @@ object LPEngraveHelper {
             depth = bean.printDepth ?: last?.depth ?: HawkEngraveKeys.lastDepth
             time = bean.printCount ?: 1
             dpi = bean.dpi //2023-7-29
+            useLaserFrequency = bean.useLaserFrequency //2023-11-4
+            laserFrequency = bean.laserFrequency
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
             this.productName = productName

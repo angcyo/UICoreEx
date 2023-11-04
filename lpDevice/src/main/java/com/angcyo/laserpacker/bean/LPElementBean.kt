@@ -451,7 +451,16 @@ data class LPElementBean(
     var printCount: Int? = null,
     //风速级别
     var pump: Int? = null,
-    //白光出光频率
+
+    /**2023-11-4
+     * 是否要使用激光器出光频率
+     * */
+    var useLaserFrequency: Boolean = false,
+
+    /**2023-10-30
+     * 激光器出光频率，取值范围为26-60，单位kHz
+     * 默认60kHz
+     * */
     var laserFrequency: Int? = null,
 
     /**是否是切割*/

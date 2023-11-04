@@ -65,6 +65,8 @@ object LPTransferData {
             this.type = type ?: last?.type ?: DeviceHelper.getProductLaserType()
             this.precision = precision ?: last?.precision ?: HawkEngraveKeys.lastPrecision
             this.pump = last?.pump ?: pump
+            this.useLaserFrequency = last?.useLaserFrequency ?: false //2023-11-4
+            this.laserFrequency = last?.laserFrequency
 
             //物理尺寸
             diameterPixel = HawkEngraveKeys.lastDiameterPixel

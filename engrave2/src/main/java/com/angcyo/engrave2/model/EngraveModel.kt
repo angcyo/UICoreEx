@@ -33,7 +33,6 @@ import com.angcyo.library.annotation.Private
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.ex.toStr
@@ -499,7 +498,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val depthList = mutableListOf<Byte>()
         val timeList = mutableListOf<Byte>()
         val typeList = mutableListOf<Byte>()
-        val laserFrequencyList = mutableListOf<Int?>()
 
         var precision = 0
         var diameter = 0
@@ -509,6 +507,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         var pumpPicture = 0
         var pumpLine = 0
         var pumpCut = 0
+
+        //出光功率
+        var laserFrequencyFill = HawkEngraveKeys.defaultLaserFrequency
+        var laserFrequencyPicture = HawkEngraveKeys.defaultLaserFrequency
+        var laserFrequencyLine = HawkEngraveKeys.defaultLaserFrequency
+        var laserFrequencyCut = HawkEngraveKeys.defaultLaserFrequency
 
         for (index in indexList) {
             EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
@@ -528,17 +532,39 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     depthList.add(engraveConfigEntity.depth.toByte())
                     timeList.add(engraveConfigEntity.time.toByte())
                     typeList.add(engraveConfigEntity.type)
-                    laserFrequencyList.add(engraveConfigEntity.laserFrequency)
 
                     //保存外接设备名
                     initDefaultEngraveConfigInfo(engraveConfigEntity)
                     engraveConfigEntity.lpSaveEntity()
 
                     when (engraveConfigEntity.layerId) {
-                        LaserPeckerHelper.LAYER_FILL -> pumpFill = engraveConfigEntity.pump
-                        LaserPeckerHelper.LAYER_PICTURE -> pumpPicture = engraveConfigEntity.pump
-                        LaserPeckerHelper.LAYER_LINE -> pumpLine = engraveConfigEntity.pump
-                        LaserPeckerHelper.LAYER_CUT -> pumpCut = engraveConfigEntity.pump
+                        LaserPeckerHelper.LAYER_FILL -> {
+                            pumpFill = engraveConfigEntity.pump
+                            laserFrequencyFill =
+                                if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
+                                    ?: HawkEngraveKeys.defaultLaserFrequency else HawkEngraveKeys.defaultLaserFrequency
+                        }
+
+                        LaserPeckerHelper.LAYER_PICTURE -> {
+                            pumpPicture = engraveConfigEntity.pump
+                            laserFrequencyPicture =
+                                if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
+                                    ?: HawkEngraveKeys.defaultLaserFrequency else HawkEngraveKeys.defaultLaserFrequency
+                        }
+
+                        LaserPeckerHelper.LAYER_LINE -> {
+                            pumpLine = engraveConfigEntity.pump
+                            laserFrequencyLine =
+                                if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
+                                    ?: HawkEngraveKeys.defaultLaserFrequency else HawkEngraveKeys.defaultLaserFrequency
+                        }
+
+                        LaserPeckerHelper.LAYER_CUT -> {
+                            pumpCut = engraveConfigEntity.pump
+                            laserFrequencyCut =
+                                if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
+                                    ?: HawkEngraveKeys.defaultLaserFrequency else HawkEngraveKeys.defaultLaserFrequency
+                        }
                     }
                 }
 
@@ -556,6 +582,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             append(" 加速级别:${precision}")
             append(" 直径:${diameter}")
             append(" pump:${pumpFill},${pumpPicture},${pumpLine},${pumpCut}")
+            append(" laserFrequency:${laserFrequencyFill},${laserFrequencyPicture},${laserFrequencyLine},${laserFrequencyCut}")
         }.writeEngraveLog()
 
         //task
@@ -567,14 +594,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task.lpSaveEntity()
 
         isSendEngraveCmd = false
-
-        //出光功率
-        val def = HawkEngraveKeys.lastLaserFrequency ?: HawkEngraveKeys.defaultLaserFrequency
-        val laserFrequency = if (laserFrequencyList.size() == 1) {
-            laserFrequencyList.find { it != null } ?: def
-        } else {
-            def
-        }
 
         EngraveCmd.batchEngrave(
             task.bigIndex!!,
@@ -589,7 +608,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             pumpPicture,
             pumpLine,
             pumpCut,
-            laserFrequency
+            laserFrequencyFill,
+            laserFrequencyPicture,
+            laserFrequencyLine,
+            laserFrequencyCut
         ).enqueue { bean, error ->
             "批量雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error
@@ -909,6 +931,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
         isSendEngraveCmd = false
 
+        val laserFrequency =
+            if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
+                ?: HawkEngraveKeys.defaultLaserFrequency else HawkEngraveKeys.defaultLaserFrequency
+
         val engraveCmd = if (fileName == null) EngraveCmd(
             index,
             engraveConfigEntity.power.toByte(),
@@ -925,8 +951,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             pumpPicture = engraveConfigEntity.pump,
             pumpLine = engraveConfigEntity.pump,
             pumpCut = engraveConfigEntity.pump,
-            laserFrequency = engraveConfigEntity.laserFrequency
-                ?: HawkEngraveKeys.defaultLaserFrequency
+            laserFrequencyLine = laserFrequency,
+            laserFrequencyFill = laserFrequency,
+            laserFrequencyPicture = laserFrequency,
+            laserFrequencyCut = laserFrequency
         ) else EngraveCmd.filenameEngrave(
             fileName, (transferDataEntity?.mount ?: QueryCmd.TYPE_SD).toByte(),
             engraveConfigEntity.power.toByte(),
@@ -935,8 +963,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             engraveConfigEntity.type,
             diameter,
             engraveConfigEntity.precision,
-            laserFrequency = engraveConfigEntity.laserFrequency
-                ?: HawkEngraveKeys.defaultLaserFrequency
+            laserFrequency = laserFrequency
         )
 
         engraveCmd.enqueue { bean, error ->

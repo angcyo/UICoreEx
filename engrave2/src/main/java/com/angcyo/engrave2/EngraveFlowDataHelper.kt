@@ -693,6 +693,8 @@ object EngraveFlowDataHelper {
             type = last?.type ?: DeviceHelper.getProductLaserType()
             precision = last?.precision ?: HawkEngraveKeys.lastPrecision
             pump = last?.pump ?: pump
+            useLaserFrequency = last?.useLaserFrequency ?: false //2023-11-4
+            laserFrequency = last?.laserFrequency
 
         }) {
             apply(

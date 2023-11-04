@@ -18,6 +18,8 @@ import io.objectbox.annotation.Id
  * [com.angcyo.engrave.model.EngraveModel.engraveNext]
  * [com.angcyo.engrave.model.EngraveModel._startEngraveCmd]
  *
+ * [com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/09
  */
@@ -91,6 +93,11 @@ data class EngraveConfigEntity(
     var diameterPixel: Float = -1f,
 
     //---LP5专属---
+
+    /**2023-11-4
+     * 是否要使用激光器出光频率
+     * */
+    var useLaserFrequency: Boolean = false,
 
     /**2023-10-30
      * 激光器出光频率，取值范围为26-60，单位kHz

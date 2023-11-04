@@ -656,14 +656,20 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             }
 
             //LP5 白光 出光频率
+            elementItemBean?.useLaserFrequency = false
+            engraveConfigEntity?.useLaserFrequency = false
             val laserFrequencyList = _deviceConfigBean?.laserFrequencyList
             if (_showLaserFrequencyConfig &&
                 laserPeckerModel.isL5() &&
-                (engraveConfigEntity?.type == LaserPeckerHelper.LASER_TYPE_WHITE) &&
+                (engraveConfigEntity?.type == LaserPeckerHelper.LASER_TYPE_WHITE ||
+                        elementItemBean?.printType?.toByte() == LaserPeckerHelper.LASER_TYPE_WHITE) &&
                 !laserFrequencyList.isNullOrEmpty()
             ) {
+                engraveConfigEntity?.useLaserFrequency = true
+                elementItemBean?.useLaserFrequency = true
                 EngraveLaserFrequencyItem()() {
                     itemEngraveConfigEntity = engraveConfigEntity
+                    itemEngraveItemBean = elementItemBean
                     initLaserFrequencyIfNeed()
                     itemWheelList = laserFrequencyList
                     itemUpdateAction(EngraveLaserFrequencyItem.PAYLOAD_UPDATE_LASER_FREQUENCY)
@@ -921,12 +927,14 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
 
                 //LP5 白光 出光频率
+                engraveConfigEntity.useLaserFrequency = false
                 val laserFrequencyList = _deviceConfigBean?.laserFrequencyList
                 if (_showLaserFrequencyConfig &&
                     laserPeckerModel.isL5() &&
                     engraveConfigEntity.type == LaserPeckerHelper.LASER_TYPE_WHITE &&
                     !laserFrequencyList.isNullOrEmpty()
                 ) {
+                    engraveConfigEntity.useLaserFrequency = true
                     EngraveLaserFrequencyItem()() {
                         itemEngraveConfigEntity = engraveConfigEntity
                         initLaserFrequencyIfNeed()
