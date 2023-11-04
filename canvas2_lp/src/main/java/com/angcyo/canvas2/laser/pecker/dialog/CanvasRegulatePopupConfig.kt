@@ -68,6 +68,12 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         /**切片数量*/
         const val KEY_SLICE = "key_slice"
 
+        /**从图片中识别到的最大切片数量*/
+        const val KEY_SLICE_MAX = "key_slice_max"
+
+        /**每一片控制下降的高度*/
+        const val KEY_SLICE_HEIGHT = "key_slice_height"
+
         /**GCode旋转方向*/
         const val KEY_DIRECTION = "key_direction"
 
@@ -439,6 +445,17 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                 }
             }
 
+            //切片下降高度
+            if (regulateList.contains(KEY_SLICE_HEIGHT)) {
+                renderSeekBarItem(
+                    KEY_SLICE_HEIGHT,
+                    _string(R.string.canvas_slice_height),
+                    getFloatOrDef(KEY_SLICE_HEIGHT, HawkEngraveKeys.minSliceHeight),
+                    HawkEngraveKeys.minSliceHeight,
+                    HawkEngraveKeys.maxSliceHeight,
+                    unit = "mm"
+                )
+            }
             //切片数量
             if (regulateList.contains(KEY_SLICE)) {
                 renderSeekBarItem(
@@ -446,7 +463,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     _string(R.string.canvas_slice_count),
                     getIntOrDef(KEY_SLICE, 0),
                     0,
-                    HawkEngraveKeys.maxSliceGranularity
+                    getIntOrDef(KEY_SLICE_MAX, 255)
                 )
             }
 
@@ -610,6 +627,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         minValue: Float = 0f,
         maxValue: Float = 100f,
         tooltip: CharSequence? = label,
+        unit: CharSequence? = null,
         init: CanvasSeekBarItem.() -> Unit = {}
     ) {
         CanvasSeekBarItem()() { //路径填充的角度
@@ -619,7 +637,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             val sum = maxValue - minValue
 
             itemProgressTextFormatAction = {
-                (minValue + sum * it._progressFraction).canvasDecimal(1)
+                (minValue + sum * it._progressFraction).canvasDecimal(1) + (unit ?: "")
             }
 
             val def = getFloatOrDef(key, defValue)
@@ -643,6 +661,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         minValue: Int = 0,
         maxValue: Int = 100,
         tooltip: CharSequence? = label,
+        unit: CharSequence? = null,
         init: CanvasSeekBarItem.() -> Unit = {}
     ) {
         CanvasSeekBarItem()() { //路径填充的角度
@@ -653,7 +672,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             val sum = maxValue - minValue
 
             itemProgressTextFormatAction = {
-                (minValue + sum * it._progressFraction).toInt().toStr()
+                (minValue + sum * it._progressFraction).toInt().toStr() + (unit ?: "")
             }
 
             val def = getIntOrDef(key, defValue)

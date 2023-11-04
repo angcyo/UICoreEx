@@ -86,6 +86,7 @@ class SimpleTransition : ITransition {
             /*1~10*/
             numPixel = (params.pathStep?.toPixel()
                 ?: LibHawkKeys._pathAcceptableError).roundToInt(),
+            autoLaser = params.isAutoCnc,
         )
         val gCodeText = file.readText()
         file.deleteSafe()

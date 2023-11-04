@@ -121,6 +121,11 @@ data class TransitionParam(
     /**是否要激活图片的切片*/
     val enableSlice: Boolean = false,
 
+    /**切片数量*/
+    val sliceCount: Int = 0,
+    /**切片下降的高度*/
+    @MM
+    val sliceHeight: Float = HawkEngraveKeys.minSliceHeight,
     /**切片的粒度*/
     val sliceGranularity: Int? = _sliceGranularity,
 ) {

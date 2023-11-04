@@ -100,7 +100,9 @@
     <string name="out_of_bounds">超出雕刻范围</string>
     <string name="canvas_crop">剪裁</string>
     <string name="canvas_relief">浮雕</string>
-    <string name="canvas_slice_count">粒度</string>
+    <string name="canvas_slice_count">切片数量</string>
+    <string name="canvas_slice_height">每片高度</string>
+    <string name="canvas_slice_granularity">切片粒度</string>
     <string name="canvas_mesh">扭曲</string>
     <string name="canvas_system">系统</string>
     <string name="canvas_custom">自定义</string>

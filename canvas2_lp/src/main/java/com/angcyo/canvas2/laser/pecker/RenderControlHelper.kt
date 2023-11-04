@@ -435,7 +435,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 initItem(renderer)
                 itemNewHawkKeyStr = "tracer"
                 itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-                //itemEnable = _elementBean?.isSupportSliceElement == true
+                itemEnable = _elementBean?.isSupportSliceElement == true
                 itemClick = {
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)

@@ -455,9 +455,11 @@ object HawkEngraveKeys {
     /**最大切片粒度*/
     var maxSliceGranularity: Int by HawkPropertyValue<Any, Int>(100)
 
-    /**切片浮雕, 每一层需要下降/上升的高度*/
-    @MM
-    var sliceGcodeControlHeight: Float by HawkPropertyValue<Any, Float>(0.1f)
+    /**最小切片下降高度*/
+    var minSliceHeight: Float by HawkPropertyValue<Any, Float>(0.1f)
+
+    /**最大切片下降高度*/
+    var maxSliceHeight: Float by HawkPropertyValue<Any, Float>(1f)
 
     var lastOutlineSpan: Float by HawkPropertyValue<Any, Float>(2f)
     var lastOutlineKeepHole: Boolean by HawkPropertyValue<Any, Boolean>(true)

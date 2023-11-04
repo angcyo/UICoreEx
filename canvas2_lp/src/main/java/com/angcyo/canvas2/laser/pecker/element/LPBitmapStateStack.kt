@@ -46,6 +46,9 @@ class LPBitmapStateStack : BitmapStateStack() {
     var maxDiameter: Float? = null
     var isMesh = false
 
+    var sliceCount: Int = 0
+    var sliceHeight: Float = HawkEngraveKeys.minSliceHeight
+
     /**切片的粒度*/
     var sliceGranularity: Int = 0
 
@@ -83,6 +86,8 @@ class LPBitmapStateStack : BitmapStateStack() {
             maxDiameter = elementBean.maxDiameter
             isMesh = elementBean.isMesh
 
+            sliceHeight = elementBean.sliceHeight
+            sliceCount = elementBean.sliceCount
             sliceGranularity = elementBean.sliceGranularity
             reliefStrength = elementBean.reliefStrength
         }
@@ -120,6 +125,8 @@ class LPBitmapStateStack : BitmapStateStack() {
             elementBean.meshShape = meshShape
             elementBean.isMesh = isMesh
 
+            elementBean.sliceHeight = sliceHeight
+            elementBean.sliceCount = sliceCount
             elementBean.sliceGranularity = sliceGranularity
             elementBean.reliefStrength = reliefStrength
         }

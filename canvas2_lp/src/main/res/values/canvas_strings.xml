@@ -100,7 +100,9 @@
     <string name="out_of_bounds">Out of bounds</string>
     <string name="canvas_crop">Crop</string>
     <string name="canvas_relief">Relief</string>
-    <string name="canvas_slice_count">Granularity</string>
+    <string name="canvas_slice_count">Slices</string>
+    <string name="canvas_slice_height">Height</string>
+    <string name="canvas_slice_granularity">Granularity</string>
     <string name="canvas_mesh">Mesh</string>
     <string name="canvas_system">System</string>
     <string name="canvas_custom">Custom</string>

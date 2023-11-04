@@ -11,6 +11,7 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -27,12 +28,14 @@ import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.vmApp
 import com.angcyo.crop.ui.cropDialog
+import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyleInt
+import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
@@ -44,6 +47,7 @@ import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.toHexColorString
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
@@ -167,7 +171,9 @@ object LPBitmapHandler {
             direction = bean.gcodeDirection,
             angle = bean.gcodeAngle.toDouble(),
             type = if (bean.gcodeOutline && bean.gcodeLineSpace < LPDataConstant.DEFAULT_MIN_LINE_SPACE)
-                2 /*仅轮廓*/ else if (bean.gcodeOutline) 1 /*轮廓+填充*/ else 3 /*不需要轮廓*/
+                2 /*仅轮廓*/ else if (bean.gcodeOutline) 1 /*轮廓+填充*/ else 3,
+            /*不需要轮廓*/
+            autoLaser = _isAutoCnc,
         )
     }
 
@@ -1056,21 +1062,42 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val bean = renderer.lpElementBean() ?: return
+        val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.getEngraveBitmapData() ?: return
         val context = anchor.context
 
+        val colors = BitmapHandle.getChannelValueList(operateBitmap).map { it.toUByte().toInt() }
+        val maxSliceCount = 255 - (colors.minOrNull() ?: 255)
         context.canvasRegulateWindow(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceGranularity)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SLICE_HEIGHT, bean.sliceHeight)
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_SLICE,
+                if (bean.sliceCount <= 0) maxSliceCount else bean.sliceCount
+            )
+            setProperty(CanvasRegulatePopupConfig.KEY_SLICE_MAX, maxSliceCount)
             firstApply = false
             onApplyAction = { dismiss ->
                 if (dismiss) {
-                    onDismissAction()
-                } else {
-                    val sliceGranularity =
-                        getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceGranularity)
-                    bean.sliceGranularity = sliceGranularity
                     renderer.requestUpdatePropertyFlag(Reason.user.apply {
                         controlType = BaseControlPoint.CONTROL_TYPE_DATA
                     }, delegate)
+                    onDismissAction()
+                } else {
+                    bean.sliceHeight =
+                        getFloatOrDef(CanvasRegulatePopupConfig.KEY_SLICE_HEIGHT, bean.sliceHeight)
+                    bean.sliceCount =
+                        getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
+
+                    if (isDebugType()) {
+                        //测试切片后的阈值
+                        val thresholdList =
+                            EngraveTransitionHelper.getSliceThresholdList(colors, bean.sliceCount)
+                        L.i(buildString {
+                            append("切片[${bean.sliceCount}/${maxSliceCount}]:")
+                            append("${colors}->")
+                            append("$thresholdList")
+                        })
+                    }
                 }
             }
         }

@@ -388,10 +388,18 @@ data class LPElementBean(
      * */
     var meshShape: String? = null,
 
+    /**切片的数量*/
+    var sliceCount: Int = 0,
+
+    /**每一层下降的高度 mm单位*/
+    @MM
+    var sliceHeight: Float = HawkEngraveKeys.minSliceHeight,
+
     /**切片的粒度,
      * 1:每1个色阶1层,
      * 10:每10个色阶1层,
      * */
+    @Implementation
     var sliceGranularity: Int = 0,
 
     /**2d浮雕强度[1~20]*/
@@ -614,7 +622,7 @@ data class LPElementBean(
 
     /**当前数据是否需要切片*/
     val isNeedSlice: Boolean
-        get() = isSupportSliceElement && sliceGranularity > 0
+        get() = isSupportSliceElement && sliceCount > 0
 
     /**是否要显示条码字符*/
     val isShowBarcodeText: Boolean

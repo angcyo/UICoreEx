@@ -48,7 +48,6 @@ import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.lines
-import com.angcyo.library.ex.low8Bit
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.save
 import com.angcyo.library.ex.size
@@ -67,6 +66,7 @@ import com.angcyo.opencv.OpenCV
 import com.angcyo.rust.handle.RustBitmapHandle
 import com.angcyo.widget.span.span
 import java.io.File
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -96,6 +96,49 @@ object EngraveTransitionHelper {
 
     /**日志输出的强调颜色*/
     var accentColor = _color(R.color.error)
+
+    /**更具切片数量, 获取对应的切片色值阈值列表
+     * [colorsList] 图片中的颜色阈值列表
+     * [com.angcyo.uicore.demo.ExampleUnitTest.testSliceList]
+     * */
+    fun getSliceThresholdList(colorsList: List<Int>, sliceCount: Int): List<Int> {
+        //移除白色
+        val colors = colorsList.toMutableList().apply { removeAll { it == 255 } }
+
+        val thresholdList = mutableListOf<Int>()
+
+        //最黑色颜色
+        val minColor = colors.minOrNull() ?: 0
+        //最白色颜色
+        val maxColor = colors.maxOrNull() ?: 255
+
+        //预估每一片的理论色阶值
+        val sliceList = mutableListOf<Int>()
+        if (sliceCount <= 1) {
+            sliceList.add(maxColor)
+        } else {
+            for (i in 0 until sliceCount) {
+                val value =
+                    maxColor - ((maxColor - minColor) * 1f / (sliceCount - 1) * i).roundToInt()
+                sliceList.add(value)
+            }
+        }
+        sliceList.sortDescending() //从大到小排序
+
+        for (i in 0 until sliceCount) {
+            val ref = sliceList[i]
+            val value = colors.minByOrNull {
+                if (it <= ref) {
+                    (it - ref).absoluteValue
+                } else {
+                    Int.MAX_VALUE
+                }
+            } ?: 0
+            thresholdList.add(value)
+        }
+
+        return thresholdList
+    }
 
     //region ---核心---
 
@@ -461,9 +504,8 @@ object EngraveTransitionHelper {
                 val sliceGcodeFile = libCacheFile("slice_output.gcode")
                 sliceGcodeFile.deleteSafe()
 
-                val sliceGranularity = max(1, params.sliceGranularity ?: 1)
-                val colors = BitmapHandle.getChannelValueList(bitmap)
-                var lastLevel = (colors.firstOrNull() ?: 255).low8Bit()
+                val colors = BitmapHandle.getChannelValueList(bitmap).map { it.toUByte().toInt() }
+                val thresholdList = getSliceThresholdList(colors, params.sliceCount)
 
                 DeviceHelper.tempEngraveLogPathList.clear()
                 val controlHeight = buildString {
@@ -477,49 +519,55 @@ object EngraveTransitionHelper {
                     }
                     appendLine()
                     append("M3021")
-                    append("S${HawkEngraveKeys.sliceGcodeControlHeight}")
+                    append("S${params.sliceHeight}")
                     appendLine()
                 }
-                colors.forEachIndexed { levelIndex, threshold ->
-                    //单切片, 防止一下子内存占用过高
-                    val threshold = threshold.low8Bit()
-                    if (threshold != 255) { //不是白色
-                        BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
-                            val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
-                            bitmap.save(cacheBitmapFile)
-                            L.i("切片[$levelIndex/${colors.size}]:$threshold->${cacheBitmapFile.absolutePath}")
-                            DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
 
-                            params.bitmapToGCodeType = 1
-                            params.bitmapToGCodeIsLast = levelIndex == colors.size - 1
-                            val bounds = provider.getEngraveDataBounds(RectF())
-                            val gCodeFile = if (params.useOpenCvHandleGCode) {
-                                transition.covertBitmap2GCode(bitmap, bounds, params)
-                            } else {
-                                transition.covertBitmapPixel2GCode(bitmap, bounds, params)
-                            }
-                            gCodeFile.readText()?.let {
-                                if (levelIndex != 0) {
-                                    //不是第一层, 则需要下降支架高度
-                                    sliceGcodeFile.appendText(controlHeight)
+                //最后一次的阈值
+                var lastThreshold = -1
+                var lastGCode: String? = null
+
+                val lastIndex = thresholdList.size - 1
+                thresholdList.forEachIndexed { levelIndex, threshold ->
+                    //单切片, 防止一下子内存占用过高
+                    if (threshold != 255) { //不是白色
+                        if (lastThreshold == threshold && lastGCode != null && levelIndex != lastIndex) {
+                            //使用缓存, 并下降高度
+                            sliceGcodeFile.appendText(controlHeight)
+                            sliceGcodeFile.appendText(lastGCode!!)
+                        } else {
+                            BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
+                                val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
+                                bitmap.save(cacheBitmapFile)
+                                L.i("切片[$levelIndex/${thresholdList.size}]:$threshold->${cacheBitmapFile.absolutePath}")
+                                DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
+
+                                params.bitmapToGCodeType = 1
+                                params.bitmapToGCodeIsLast = levelIndex == lastIndex
+                                val bounds = provider.getEngraveDataBounds(RectF())
+                                val gCodeFile = if (params.useOpenCvHandleGCode) {
+                                    transition.covertBitmap2GCode(bitmap, bounds, params)
+                                } else {
+                                    transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                                 }
-                                sliceGcodeFile.appendText(it)
-                                //循环的次数
-                                for (i in (threshold + sliceGranularity) until lastLevel step sliceGranularity) {
-                                    //每一层下降高度
-                                    sliceGcodeFile.appendText(controlHeight)
+                                gCodeFile.readText()?.let {
+                                    lastGCode = it
+                                    if (levelIndex != 0) {
+                                        //不是第一层, 则需要下降支架高度
+                                        sliceGcodeFile.appendText(controlHeight)
+                                    }
                                     sliceGcodeFile.appendText(it)
                                 }
-                            }
 
-                            val cacheGCodeFile = libCacheFile("slice_${threshold}.gcode")
-                            if (gCodeFile.renameTo(cacheGCodeFile)) {
-                                DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
+                                val cacheGCodeFile = libCacheFile("slice_${threshold}.gcode")
+                                if (gCodeFile.renameTo(cacheGCodeFile)) {
+                                    DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
+                                }
+                                bitmap.recycle()
                             }
-                            bitmap.recycle()
                         }
                     }
-                    lastLevel = threshold
+                    lastThreshold = threshold
                 }
 
                 val fileSize = sliceGcodeFile.length()
@@ -537,7 +585,7 @@ object EngraveTransitionHelper {
                     }
                     append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
                     append(" ${bitmap.byteCount.toSizeString()}->${fileSize.toSizeString()}")
-                    append(" $colors")
+                    append(" ${colors}->${params.sliceCount}:${params.sliceHeight}")
                     append(" 耗时:${LTime.time()}") {
                         foregroundColor = accentColor
                     }

@@ -210,10 +210,11 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
             itemNewHawkKeyStr = "use_gcode_slice_data"
             itemClick = {
                 wrapLoading {
+                    val bean = renderElement?.elementBean
                     EngraveTransitionHelper.transitionToGCode(
                         renderElement,
                         transferConfigEntity,
-                        TransitionParam(enableSlice = true)
+                        TransitionParam(enableSlice = true, sliceCount = bean?.sliceCount ?: 1)
                     )
                 }
             }
