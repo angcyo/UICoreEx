@@ -469,4 +469,8 @@ object HawkEngraveKeys {
     var lastTracerLength: Float by HawkPropertyValue<Any, Float>(4f)
     var lastTracerSplice: Float by HawkPropertyValue<Any, Float>(0.5f)
 
+    /**已经显示了提示的版本号*/
+    var showPowerTipVersion: String? by HawkPropertyValue<Any, String?>(null)
+    var showSpeedTipVersion: String? by HawkPropertyValue<Any, String?>(null)
+    var showTimesTipVersion: String? by HawkPropertyValue<Any, String?>(null)
 }

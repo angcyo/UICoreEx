@@ -1,6 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.graphics.Typeface
+import android.view.View
+import androidx.core.view.postDelayed
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
@@ -8,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.popup.popupTipWindow
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -21,7 +24,10 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.calcIncrementValue
 import com.angcyo.library.ex.decimal
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.hawkGetString
+import com.angcyo.library.ex.hawkPut
 import com.angcyo.library.ex.toStr
+import com.angcyo.library.getAppVersionCode
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
@@ -78,56 +84,65 @@ class EngravePropertyItem : DslAdapterItem() {
         val powerLabel = _string(R.string.custom_power)
         val power = itemEngraveConfigEntity?.power ?: (itemEngraveItemBean?.printPower
             ?: HawkEngraveKeys.lastPower)
-        itemHolder.tv(R.id.power_view)?.text = span {
-            if (HawkEngraveKeys.enableConfigIcon) {
-                appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_power_svg)))
-            } else {
-                append(powerLabel)
+        itemHolder.tv(R.id.power_view)?.apply {
+            text = span {
+                if (HawkEngraveKeys.enableConfigIcon) {
+                    appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_power_svg)))
+                } else {
+                    append(powerLabel)
+                }
+                appendln()
+                append("$power") {
+                    fontSize = 40 * dpi
+                    style = Typeface.BOLD
+                    foregroundColor = _color(R.color.device_primary_color)
+                }
+                append("%")
             }
-            appendln()
-            append("$power") {
-                fontSize = 40 * dpi
-                style = Typeface.BOLD
-                foregroundColor = _color(R.color.device_primary_color)
-            }
-            append("%")
+            checkAndShowTip(this, powerLabel, HawkEngraveKeys::showPowerTipVersion.name)
         }
 
         //深度-速度
         val speedLabel = _string(R.string.custom_speed)
         val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
             ?: HawkEngraveKeys.lastDepth)
-        itemHolder.tv(R.id.speed_view)?.text = span {
-            if (HawkEngraveKeys.enableConfigIcon) {
-                appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_depth_svg)))
-            } else {
-                append(speedLabel)
+        itemHolder.tv(R.id.speed_view)?.apply {
+            text = span {
+                if (HawkEngraveKeys.enableConfigIcon) {
+                    appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_depth_svg)))
+                } else {
+                    append(speedLabel)
+                }
+                appendln()
+                append("$depth") {
+                    fontSize = 40 * dpi
+                    style = Typeface.BOLD
+                    foregroundColor = _color(R.color.device_primary_color)
+                }
+                append("%")
             }
-            appendln()
-            append("$depth") {
-                fontSize = 40 * dpi
-                style = Typeface.BOLD
-                foregroundColor = _color(R.color.device_primary_color)
-            }
-            append("%")
+            checkAndShowTip(this, speedLabel, HawkEngraveKeys::showSpeedTipVersion.name)
         }
 
         //雕刻次数
         itemHolder.visible(R.id.times_view, itemShowTimes)
         val timesLabel = _string(R.string.print_times)
         val time = itemEngraveConfigEntity?.time ?: (itemEngraveItemBean?.printCount ?: 1)
-        itemHolder.tv(R.id.times_view)?.text = span {
-            if (HawkEngraveKeys.enableConfigIcon) {
-                appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_times_svg)))
-            } else {
-                append(timesLabel)
+        itemHolder.tv(R.id.times_view)?.apply {
+            text = span {
+                if (HawkEngraveKeys.enableConfigIcon) {
+                    appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_times_svg)))
+                } else {
+                    append(timesLabel)
+                }
+                appendln()
+                append("$time") {
+                    fontSize = 40 * dpi
+                    style = Typeface.BOLD
+                    foregroundColor = _color(R.color.device_primary_color)
+                }
             }
-            appendln()
-            append("$time") {
-                fontSize = 40 * dpi
-                style = Typeface.BOLD
-                foregroundColor = _color(R.color.device_primary_color)
-            }
+            checkAndShowTip(this, timesLabel, HawkEngraveKeys::showTimesTipVersion.name)
         }
 
         //事件
@@ -229,4 +244,16 @@ class EngravePropertyItem : DslAdapterItem() {
     /**获取选中的byte数据*/
     fun WheelDialogConfig.getSelectedInt(index: Int, def: Int): Int =
         wheelItems?.get(index)?.toString()?.toIntOrNull() ?: def
+
+    /**检查或者显示tip窗口*/
+    private fun checkAndShowTip(anchor: View, tip: CharSequence?, hawkKey: String) {
+        val value = hawkKey.hawkGetString()?.toLongOrNull()
+        val versionCode = getAppVersionCode()
+        if (value != versionCode) {
+            anchor.postDelayed(360L) {
+                anchor.popupTipWindow(tip)
+                hawkKey.hawkPut("$versionCode")
+            }
+        }
+    }
 }
