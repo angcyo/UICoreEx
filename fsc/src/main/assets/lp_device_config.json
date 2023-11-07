@@ -506,6 +506,7 @@
     "sMaxWidth": 300,
     "carMaxWidth": 2000,
     "maxTransferDataSize": 480000000,
+    "supportMaxSpeed": 15000,
     "laserTypeList": [
       {
         "type": 1,

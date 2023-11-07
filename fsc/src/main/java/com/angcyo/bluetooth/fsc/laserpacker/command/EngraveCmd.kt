@@ -74,6 +74,10 @@ data class EngraveCmd(
     val laserFrequencyPicture: Int = -1, //白光激光出光频率
     val laserFrequencyLine: Int = -1, //白光激光出光频率
     val laserFrequencyCut: Int = -1, //白光激光出光频率
+    val bigSpeedFill: Int? = null,
+    val bigSpeedPicture: Int? = null,
+    val bigSpeedLine: Int? = null,
+    val bigSpeedCut: Int? = null,
 ) : BaseCommand() {
 
     companion object {
@@ -121,6 +125,10 @@ data class EngraveCmd(
             laserFrequencyPicture: Int,
             laserFrequencyLine: Int,
             laserFrequencyCut: Int,
+            bigSpeedFill: Int?,
+            bigSpeedPicture: Int?,
+            bigSpeedLine: Int?,
+            bigSpeedCut: Int?,
         ): EngraveCmd {
             return EngraveCmd(
                 state = 0x05,
@@ -142,6 +150,10 @@ data class EngraveCmd(
                 laserFrequencyPicture = laserFrequencyPicture,
                 laserFrequencyLine = laserFrequencyLine,
                 laserFrequencyCut = laserFrequencyCut,
+                bigSpeedFill = bigSpeedFill,
+                bigSpeedPicture = bigSpeedPicture,
+                bigSpeedLine = bigSpeedLine,
+                bigSpeedCut = bigSpeedCut,
             )
         }
 
@@ -244,7 +256,15 @@ data class EngraveCmd(
                 write(pumpLine)
                 write(pumpCut)
                 //2023-10-30 白光激光出光频率
+                write(laserFrequencyFill)
+                write(laserFrequencyPicture)
                 write(laserFrequencyLine)
+                write(laserFrequencyCut)
+                //2023-11-7 雕刻大速度
+                write(bigSpeedFill ?: 0, 2)
+                write(bigSpeedPicture ?: 0, 2)
+                write(bigSpeedLine ?: 0, 2)
+                write(bigSpeedCut ?: 0, 2)
             }
             val size = bytes.size()
             data = bytes.toHexString(false)

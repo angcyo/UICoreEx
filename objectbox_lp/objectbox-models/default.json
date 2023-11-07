@@ -281,7 +281,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "26:6164986946782892307",
+      "lastPropertyId": "27:6311780813203614263",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -404,6 +404,11 @@
           "id": "26:6164986946782892307",
           "name": "useLaserFrequency",
           "type": 1
+        },
+        {
+          "id": "27:6311780813203614263",
+          "name": "bigSpeed",
+          "type": 5
         }
       ],
       "relations": []

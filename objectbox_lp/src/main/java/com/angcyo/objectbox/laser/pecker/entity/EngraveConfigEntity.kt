@@ -142,6 +142,9 @@ data class EngraveConfigEntity(
      * 不进行数据创建时的逻辑*/
     var dpi: Float? = null,
 
+    /**2023-11-7 雕刻速度, 支持15000这样的大值*/
+    var bigSpeed: Int? = null,
+
     /**创建时间*/
     var createTime: Long = nowTime()
 ) {

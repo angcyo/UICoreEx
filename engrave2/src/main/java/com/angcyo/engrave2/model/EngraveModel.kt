@@ -514,6 +514,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         var laserFrequencyLine = HawkEngraveKeys.defaultLaserFrequency
         var laserFrequencyCut = HawkEngraveKeys.defaultLaserFrequency
 
+        //大速度
+        var bigSpeedFill: Int? = 0
+        var bigSpeedPicture: Int? = 0
+        var bigSpeedLine: Int? = 0
+        var bigSpeedCut: Int? = 0
+
         for (index in indexList) {
             EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
                 //雕刻参数
@@ -539,6 +545,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
                     when (engraveConfigEntity.layerId) {
                         LaserPeckerHelper.LAYER_FILL -> {
+                            bigSpeedFill = engraveConfigEntity.bigSpeed
                             pumpFill = engraveConfigEntity.pump
                             laserFrequencyFill =
                                 if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
@@ -546,6 +553,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         }
 
                         LaserPeckerHelper.LAYER_PICTURE -> {
+                            bigSpeedPicture = engraveConfigEntity.bigSpeed
                             pumpPicture = engraveConfigEntity.pump
                             laserFrequencyPicture =
                                 if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
@@ -553,6 +561,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         }
 
                         LaserPeckerHelper.LAYER_LINE -> {
+                            bigSpeedLine = engraveConfigEntity.bigSpeed
                             pumpLine = engraveConfigEntity.pump
                             laserFrequencyLine =
                                 if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
@@ -560,6 +569,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         }
 
                         LaserPeckerHelper.LAYER_CUT -> {
+                            bigSpeedCut = engraveConfigEntity.bigSpeed
                             pumpCut = engraveConfigEntity.pump
                             laserFrequencyCut =
                                 if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
@@ -611,7 +621,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             laserFrequencyFill,
             laserFrequencyPicture,
             laserFrequencyLine,
-            laserFrequencyCut
+            laserFrequencyCut,
+            bigSpeedFill,
+            bigSpeedPicture,
+            bigSpeedLine,
+            bigSpeedCut,
         ).enqueue { bean, error ->
             "批量雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error

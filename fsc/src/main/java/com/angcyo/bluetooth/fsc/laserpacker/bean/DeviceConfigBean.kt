@@ -68,6 +68,9 @@ data class DeviceConfigBean(
     var carMaxHeight: Int = 0,
     var penMaxHeight: Int = 0,
 
+    /**2023-11-7 支持的最大速度*/
+    var supportMaxSpeed: Int? = null,
+
     /**未指定配置dpi时. 默认的dpi分辨率列表*/
     var dpiList: List<PxInfo>? = null,
 

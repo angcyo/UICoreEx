@@ -451,6 +451,8 @@ data class LPElementBean(
     var printCount: Int? = null,
     //风速级别
     var pump: Int? = null,
+    /**2023-11-7 雕刻速度, 支持15000这样的大值*/
+    var bigSpeed: Int? = null,
 
     /**2023-11-4
      * 是否要使用激光器出光频率

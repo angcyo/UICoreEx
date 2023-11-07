@@ -14,6 +14,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.element.haveVariableElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveBigValueItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveConfirmItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishControlItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishInfoItem
@@ -944,6 +945,25 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
 
                 //雕刻参数
+
+                //2023-11-7 big雕刻速度
+                val supportMaxSpeed = _deviceConfigBean?.supportMaxSpeed
+                if (supportMaxSpeed == null) {
+                    engraveConfigEntity.bigSpeed = null
+                } else {
+                    EngraveBigValueItem()() {
+                        itemMaxValue = supportMaxSpeed.toFloat()
+                        itemEngraveConfigEntity = engraveConfigEntity
+                        /*observeItemChange {
+                            engraveConfigProvider.onSaveEngraveConfig(
+                                this@BaseEngraveLayoutHelper,
+                                engraveConfigEntity
+                            )
+                        }
+                        observeMaterialChange()*/
+                    }
+                }
+
                 if (deviceStateModel.isPenMode()) {
                     //握笔模块, 雕刻速度, 非雕刻深度
                     engraveConfigEntity.power = 100 //功率必须100%
