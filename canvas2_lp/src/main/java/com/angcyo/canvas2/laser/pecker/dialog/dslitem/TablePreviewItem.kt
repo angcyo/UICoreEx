@@ -12,8 +12,10 @@ import com.angcyo.library.component.runOnBackground
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.createTextPaint
 import com.angcyo.library.ex.drawTextCenter
+import com.angcyo.library.ex.visible
 import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.progress.ArcLoadingView
 import java.lang.ref.WeakReference
 
 /**
@@ -35,6 +37,13 @@ class TablePreviewItem : DslAdapterItem() {
 
     var itemPreviewBitmap: Bitmap? = lastCachePreviewBitmap?.get()
 
+    /**是否正在加载中...*/
+    var _itemIsLoading = false
+        set(value) {
+            field = value
+            updateAdapterItem()
+        }
+
     init {
         itemLayoutId = R.layout.item_table_preview__layout
     }
@@ -46,8 +55,15 @@ class TablePreviewItem : DslAdapterItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+        itemHolder.v<ArcLoadingView>(R.id.lib_progress_view)?.apply {
+            visible(_itemIsLoading)
+            if (_itemIsLoading) {
+                startLoading()
+            } else {
+                endLoading()
+            }
+        }
         itemHolder.img(R.id.lib_image_view)?.apply {
-
             if (_isDarkMode) {
                 //暗色适配 com.angcyo.canvas2.laser.pecker.RenderLayoutHelper.bindRenderLayout
                 setBackgroundColor(_color(R.color.colorPrimaryDark))
@@ -63,6 +79,7 @@ class TablePreviewItem : DslAdapterItem() {
 
     /**更新预览效果图*/
     fun updatePreview() {
+        _itemIsLoading = true
         runOnBackground {
             val paint = createTextPaint(
                 _color(R.color.colorAccent),
@@ -96,7 +113,7 @@ class TablePreviewItem : DslAdapterItem() {
             lastCachePreviewBitmap?.get()?.recycle()
             lastCachePreviewBitmap = WeakReference(bitmap)
             itemPreviewBitmap = bitmap
-            updateAdapterItem()
+            _itemIsLoading = false
         }
     }
 }

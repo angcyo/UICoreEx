@@ -453,6 +453,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //功率/深度/次数
             EngravePropertyItem()() {
                 itemShowTimes = false
+                itemShowPopupTip = false
                 itemLabelText = "其它元素参数"
             }
         }

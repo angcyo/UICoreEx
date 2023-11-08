@@ -93,6 +93,9 @@ class EngravePropertyItem : DslAdapterItem() {
     /**Label的点击事件*/
     var itemLabelClickAction: ViewAction? = null
 
+    /**是否显示Popup提示*/
+    var itemShowPopupTip: Boolean = true
+
     private val nightModel = vmApp<NightModel>()
 
     init {
@@ -270,7 +273,7 @@ class EngravePropertyItem : DslAdapterItem() {
     private fun checkAndShowTip(anchor: View, tip: CharSequence?, hawkKey: String) {
         val value = hawkKey.hawkGetString()?.toLongOrNull()
         val versionCode = getAppVersionCode()
-        if (value != versionCode) {
+        if (itemShowPopupTip && value != versionCode) {
             anchor.postDelayed(360L) {
                 anchor.popupTipWindow(tip)
                 hawkKey.hawkPut("$versionCode")
