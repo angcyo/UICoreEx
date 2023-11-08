@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker._showPumpConfig
+import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -430,6 +431,7 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
             //雕刻速度
             EngraveOptionWheelItem()() {
                 itemTag = MaterialEntity.SPEED
+                itemShowRefVelocity = _showRefVelocity
                 itemLabelText = _string(R.string.engrave_speed)
                 itemWheelList = EngraveHelper.percentList()
                 itemEngraveConfigEntity = engraveConfigEntity

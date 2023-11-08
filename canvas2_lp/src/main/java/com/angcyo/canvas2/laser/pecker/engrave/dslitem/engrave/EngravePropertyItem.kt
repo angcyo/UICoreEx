@@ -8,6 +8,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.mmToRenderUnitValue
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.popupTipWindow
@@ -28,10 +30,12 @@ import com.angcyo.library.ex.hawkGetString
 import com.angcyo.library.ex.hawkPut
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.getAppVersionCode
+import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
+import kotlin.math.roundToInt
 
 /**
  * 雕刻属性item, 包含功率/深度/次数
@@ -42,6 +46,34 @@ import com.angcyo.widget.span.span
  * @since 2022/10/15
  */
 class EngravePropertyItem : DslAdapterItem() {
+
+    companion object {
+        /**获取深度对应的参考速度*/
+        fun getReferenceVelocity(layoutId: String?, depth: Int): String {
+            val digit = if (LPConstant.renderUnit is InchRenderUnit) {
+                //英制单位下用3位小数
+                3
+            } else {
+                2
+            }
+            val unit = "${LPConstant.renderUnit.getUnit()}/s"
+            if (layoutId == LaserPeckerHelper.LAYER_LINE || layoutId == LaserPeckerHelper.LAYER_CUT) {
+                val value = (if (depth <= 40) {
+                    calcIncrementValue(depth, 1, 80f, -1.5f)
+                } else if (depth <= 60) {
+                    calcIncrementValue(depth, 41, 20f, -0.5f)
+                } else if (depth <= 100) {
+                    calcIncrementValue(depth, 61, 9.85f, -0.25f)
+                } else {
+                    0f
+                })
+                return value.mmToRenderUnitValue().decimal(digit, false, false) + unit
+            } else {
+                val value = EngraveCmd.depthToSpeed(depth) * 2
+                return value.toFloat().mmToRenderUnitValue().roundToInt().toString() + unit
+            }
+        }
+    }
 
     /**参数配置实体*/
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
@@ -175,7 +207,15 @@ class EngravePropertyItem : DslAdapterItem() {
 
                 if (itemShowRefVelocity) {
                     wheelItemToStringAction = {
-                        it.toStr() + " (${getReferenceVelocity(it.toStr().toIntOrNull() ?: 0)}mm/s)"
+                        val layoutId =
+                            itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId
+
+                        it.toStr() + " (${
+                            getReferenceVelocity(
+                                layoutId,
+                                it.toStr().toIntOrNull() ?: 0
+                            )
+                        })"
                     }
                 }
 
@@ -220,25 +260,6 @@ class EngravePropertyItem : DslAdapterItem() {
     override fun onItemChangeListener(item: DslAdapterItem) {
         itemEngraveConfigEntity?.lpSaveEntity()
         super.onItemChangeListener(item)
-    }
-
-    /**获取深度对应的参考速度*/
-    private fun getReferenceVelocity(depth: Int): String? {
-        val layoutId = itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId
-        val digit = 2
-        if (layoutId == LaserPeckerHelper.LAYER_LINE || layoutId == LaserPeckerHelper.LAYER_CUT) {
-            return (if (depth <= 40) {
-                calcIncrementValue(depth, 1, 80f, -1.5f)
-            } else if (depth <= 60) {
-                calcIncrementValue(depth, 41, 20f, -0.5f)
-            } else if (depth <= 100) {
-                calcIncrementValue(depth, 61, 9.85f, -0.25f)
-            } else {
-                null
-            })?.decimal(digit, false, false)
-        } else {
-            return "${EngraveCmd.depthToSpeed(depth) * 2}"
-        }
     }
 
     /**获取选中的byte数据*/

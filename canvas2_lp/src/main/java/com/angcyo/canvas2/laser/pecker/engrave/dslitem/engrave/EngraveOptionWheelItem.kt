@@ -2,17 +2,20 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
 import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dialog2.dslitem.itemWheelSelectorAction
+import com.angcyo.dialog2.dslitem.itemWheelToTextAction
 import com.angcyo.dialog2.dslitem.itemWheelUnit
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.ensurePrintPrecision
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -35,8 +38,26 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
     /**单元素参数配置*/
     var itemEngraveItemBean: LPElementBean? = null
 
+    /**是否要显示速度参考值
+     * [com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravePropertyItem.itemShowRefVelocity]*/
+    var itemShowRefVelocity: Boolean = false
+
     init {
         itemLayoutId = R.layout.item_engrave_option_layout
+
+        itemWheelToTextAction = { item ->
+            val str = item.toStr()
+            if (itemShowRefVelocity) {
+                str + " (${
+                    EngravePropertyItem.getReferenceVelocity(
+                        LaserPeckerHelper.LAYER_LINE,
+                        str.toIntOrNull() ?: 0
+                    )
+                }) "
+            } else {
+                str
+            }
+        }
 
         itemWheelSelectorAction = { dialog, index, item ->
             //赋值操作

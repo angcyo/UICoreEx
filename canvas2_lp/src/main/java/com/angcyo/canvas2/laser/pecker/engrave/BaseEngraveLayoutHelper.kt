@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker._showLaserFrequencyConfig
 import com.angcyo.bluetooth.fsc.laserpacker._showPumpConfig
+import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
@@ -682,6 +683,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 //雕刻速度, 非雕刻深度
                 EngraveOptionWheelItem()() {
                     itemTag = MaterialEntity.SPEED
+                    itemShowRefVelocity = _showRefVelocity
                     itemLabelText = _string(R.string.engrave_speed)
                     itemWheelList = EngraveHelper.percentList()
                     itemEngraveItemBean = elementItemBean
@@ -975,6 +977,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     //雕刻速度
                     EngraveOptionWheelItem()() {
                         itemTag = MaterialEntity.SPEED
+                        itemShowRefVelocity = _showRefVelocity
                         itemLabelText = _string(R.string.engrave_speed)
                         itemWheelList = EngraveHelper.percentList()
                         itemEngraveConfigEntity = engraveConfigEntity
