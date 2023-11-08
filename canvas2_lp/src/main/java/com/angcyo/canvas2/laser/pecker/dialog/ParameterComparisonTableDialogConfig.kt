@@ -324,6 +324,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     var renderDelegate: CanvasRenderDelegate? = null
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     init {
         dialogTitle = _string(R.string.add_parameter_comparison_table)
@@ -339,6 +340,12 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         }
 
         onRenderAdapterAction = {
+
+            if (deviceStateModel.isPenMode() || laserPeckerModel.isZOpen()) {
+                //画布模式下, 只能用GCode
+                gridLayerId = LaserPeckerHelper.LAYER_LINE
+            }
+
             if (needPreview) {
                 TablePreviewItem()() {
                     parameterComparisonTableDialogConfig = this@ParameterComparisonTableDialogConfig
@@ -380,28 +387,32 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             }
 
             //图层选择
-            LayerSegmentItem()() {
-                itemIncludeCutLayer = true
-                itemCurrentIndex = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)
-                    .indexOfFirst { it.layerId == gridLayerId }
-                observeItemChange {
-                    gridLayerId = currentLayerInfo().layerId
-                    //updateTablePreview()
-                    refreshDslAdapter()
+            if (!deviceStateModel.isPenMode()) {
+                LayerSegmentItem()() {
+                    itemIncludeCutLayer = true
+                    itemCurrentIndex = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)
+                        .indexOfFirst { it.layerId == gridLayerId }
+                    observeItemChange {
+                        gridLayerId = currentLayerInfo().layerId
+                        //updateTablePreview()
+                        refreshDslAdapter()
+                    }
                 }
             }
 
-            //激光类型选择
-            val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-            if (typeList.size() > 1) {
-                //激光类型
-                EngraveLaserSegmentItem()() {
-                    observeItemChange {
-                        val type = currentLaserTypeInfo().type
-                        gridPrintType = type
-                        HawkEngraveKeys.lastType = type.toInt()
+            //激光类型选择 激光光源选择
+            if (laserPeckerModel.productInfoData.value?.isCSeries() != true) {
+                val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+                if (typeList.size() > 1) {
+                    //激光类型
+                    EngraveLaserSegmentItem()() {
+                        observeItemChange {
+                            val type = currentLaserTypeInfo().type
+                            gridPrintType = type
+                            HawkEngraveKeys.lastType = type.toInt()
 
-                        updateTablePreview()
+                            updateTablePreview()
+                        }
                     }
                 }
             }
