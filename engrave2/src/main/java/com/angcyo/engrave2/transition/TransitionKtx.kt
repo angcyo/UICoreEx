@@ -545,7 +545,7 @@ fun Bitmap.toGCode(
                         val yValue = lineY.toDouble()
                         val xValue = lastLineRef.toDouble()
 
-                        gCodeWriteHandler.writePoint(xValue + offsetX, yValue + offsetY)
+                        gCodeWriteHandler.writePoint(xValue + offsetX, yValue + offsetY, null)
                         lastGCodeLineRef = lastLineRef //有数据的列
 
                         if (isObliqueLine) {
@@ -612,7 +612,7 @@ fun Bitmap.toGCode(
                         val xValue = lineX.toDouble()
                         val yValue = lastLineRef.toDouble()
 
-                        gCodeWriteHandler.writePoint(xValue + offsetX, yValue + offsetY)
+                        gCodeWriteHandler.writePoint(xValue + offsetX, yValue + offsetY, null)
                         lastGCodeLineRef = lastLineRef //有数据的行
 
                         if (isObliqueLine) {

@@ -70,6 +70,7 @@ object CanvasDataHandleOperate {
                     autoCnc
                 )
             }
+
             Paint.Style.FILL -> {
                 pathFillToGCode(
                     pathList,
@@ -86,6 +87,7 @@ object CanvasDataHandleOperate {
                     autoCnc
                 )
             }
+
             else -> {
                 pathStrokeToGCode(
                     pathList,
@@ -343,7 +345,7 @@ object CanvasDataHandleOperate {
                             val yValue = lineY.toDouble()
                             val xValue = lastLineRef.toDouble()
 
-                            gCodeWriteHandler.writePoint(xValue, yValue)
+                            gCodeWriteHandler.writePoint(xValue, yValue, null)
                             lastGCodeLineRef = lastLineRef //有数据的列
 
                             if (isObliqueLine) {
@@ -410,7 +412,7 @@ object CanvasDataHandleOperate {
                             val xValue = lineX.toDouble()
                             val yValue = lastLineRef.toDouble()
 
-                            gCodeWriteHandler.writePoint(xValue, yValue)
+                            gCodeWriteHandler.writePoint(xValue, yValue, null)
                             lastGCodeLineRef = lastLineRef //有数据的行
 
                             if (isObliqueLine) {

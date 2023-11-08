@@ -15,6 +15,7 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.app
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.bounds
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
@@ -136,6 +137,11 @@ class SimpleTransition : ITransition {
         gCodeHandler.unit = IValueUnit.MM_UNIT
         gCodeHandler.isAutoCnc = params.isAutoCnc
         gCodeHandler.isCollectPoint = params.gcodeUsePathData
+
+        //2023-11-8
+        gCodeHandler.enableVectorRadiansSample = LibLpHawkKeys.enableVectorRadiansSample
+        gCodeHandler.pathSampleStepRadians = LibHawkKeys.pathSampleStepRadians
+        gCodeHandler.pathAcceptableDegrees = LibHawkKeys.pathAcceptableDegrees
 
         //平移
         var targetPathList = pathList

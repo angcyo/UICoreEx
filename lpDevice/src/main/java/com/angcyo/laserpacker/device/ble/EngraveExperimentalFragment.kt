@@ -87,6 +87,17 @@ class EngraveExperimentalFragment : DebugFragment() {
                 })
             }
 
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(LibLpHawkKeys::enableVectorRadiansSample.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = "激活矢量数据的弧度采样"
+                    des =
+                        "激活后,角度变化达到(${LibHawkKeys.pathAcceptableDegrees}°)时才视为关键点"
+                    key = LibLpHawkKeys::enableVectorRadiansSample.name
+                    type = Boolean::class.java
+                    defValue = LibLpHawkKeys.enableVectorRadiansSample
+                })
+            }
+
             if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableItemTopOrder.name)) {
                 renderDebugAction(DebugAction().apply {
                     label = _string(R.string.item_top_order_label)
