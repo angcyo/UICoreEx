@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_hdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/lib_min_item_height"
+        android:gravity="left|center_vertical"
+        android:paddingRight="@dimen/lib_padding_right"
+        android:text="@string/canvas_image"
+        android:tooltipText="自定义雕刻的图片" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lib_image_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@color/lib_image_placeholder_white_color"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/lib_ic_info" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lib_clear_view"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:background="@drawable/lib_bg2_selector"
+        android:padding="@dimen/lib_hdpi"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/lib_edit_delete" />
+
+</LinearLayout>

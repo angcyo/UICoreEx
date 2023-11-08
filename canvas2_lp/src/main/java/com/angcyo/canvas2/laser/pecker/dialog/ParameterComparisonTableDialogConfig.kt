@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.Keep
@@ -20,7 +21,8 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.AppointPowerDepthItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
-import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PTCLabelItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PCTImageItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PCTLabelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PrintCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
@@ -56,6 +58,7 @@ import com.angcyo.library.ex.appendSpaceIfNotEmpty
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
@@ -147,6 +150,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         /**按键大小*/
         internal var keyboardNumSize = 45 * dpi
+
+        /**选中的图片*/
+        internal var selectImage: Bitmap? = null
 
         /**添加乘法口诀表*/
         fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
@@ -373,7 +379,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             PrintCountItem()()
 
             //备注标签
-            PTCLabelItem()()
+            PCTLabelItem()()
 
             //字体大小, 边距
             LabelSizeItem()() {
@@ -398,6 +404,13 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         refreshDslAdapter()
                     }
                 }
+                if (gridLayerId == LaserPeckerHelper.LAYER_PICTURE) {
+                    PCTImageItem()()
+                } else {
+                    selectImage = null
+                }
+            } else {
+                selectImage = null
             }
 
             //激光类型选择 激光光源选择
@@ -416,6 +429,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     }
                 }
             }
+
+            //---雕刻参数---
 
             //分辨率dpi
             if (LayerHelper.showDpiConfig(gridLayerId)) {
@@ -688,16 +703,33 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         paintStyle =
                             if (isCut) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
-                        width = max(2f, (gridWidth - gridMargin * 2)).toMm()
-                        height = max(2f, (gridHeight - gridMargin * 2)).toMm()
+                        val w = max(2f, (gridWidth - gridMargin * 2))
+                        val h = max(2f, (gridHeight - gridMargin * 2))
+                        width = w.toMm()
+                        height = h.toMm()
                         left = (x + gridMargin).toMm()
                         top = (y + gridMargin).toMm()
                         name = "grid[${powerValue},${depthValue}]"
 
+                        //2023-11-8 支持设置图片
+                        if (selectImage != null) {
+                            mtype = LPDataConstant.DATA_TYPE_BITMAP
+                            imageOriginal = selectImage!!.toBase64Data()
+                            if (gridLayerId == LaserPeckerHelper.LAYER_FILL) {
+                                //图片图层
+                                imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
+                            } else {
+                                imageFilter = LPDataConstant.DATA_MODE_DITHERING
+                            }
+                            scaleX = w / selectImage!!.width.toPixel()
+                            scaleY = h / selectImage!!.height.toPixel()
+                        }
+
                         //参数
-                        dataMode =
-                            if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LaserPeckerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
-                            else gridLayerId.toDataMode()
+                        dataMode = if (HawkEngraveKeys.checkCpu32 &&
+                            !BuildHelper.isCpu64 &&
+                            gridLayerId == LaserPeckerHelper.LAYER_PICTURE
+                        ) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/ else gridLayerId.toDataMode()
 
                         printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)

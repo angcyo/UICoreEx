@@ -15,10 +15,10 @@ import com.angcyo.widget.base.setInputText
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/04/21
  */
-class PTCLabelItem : DslAdapterItem() {
+class PCTLabelItem : DslAdapterItem() {
 
     init {
-        itemLayoutId = R.layout.item_ptc_label_layout
+        itemLayoutId = R.layout.item_pct_label_layout
     }
 
     override fun onItemBind(
