@@ -28,20 +28,27 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveOptionWheelItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravePropertyItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.BaseRecyclerDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
+import com.angcyo.dialog2.dslitem.itemSelectedIndex
+import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.eachItem
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.item.style.itemCurrentIndex
+import com.angcyo.item.style.itemLabelText
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.ensurePrintPrecision
 import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.laserpacker.device.toDataMode
 import com.angcyo.laserpacker.device.toLaserWave
@@ -64,6 +71,7 @@ import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.BuildHelper
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
@@ -122,6 +130,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         /**强行指定格子的数据类型, 图层id*/
         internal var gridLayerId: String by HawkPropertyValue<Any, String>(LaserPeckerHelper.LAYER_FILL)
+
+        /**加速级别*/
+        internal var gridPrintPrecision: Int by HawkPropertyValue<Any, Int>(1)
 
         /**额外追加的行列范围
          * [行:列 行:列 行:列] */
@@ -430,6 +441,23 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
             }
 
+            if (laserPeckerModel.isCSeries()) {
+                //C1 加速级别选择 加速级别
+                EngraveOptionWheelItem()() {
+                    itemTag = EngraveConfigEntity::precision.name
+                    itemLabelText = _string(R.string.engrave_precision)
+                    itemWheelList = EngraveHelper.percentList(5)
+                    itemSelectedIndex = EngraveHelper.findOptionIndex(
+                        itemWheelList,
+                        gridPrintPrecision
+                    )
+                    observeItemChange {
+                        gridPrintPrecision =
+                            getSelectedWheelIntData(def = gridPrintPrecision).ensurePrintPrecision()
+                    }
+                }
+            }
+
             //---雕刻参数---
 
             //分辨率dpi
@@ -732,12 +760,12 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                             gridLayerId == LaserPeckerHelper.LAYER_PICTURE
                         ) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/ else gridLayerId.toDataMode()
 
-                        printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)
                         printPower = powerValue
                         printDepth = depthValue
                         printType = gridPrintType.toInt()
-                        printPrecision = HawkEngraveKeys.lastPrecision
+                        //printPrecision = numberTextItem.elementBean.printPrecision //HawkEngraveKeys.lastPrecision
+                        printPrecision = gridPrintPrecision.ensurePrintPrecision()
                         dpi = gridLayerId.filterLayerDpi(
                             LayerHelper.getProductLastLayerDpi(gridLayerId)
                         )
