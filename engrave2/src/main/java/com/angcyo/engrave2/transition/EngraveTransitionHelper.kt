@@ -678,8 +678,10 @@ object EngraveTransitionHelper {
                             write(len, 2)
                             logBuilder?.append("${len}:")
                             line.pointList.forEach { section ->
-                                val x = (section.x * 10 - transferDataEntity.x).roundToInt()
-                                val y = (section.y * 10 - transferDataEntity.y).roundToInt()
+                                val x =
+                                    (section.x * 10 * 10 - transferDataEntity.x * 10).roundToInt()
+                                val y =
+                                    (section.y * 10 * 10 - transferDataEntity.y * 10).roundToInt()
                                 write(x, 2)
                                 write(y, 2)
                                 logBuilder?.append("(${x},${y})")
