@@ -89,6 +89,11 @@ data class TransitionParam(
     @MM
     var pathStep: Float? = null,
 
+    /**路径采样公差
+     * [LibHawkKeys.pathTolerance]*/
+    @MM
+    var pathTolerance: Float? = null,
+
     /**是否激活压缩输出GCode
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
     val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,

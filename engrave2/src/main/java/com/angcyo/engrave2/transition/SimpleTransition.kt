@@ -141,7 +141,9 @@ class SimpleTransition : ITransition {
         //2023-11-8
         gCodeHandler.enableVectorRadiansSample = LibLpHawkKeys.enableVectorRadiansSample
         gCodeHandler.pathSampleStepRadians = LibHawkKeys.pathSampleStepRadians
-        gCodeHandler.pathAcceptableDegrees = LibHawkKeys.pathAcceptableDegrees
+        gCodeHandler.updatePathToleranceByPixel(
+            (params.pathTolerance ?: LibHawkKeys.pathTolerance).toPixel()
+        )
 
         //平移
         var targetPathList = pathList
@@ -162,9 +164,6 @@ class SimpleTransition : ITransition {
             @Pixel
             val pathStep = params.pathStep?.toPixel() ?: LibHawkKeys._pathAcceptableError
             gCodeHandler.updatePathStepByPixel(pathStep)
-            if (gCodeHandler.enableVectorRadiansSample) {
-                gCodeHandler.updateGapValueByPixel(pathStep)
-            }
             gCodeHandler.pathStrokeToVector(targetPathList, true, true, 0f, 0f, pathStep)
         }
         val result = PathDataFile(outputFile)
