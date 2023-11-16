@@ -18,12 +18,12 @@
     <string name="laser_type_white">白光</string>
     <string name="laser_type_blue">蓝光</string>
 
-    <string name="preview_state_gcode">预览向量图</string>
-    <string name="preview_state_range">预览范围</string>
-    <string name="preview_state_z_pause">第三轴暂停</string>
-    <string name="preview_state_z_pause2">%1$s暂停</string>
+    <string name="preview_state_gcode">预览向量图状态</string>
+    <string name="preview_state_range">预览范围状态</string>
+    <string name="preview_state_z_pause">第三轴暂停状态</string>
+    <string name="preview_state_z_pause2">%1$s暂停状态</string>
     <string name="preview_state_z_continue">第三轴继续</string>
-    <string name="preview_state_z_continue2">%1$s继续</string>
+    <string name="preview_state_z_continue2">%1$s预览状态</string>
     <string name="preview_state_z_scroll">第三轴滚动</string>
     <string name="preview_state_center">预览显示中心</string>
     <string name="preview_state_points">4点范围预览</string>

@@ -18,15 +18,15 @@
     <string name="laser_type_white">White</string>
     <string name="laser_type_blue">Blue</string>
 
-    <string name="preview_state_gcode">Preview gcode</string>
-    <string name="preview_state_range">Scope Preview</string>
+    <string name="preview_state_gcode">Preview gcode status</string>
+    <string name="preview_state_range">Preview scope status</string>
     <string name="preview_state_z_pause">Pause roll</string>
-    <string name="preview_state_z_pause2">%1$s Pause</string>
+    <string name="preview_state_z_pause2">%1$s Pause Status</string>
     <string name="preview_state_z_continue">Continue roll</string>
-    <string name="preview_state_z_continue2">%1$s Continue</string>
+    <string name="preview_state_z_continue2">%1$s Preview Status</string>
     <string name="preview_state_z_scroll">Scroll roll</string>
-    <string name="preview_state_center">Display Center</string>
-    <string name="preview_state_points">4 point range preview</string>
+    <string name="preview_state_center">Display Center Status</string>
+    <string name="preview_state_points">4 point range preview status</string>
     <string name="preview_state_bracket">Bracket</string>
 
     <string name="engrave_state_pause">Engrave pause</string>
