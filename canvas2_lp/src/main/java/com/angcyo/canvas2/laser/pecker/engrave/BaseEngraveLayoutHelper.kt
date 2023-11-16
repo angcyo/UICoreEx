@@ -997,7 +997,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     //功率/深度/次数
                     EngravePropertyItem()() {
                         itemEngraveConfigEntity = engraveConfigEntity
-
+                        itemShowSpeed = supportMaxSpeed == null
                         itemLabelClickAction = {
                             startPreviewOnlY()
                         }

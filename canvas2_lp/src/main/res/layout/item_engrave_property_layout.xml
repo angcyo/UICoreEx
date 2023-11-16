@@ -52,7 +52,8 @@
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
             android:paddingVertical="@dimen/lib_hdpi"
             android:tooltipText="@string/custom_speed"
-            tools:text="深度\n99%" />
+            tools:text="深度\n99%"
+            tools:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/times_view"

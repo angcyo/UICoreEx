@@ -81,8 +81,11 @@ class EngravePropertyItem : DslAdapterItem() {
     /**单元素参数配置*/
     var itemEngraveItemBean: LPElementBean? = null
 
-    /**是否要显示雕刻次数*/
+    /**是否要显示雕刻次数设置*/
     var itemShowTimes: Boolean = true
+
+    /**是否要显示雕刻速度(深度)设置*/
+    var itemShowSpeed: Boolean = true
 
     /**需要显示的文本标签*/
     var itemLabelText: CharSequence? = null
@@ -138,6 +141,7 @@ class EngravePropertyItem : DslAdapterItem() {
         }
 
         //深度-速度
+        itemHolder.visible(R.id.speed_view, itemShowSpeed)
         val speedLabel = _string(R.string.custom_speed)
         val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
             ?: HawkEngraveKeys.lastDepth)
