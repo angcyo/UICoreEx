@@ -448,14 +448,7 @@ object LaserPeckerHelper {
         //最佳预览范围设置
         if (!configBean.bestPhysPath.isNullOrBlank()) {
             //path
-            val path = Sharp.loadPath(configBean.bestPhysPath) //bestPhysPath里面是mm单位
-            limitPath.set(path)
-            val scaleMatrix = acquireTempMatrix()
-            val scale = mmValueUnit.convertValueToPixel(1f)
-            scaleMatrix.setScale(scale, scale)//缩放到像素单位
-            limitPath.transform(scaleMatrix)
-            limitPath.computePathBounds(previewBounds)
-            scaleMatrix.release()
+            loadStringPath(configBean.bestPhysPath, previewBounds)?.let { limitPath.set(it) }
         } else if (configBean.bestWidthPhys > 0 && configBean.bestHeightPhys > 0) {
             val lOffset = (wPhys - configBean.bestWidthPhys) / 2 //mm
             val tOffset = (hPhys - configBean.bestHeightPhys) / 2 //mm
@@ -463,9 +456,8 @@ object LaserPeckerHelper {
             val t = mmValueUnit.convertValueToPixel(tOffset.toFloat()).floor()
             val r = mmValueUnit.convertValueToPixel((configBean.bestWidthPhys + lOffset).toFloat())
                 .ceil()
-            val b =
-                mmValueUnit.convertValueToPixel((configBean.bestHeightPhys + tOffset).toFloat())
-                    .ceil()
+            val b = mmValueUnit.convertValueToPixel((configBean.bestHeightPhys + tOffset).toFloat())
+                .ceil()
             previewBounds.set(l, t, r, b)
             limitPath.rewind()
             maxOvalPath(
@@ -492,9 +484,17 @@ object LaserPeckerHelper {
             limitPath
         ).apply {
             this.isOriginCenter = false
+            this.zTipPath = loadStringPath(configBean.zTipPath)
+            this.rTipPath = loadStringPath(configBean.rTipPath)
+            this.sTipPath = loadStringPath(configBean.sTipPath)
+            this.sRepTipPath = loadStringPath(configBean.sRepTipPath)
+            this.tipPath = loadStringPath(configBean.tipPath)
+            this.carTipPath = loadStringPath(configBean.carTipPath)
+            this.penTipPath = loadStringPath(configBean.penTipPath)
             this.zLimitPath = zLimitPath
             this.rLimitPath = rLimitPath
             this.sLimitPath = sLimitPath
+            this.sRepLimitPath = sLimitPath
             this.carLimitPath = carLimitPath
             this.carPreviewBounds = carPreviewBounds
             this.penBounds = penBounds
@@ -524,6 +524,25 @@ object LaserPeckerHelper {
             this.zModeList = modeList
             this.deviceConfigBean = configBean
         }
+    }
+
+    /**加载mm 对应的path, 返回像素单位的数据*/
+    @Pixel
+    private fun loadStringPath(pathStr: String?, bounds: RectF? = null): Path? {
+        if (pathStr.isNullOrEmpty()) {
+            return null
+        }
+        val mmValueUnit = MM_UNIT
+        val path = Sharp.loadPath(pathStr) //里面是mm单位
+        val scaleMatrix = acquireTempMatrix()
+        val scale = mmValueUnit.convertValueToPixel(1f)
+        scaleMatrix.setScale(scale, scale)//缩放到像素单位
+        path.transform(scaleMatrix)
+        if (bounds != null) {
+            path.computePathBounds(bounds)
+        }
+        scaleMatrix.release()
+        return path
     }
 
     /**切换设备中心点

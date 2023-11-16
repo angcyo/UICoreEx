@@ -86,44 +86,49 @@ data class EngravePreviewCmd(
         @MM
         val BRACKET_MAX_STEP: Int = 65535//130, 65535
 
-        /**获取最佳限制框的path,
+        /**获取最佳限制框的path, 蓝色框提示
          * [com.angcyo.engrave.EngraveProductLayoutHelper.PREVIEW_COLOR] 最佳的限制框, 蓝光提示
          *
          * [getBoundsPath]
          * */
         fun getLimitPath(
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value,
-            includeLimitPath: Boolean = true,
+            includeLimitPath: Boolean = true, /*是否要获取的对应的显示框*/
+            includeTipPath: Boolean = false, /*获取对应的提示框*/
         ): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
             val deviceStateModel = vmApp<DeviceStateModel>()
 
             val limitPath = if (peckerModel.isZOpen()) {
                 //Z轴打开
-                productInfo?.zLimitPath
+                if (includeTipPath) productInfo?.zTipPath else productInfo?.zLimitPath
             } else if (peckerModel.isROpen()) {
                 //R轴打开
-                productInfo?.rLimitPath
-            } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
+                if (includeTipPath) productInfo?.rTipPath else productInfo?.rLimitPath
+            } else if (peckerModel.isSRepMode()) {
+                //滑台多文件
+                if (includeTipPath) productInfo?.sRepTipPath else productInfo?.sRepLimitPath
+                    ?: productInfo?.sLimitPath
+            } else if (peckerModel.isSOpen()) {
                 //S轴打开
-                productInfo?.sLimitPath
+                if (includeTipPath) productInfo?.sTipPath else productInfo?.sLimitPath
             } else if (peckerModel.isCarConnect()) {
                 //C1平台移动模式
-                productInfo?.carLimitPath
+                if (includeTipPath) productInfo?.carTipPath else productInfo?.carLimitPath
             } else if (deviceStateModel.isPenMode()) {
                 //画笔模块
-                productInfo?.penBounds?.let { rect ->
+                if (includeTipPath) productInfo?.penTipPath else productInfo?.penBounds?.let { rect ->
                     Path().apply { addRect(rect, Path.Direction.CW) }
                 }
             } else if (includeLimitPath) {
-                productInfo?.limitPath
+                if (includeTipPath) productInfo?.tipPath else productInfo?.limitPath
             } else {
                 null
             }
             return limitPath
         }
 
-        /**获取最大物理的path
+        /**获取最大物理的path, 红色框提示
          * [com.angcyo.engrave.EngraveProductLayoutHelper.ENGRAVE_COLOR] 物理范围, 红光提示
          * [getLimitPath]
          * */

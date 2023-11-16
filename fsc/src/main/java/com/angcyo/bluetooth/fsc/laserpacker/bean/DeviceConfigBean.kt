@@ -53,6 +53,15 @@ data class DeviceConfigBean(
      * [M10,10L100,100] 值是mm单位*/
     @MM
     var bestPhysPath: String? = null,
+    /**默认模式下的提示框*/
+    var tipPath: String? = null,
+    /**z轴连接时限制提示框, 优先处理此字段, 再处理[zMaxWidth]等*/
+    var zTipPath: String? = null,
+    var sTipPath: String? = null,
+    var sRepTipPath: String? = null,
+    var rTipPath: String? = null,
+    var carTipPath: String? = null,
+    var penTipPath: String? = null,
 
     /**有效范围宽高比例, 在[bestWidthPhys] [bestHeightPhys]中*/
     var validWidthRatio: Float = 0f,

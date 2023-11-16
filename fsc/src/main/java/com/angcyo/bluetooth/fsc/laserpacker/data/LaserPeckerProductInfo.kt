@@ -64,22 +64,32 @@ data class LaserPeckerProductInfo(
      * */
     @Pixel
     var limitPath: Path,
+    var tipPath: Path? = null,
     /**Z轴限制提示框, 像素, 在手机上的像素*/
     @Pixel
     var zLimitPath: Path? = null,
+    var zTipPath: Path? = null,
+
     /**旋转轴,最大提示框*/
     @Pixel
     var rLimitPath: Path? = null,
+    var rTipPath: Path? = null,
     /**滑台,最大提示框*/
     @Pixel
     var sLimitPath: Path? = null,
+    var sTipPath: Path? = null,
+    @Pixel
+    var sRepLimitPath: Path? = null,
+    var sRepTipPath: Path? = null,
     /**C1平台移动/小车模式,最大提示框*/
     @Pixel
     var carLimitPath: Path? = null,
+    var carTipPath: Path? = null,
     /**C1平台移动/小车模式,最大预览范围*/
     @Pixel
     var carPreviewBounds: RectF? = null,
 
+    var penTipPath: Path? = null,
     /** C1画笔模块, 最大高度390mm
      * limit path 同样是这个范围
      * */

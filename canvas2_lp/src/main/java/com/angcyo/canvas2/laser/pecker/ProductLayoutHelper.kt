@@ -263,6 +263,9 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         val limitList = mutableListOf<LimitInfo>()
         //最佳预览尺寸用蓝色提示
         val limitPath: Path = productInfo.limitPath
+        EngravePreviewCmd.getLimitPath(productInfo, true, true)?.let {
+            limitList.add(LimitInfo(it, it.computePathBounds(), DeviceHelper.PREVIEW_COLOR))
+        }
         limitList.add(
             LimitInfo(limitPath, limitPath.computePathBounds(), DeviceHelper.PREVIEW_COLOR)
         )
@@ -283,11 +286,15 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**显示Z/R/S轴限制框*/
     private fun _showZRSLimit() {
         val productInfo = laserPeckerModel.productInfoData.value
+        val tipPath: Path? = EngravePreviewCmd.getLimitPath(productInfo, false, true)
         val limitPath: Path? = EngravePreviewCmd.getLimitPath(productInfo, false)
 
         if (productInfo != null && limitPath != null) {
             //追加显示Z轴显示框
             val limitList = mutableListOf<LimitInfo>()
+            tipPath?.let {
+                limitList.add(LimitInfo(it, it.computePathBounds(), DeviceHelper.PREVIEW_COLOR))
+            }
             limitList.add(
                 LimitInfo(limitPath, limitPath.computePathBounds(), DeviceHelper.ENGRAVE_COLOR)
             )

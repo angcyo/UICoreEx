@@ -323,6 +323,7 @@
     "rMaxHeight": 628,
     "sMaxHeight": 300,
     "carMaxHeight": 2000,
+    "sRepTipPath": "M12.5,0,L102.5,0L102.5,300L12.5,300L12.5,0",
     "laserTypeList": [
       {
         "type": 1,
