@@ -731,20 +731,25 @@ data class LPElementBean(
     }
 
     /**清空数据索引, 并且清除雕刻参数*/
-    fun clearIndex(reason: String, clearEngraveParams: Boolean) {
+    fun clearIndex(reason: String, clearEngraveParams: Boolean = false) {
         L.i("清空索引[$reason]:${index} 清除参数[${clearEngraveParams.toDC()}]")
         index = null
         if (clearEngraveParams) {
-            dpi = null
-            materialCode = null
-            materialKey = null
-            materialName = null
-            printType = null
-            printPrecision = null
-            printPower = null
-            printDepth = null
-            printCount = null
+            clearEngraveParams()
         }
+    }
+
+    /**清理雕刻参数*/
+    fun clearEngraveParams() {
+        dpi = null
+        materialCode = null
+        materialKey = null
+        materialName = null
+        printType = null
+        printPrecision = null
+        printPower = null
+        printDepth = null
+        printCount = null
     }
 
     fun initEngraveParamsIfNeed() {

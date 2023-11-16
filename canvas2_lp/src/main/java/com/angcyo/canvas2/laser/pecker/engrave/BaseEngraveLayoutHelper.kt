@@ -541,7 +541,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
                         observeItemChange {
                             //保存最后一次选择的dpi
-                            elementItemBean?.clearIndex("数据dpi改变", true)  //清空数据索引
+                            elementItemBean?.clearIndex("数据dpi改变")  //清空数据索引
                             dpi =
                                 itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
                             elementItemBean?.dpi = dpi
@@ -560,7 +560,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         layerId.filterLayerDpi(LaserPeckerHelper.DPI_254)
                     }
                     if (elementItemBean?.dpi != dpi) {
-                        elementItemBean?.clearIndex("DPI不一致", true)
+                        elementItemBean?.clearIndex("DPI不一致")
                         elementItemBean?.dpi = dpi
                         elementItemBean?.initEngraveParamsIfNeed()
                         onEngraveParamsChangeAction()//单文件雕刻参数改变

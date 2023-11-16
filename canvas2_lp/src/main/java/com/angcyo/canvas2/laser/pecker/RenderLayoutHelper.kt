@@ -451,7 +451,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
                     val index = renderer.lpElementBean()?.index
                     if (index != null) {
-                        renderer.lpElementBean()?.clearIndex("数据改变", true) //清空数据索引
+                        renderer.lpElementBean()?.clearIndex("数据改变") //清空数据索引
                     }
 
                     needUpdateControlLayout = true
@@ -1034,7 +1034,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 } else {
                     isChanged = true
                     isCut = cut
-                    clearIndex("快捷操作切割类型改变", true)
+                    clearIndex("快捷操作切割类型改变")
                 }
             }
         }
