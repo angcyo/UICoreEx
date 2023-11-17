@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
-        <color android:color="@color/transparent" />
-    </item>
-    <item>
         <shape>
             <corners android:bottomLeftRadius="@dimen/lib_radius_normal2" />
-            <solid android:color="@color/canvas_segment_tab_bg_color" />
+            <solid android:color="@color/canvas_primary" />
         </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape>
+            <corners android:bottomLeftRadius="@dimen/lib_radius_normal2" />
+            <solid android:color="@color/canvas_primary" />
+        </shape>
+    </item>
+    <item>
+        <color android:color="@color/transparent" />
     </item>
 </selector>

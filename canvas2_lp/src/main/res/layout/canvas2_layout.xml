@@ -329,6 +329,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tab_deselect_color="@color/lib_text_color"
                 app:tab_draw_indicator="false"
+                app:tab_enable_text_bold="true"
                 app:tab_item_is_equ_width="true"
                 app:tab_select_color="@color/lib_text_color">
 
