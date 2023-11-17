@@ -416,6 +416,7 @@
     "rMaxHeight": 628,
     "sMaxHeight": 300,
     "carMaxHeight": 2000,
+    "supportMaxSpeed": 4000,
     "laserTypeList": [
       {
         "type": 1,
