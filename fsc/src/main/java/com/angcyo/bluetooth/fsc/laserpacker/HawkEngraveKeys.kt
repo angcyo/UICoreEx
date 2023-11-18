@@ -236,6 +236,29 @@ object HawkEngraveKeys {
     /**是否激活wifi实验性功能配置*/
     var enableWifiFunConfig: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
+    /**抖动算法的模式
+     *  1: floyd
+     *  2: atkinson
+     *  3: stucki def
+     *  4: burkes
+     *  5: jarvis
+     *  6: sierra3
+     *  _: stucki
+     * */
+    var ditherModeConfig: String? by HawkPropertyValue<Any, String?>(null)
+
+    /**抖动模式*/
+    val ditherMode: Int
+        get() = when (ditherModeConfig?.lowercase()) {
+            "floyd" -> 1
+            "atkinson" -> 2
+            "stucki" -> 3
+            "burkes" -> 4
+            "jarvis" -> 5
+            "sierra3" -> 6
+            else -> 0
+        }
+
     //
 
     /**最大的下位机能接收的文件大小 字节, 30MB */

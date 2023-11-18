@@ -10,6 +10,7 @@ import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.DebugWifiConfigItem
+import com.angcyo.laserpacker.device.ble.dslitem.DitherModeConfigItem
 import com.angcyo.laserpacker.device.ble.dslitem.ExperimentalTopItem
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys
@@ -155,6 +156,12 @@ class EngraveExperimentalFragment : DebugFragment() {
 
             if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableWifiFunConfig.name)) {
                 DebugWifiConfigItem()() {
+                    initItem()
+                }
+            }
+
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::ditherModeConfig.name)) {
+                DitherModeConfigItem()() {
                     initItem()
                 }
             }

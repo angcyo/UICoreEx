@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/lib_padding_left"
+    android:paddingBottom="@dimen/lib_hdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_label_view"
+        style="@style/LibTitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/lib_ldpi"
+        android:text="抖动算法" />
+
+    <com.angcyo.tablayout.DslTabLayout
+        android:id="@+id/lib_tab_layout"
+        style="@style/LibTabSegmentStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:tab_deselect_color="@color/device_primary_color"
+        app:tab_preview_item_count="6"
+        app:tab_preview_item_layout_id="@layout/lib_segment_layout"
+        app:tab_select_color="@color/lib_theme_black"
+        tools:tab_default_index="0" />
+
+</LinearLayout>

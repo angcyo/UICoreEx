@@ -354,7 +354,8 @@ object EngraveTransitionHelper {
                     0f,
                     0f,
                     false,
-                    LibHawkKeys.alphaThreshold
+                    LibHawkKeys.alphaThreshold,
+                    ditherMode = HawkEngraveKeys.ditherMode
                 )
             } else {
                 OpenCV.bitmapToDithering(
@@ -379,6 +380,7 @@ object EngraveTransitionHelper {
                     params.contrast,
                     params.brightness,
                     params.invert,
+                    ditherMode = HawkEngraveKeys.ditherMode
                 )
             } else {
                 OpenCV.bitmapToDithering(
