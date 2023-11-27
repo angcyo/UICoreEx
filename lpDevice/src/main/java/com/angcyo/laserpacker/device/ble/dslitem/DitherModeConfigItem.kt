@@ -28,7 +28,6 @@ class DitherModeConfigItem : DslSegmentTabItem() {
         "burkes",
         "jarvis",
         "sierra3",
-        "stucki"
     )
 
     init {
