@@ -21,7 +21,7 @@
     <string name="canvas_variable_barcode">VariableBarcode</string>
     <string name="canvas_add_variable_text">Add variable text</string>
     <string name="canvas_variable_text_empty_tip">There is no data yet, please add it quickly</string>
-    <string name="canvas_material">Material</string>
+    <string name="canvas_material">Clipart</string>
     <string name="canvas_doodle">Graffiti</string>
     <string name="canvas_barcode">Barcode</string>
     <string name="canvas_qrcode">QR Code</string>
