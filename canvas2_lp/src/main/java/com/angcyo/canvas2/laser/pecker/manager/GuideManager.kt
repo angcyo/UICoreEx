@@ -13,7 +13,6 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.animationOf
 import com.angcyo.library.ex.infinite
 import com.angcyo.library.ex.inflate
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isNoSize
 import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.size
@@ -54,6 +53,9 @@ object GuideManager {
     fun checkOrShowGuide(container: ViewGroup?, anchor: View?, index: Int, delay: Long = 0) {
         if (!vmApp<DeviceStateModel>().isDeviceConnect()) {
             //设备未连接
+            anchor?.postDelay(160) {
+                checkOrShowGuide(container, anchor, index, delay)
+            }
             return
         }
         if (container == null) {
