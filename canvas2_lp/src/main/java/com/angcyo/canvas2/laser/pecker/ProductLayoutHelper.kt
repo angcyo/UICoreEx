@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Path
+import com.angcyo.base.contentView
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -12,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
+import com.angcyo.canvas2.laser.pecker.manager.GuideManager
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.updateElementAfterEngrave
 import com.angcyo.core.component.model.DataShareModel
@@ -31,6 +33,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
+import com.angcyo.library.component.lastActivity
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.computePathBounds
@@ -202,6 +205,13 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
                         "雕刻完成, 更新变量文本".writeEngraveLog(L.INFO)
                         renderDelegate?.updateElementAfterEngrave()
+
+                        GuideManager.checkOrShowGuide(
+                            lastActivity?.window?.contentView(),
+                            null,
+                            6,
+                            300
+                        )
                     }
                 }
             }

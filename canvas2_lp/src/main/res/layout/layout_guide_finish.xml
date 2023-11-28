@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.GuideFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:r_clip_anchor="true"
+    app:r_clip_anchor_inset="6dp"
+    app:r_clip_anchor_radius="6dp"
+    app:r_guide_background="@color/canvas_guide_bg_color">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/lib_xxxhdpi">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/guide_finish_gif" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/LibTitleTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:padding="@dimen/lib_xhdpi"
+                android:text="@string/canvas_guid_finish_title"
+                android:textColor="@color/canvas_primary"
+                android:textSize="@dimen/text_main_size" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/LibBodyTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:padding="@dimen/lib_xhdpi"
+                android:text="@string/canvas_guid_finish_des"
+                android:textColor="@color/lib_theme_white_color"
+                android:visibility="gone" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/skip_guide_view"
+                style="@style/LibButtonThemeSolidStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/lib_xxhdpi"
+                android:minWidth="240dp"
+                android:paddingHorizontal="@dimen/lib_xxxhdpi"
+                android:text="@string/canvas_guid_know"
+                android:textColor="@color/text_primary_color" />
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+</com.angcyo.widget.layout.GuideFrameLayout>

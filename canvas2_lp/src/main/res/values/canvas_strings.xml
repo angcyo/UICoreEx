@@ -256,4 +256,15 @@
     <string name="canvas_tracer_splice">Splicing</string>
     <string name="canvas_tracer_splice_tip">The larger the splice threshold, the fewer splices</string>
 
+    <string name="canvas_guid_start_des">Dear users, welcome to experience the New version of the creation module! We will take you through 6 steps to complete a sculpture, come and experience it now!</string>
+    <string name="canvas_guid_skip">Skip novice boot</string>
+    <string name="canvas_guid_clipart">Click Clipart</string>
+    <string name="canvas_guid_preview">Click Preview</string>
+    <string name="canvas_guid_next">Adjust focal length</string>
+    <string name="canvas_guid_send">Send file</string>
+    <string name="canvas_guid_engrave">Start Engrave</string>
+    <string name="canvas_guid_finish_title">Congratulations on a great piece of sculpting in Laserpecker!</string>
+    <string name="canvas_guid_finish_des">If you want to experience the beginner guide again, you can go to the "My" screen</string>
+    <string name="canvas_guid_know">Well</string>
+
 </resources>

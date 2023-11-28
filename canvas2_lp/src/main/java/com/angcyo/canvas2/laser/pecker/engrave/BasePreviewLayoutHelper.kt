@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import com.angcyo.base.contentView
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -18,11 +19,13 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewControlIte
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewDiameterItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
+import com.angcyo.canvas2.laser.pecker.manager.GuideManager
 import com.angcyo.dsladapter.findItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.canvas.core.Reason
+import com.angcyo.library.component.lastActivity
 import com.angcyo.library.ex.ViewAction
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
@@ -250,6 +253,14 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                             }
                         }
                     }
+                }
+                itemBindOverride = { itemHolder, _, _, _ ->
+                    GuideManager.checkOrShowGuide(
+                        lastActivity?.window?.contentView(),
+                        itemHolder.view(R.id.lib_button),
+                        3,
+                        300
+                    )
                 }
             }
         }

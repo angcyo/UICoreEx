@@ -256,4 +256,14 @@
     <string name="canvas_tracer_splice">拼接阈值</string>
     <string name="canvas_tracer_splice_tip">拼接阈值越大,拼接越少</string>
 
+    <string name="canvas_guid_start_des">亲爱的用户，欢迎您体验全新版创作模块！接下来将带您6步完成一个雕刻作品，马上来体验吧！</string>
+    <string name="canvas_guid_skip">跳过引导</string>
+    <string name="canvas_guid_clipart">点击素材</string>
+    <string name="canvas_guid_preview">点击预览</string>
+    <string name="canvas_guid_next">调整焦距</string>
+    <string name="canvas_guid_send">发送文件</string>
+    <string name="canvas_guid_engrave">开始雕刻</string>
+    <string name="canvas_guid_finish_title">恭喜您在Laserpecker雕刻了一份很棒的作品！</string>
+    <string name="canvas_guid_finish_des">如需再次体验新手引导，您可以去“我的”界面中进入</string>
+    <string name="canvas_guid_know">好的</string>
 </resources>

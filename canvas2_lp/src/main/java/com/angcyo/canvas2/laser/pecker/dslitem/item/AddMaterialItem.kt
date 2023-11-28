@@ -1,15 +1,20 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import android.graphics.drawable.BitmapDrawable
+import com.angcyo.base.contentView
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.canvasMaterialWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.manager.GuideManager
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.library.component.lastActivity
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toBitmap
+import com.angcyo.widget.DslViewHolder
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 import com.pixplicity.sharp.SharpDrawable
@@ -66,5 +71,15 @@ class AddMaterialItem : CanvasIconItem() {
                 }
             }
         }
+    }
+
+    override fun onItemBind(
+        itemHolder: DslViewHolder,
+        itemPosition: Int,
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
+    ) {
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+        GuideManager.checkOrShowGuide(lastActivity?.window?.contentView(), itemHolder.itemView, 1)
     }
 }

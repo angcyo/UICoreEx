@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.GuideFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:r_clip_anchor="true"
+    app:r_guide_anchors="400,400,400,400"
+    app:r_guide_background="@color/canvas_guide_bg_color">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/skip_guide_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:layout_marginTop="@dimen/action_bar_height"
+        android:background="@drawable/lib_bg_selector"
+        android:drawableLeft="@drawable/lib_close_min"
+        android:drawablePadding="@dimen/lib_hdpi"
+        android:padding="@dimen/lib_xhdpi"
+        android:text="@string/canvas_guid_skip"
+        android:textColor="@color/lib_theme_white_color" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/lib_xhdpi">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/guid_logo_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_xhdpi"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/guide_logo" />
+
+        <FrameLayout
+            android:id="@+id/text_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-16dp"
+            android:background="@drawable/guid_shape_bg"
+            android:padding="@dimen/lib_xhdpi"
+            app:layout_constraintTop_toBottomOf="@id/guid_logo_image_view">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/LibBodyTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="4dp"
+                android:text="@string/canvas_guid_start_des"
+                android:textSize="@dimen/text_sub_size" />
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:r_guide_gravity="TOP|HORIZONTAL_CENTER|OFFSET_SELF"
+        app:r_guide_show_in_anchor="0">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/lib_theme_white_color"
+            tools:text="1/6\nClick Clipart" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/lib_xhdpi"
+            app:srcCompat="@mipmap/guide_arrows_up" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/guide_cursor_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:r_guide_gravity="RIGHT|BOTTOM|OFFSET_SELF"
+        app:r_guide_offset_x="-20dp"
+        app:r_guide_offset_y="-20dp"
+        app:r_guide_show_in_anchor="0"
+        app:srcCompat="@mipmap/guide_cursor" />
+
+</com.angcyo.widget.layout.GuideFrameLayout>

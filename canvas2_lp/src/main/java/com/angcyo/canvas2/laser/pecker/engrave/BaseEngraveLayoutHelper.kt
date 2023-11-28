@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import com.angcyo.base.contentView
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -39,6 +40,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.DataStopTransfer
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.DataTransmittingItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
+import com.angcyo.canvas2.laser.pecker.manager.GuideManager
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.canvas2.laser.pecker.util.updateElementAutoDateTime
@@ -72,6 +74,7 @@ import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
+import com.angcyo.library.component.lastActivity
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._color
@@ -303,6 +306,14 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         }
                         false
                     }
+                }
+                itemBindOverride = { itemHolder, _, _, _ ->
+                    GuideManager.checkOrShowGuide(
+                        lastActivity?.window?.contentView(),
+                        itemHolder.view(R.id.lib_button),
+                        4,
+                        300
+                    )
                 }
             }
         }
@@ -1045,6 +1056,14 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             }
                         }
                     }
+                }
+                itemBindOverride = { itemHolder, _, _, _ ->
+                    GuideManager.checkOrShowGuide(
+                        lastActivity?.window?.contentView(),
+                        itemHolder.view(R.id.lib_button),
+                        5,
+                        300
+                    )
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Matrix
 import android.view.MotionEvent
+import com.angcyo.base.contentView
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
@@ -45,6 +46,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.VariableTextItem
 import com.angcyo.canvas2.laser.pecker.element.haveBarcodeElement
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper
+import com.angcyo.canvas2.laser.pecker.manager.GuideManager
 import com.angcyo.canvas2.laser.pecker.manager.saveProjectStateV2
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
@@ -71,6 +73,7 @@ import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
+import com.angcyo.library.component.lastActivity
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.ex._color
@@ -558,6 +561,17 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     }
                 }
                 renderLayerListLayout()
+
+                if (to.isNotEmpty()) {
+                    _rootViewHolder?.view(R.id.preview_view)?.let {
+                        GuideManager.checkOrShowGuide(
+                            lastActivity?.window?.contentView(),
+                            it,
+                            2,
+                            160
+                        )
+                    }
+                }
             }
 
             override fun onRendererGroupChange(
