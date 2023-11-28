@@ -257,7 +257,7 @@
     <string name="canvas_tracer_splice_tip">The larger the splice threshold, the fewer splices</string>
 
     <string name="canvas_guid_start_des">Dear users, welcome to experience the New version of the creation module! We will take you through 6 steps to complete a sculpture, come and experience it now!</string>
-    <string name="canvas_guid_skip">Skip novice boot</string>
+    <string name="canvas_guid_skip">Skip the Beginner\'s Guide</string>
     <string name="canvas_guid_clipart">Click Clipart</string>
     <string name="canvas_guid_preview">Click Preview</string>
     <string name="canvas_guid_next">Adjust focal length</string>
