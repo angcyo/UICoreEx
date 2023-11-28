@@ -13,6 +13,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.animationOf
 import com.angcyo.library.ex.infinite
 import com.angcyo.library.ex.inflate
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isNoSize
 import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.size
@@ -49,38 +50,69 @@ object GuideManager {
     /**当前指引到了哪一步, 从1开始*/
     var guideIndex: Int = 0
 
+    /**正在延迟等待的引导索引*/
+    private var delayIndex: Int = -1
+
     /**检查或者显示引导*/
     fun checkOrShowGuide(container: ViewGroup?, anchor: View?, index: Int, delay: Long = 0) {
-        if (!vmApp<DeviceStateModel>().isDeviceConnect()) {
-            //设备未连接
-            anchor?.postDelay(160) {
-                checkOrShowGuide(container, anchor, index, delay)
-            }
-            return
-        }
         if (container == null) {
             return
         }
-        /*if (isDebugType()) {
+        if (index - guideIndex != 1) {
+            //不是下一步
+            return
+        }
+        if (isDebugType()) {
             resetGuide()
-        }*/
+        }
         if (guideVersion == getAppVersionCode()) {
             //已经完成了引导
+            return
+        }
+        if (!vmApp<DeviceStateModel>().isDeviceConnect()) {
+            if (delayIndex == index) {
+                //已经在延迟
+            } else if (delayIndex == -1) {
+                delayIndex = index
+                showGuide(container, anchor, index, delay)
+            }
+            return
+        }
+        if (anchor != null) {
+            val screenRect = anchor.screenRect()
+            if (screenRect.isNoSize()) {
+                if (delayIndex == index) {
+                    //已经在延迟
+                } else if (delayIndex == -1) {
+                    delayIndex = index
+                    showGuide(container, anchor, index, delay)
+                }
+                return
+            }
+        }
+        delayIndex = -1
+        showGuide(container, anchor, index, delay)
+    }
+
+    private fun showGuide(container: ViewGroup, anchor: View?, index: Int, delay: Long = 0) {
+        if (!vmApp<DeviceStateModel>().isDeviceConnect()) {
+            //设备未连接
+            anchor?.let {
+                it.postDelay(160) {
+                    showGuide(container, anchor, index, delay)
+                }
+            }
             return
         }
         if (anchor != null) {
             val screenRect = anchor.screenRect()
             if (screenRect.isNoSize()) {
                 anchor.postDelay(160) {
-                    checkOrShowGuide(container, anchor, index, delay)
+                    showGuide(container, anchor, index, delay)
                 }
                 return
             }
-            L.d("引导[$index]$screenRect")
-        }
-        if (index - guideIndex != 1) {
-            //不是下一步
-            return
+            L.d("显示引导[$index]$screenRect")
         }
         guideIndex = index
         (anchor ?: container).postDelay(delay) {
@@ -92,6 +124,7 @@ object GuideManager {
      * [index] 从1开始
      * */
     private fun showGuideOf(container: ViewGroup, anchor: View?, index: Int) {
+        delayIndex = -1
         val guidLayoutId = guideLayoutList.getOrNull(index - 1) ?: 0
         if (index == guideLayoutList.size()) {
             finishGuide()

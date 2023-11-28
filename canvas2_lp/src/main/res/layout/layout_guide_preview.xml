@@ -28,7 +28,7 @@
         android:gravity="center"
         android:orientation="vertical"
         app:r_guide_gravity="BOTTOM|LEFT|OFFSET_SELF_HEIGHT"
-        app:r_guide_offset_x="40dp"
+        app:r_guide_offset_x="10dp"
         app:r_guide_offset_y="0dp"
         app:r_guide_show_in_anchor="0">
 
@@ -53,8 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:r_guide_gravity="LEFT|BOTTOM|OFFSET_SELF_HEIGHT"
-        app:r_guide_offset_x="-10dp"
-        app:r_guide_offset_y="-10dp"
+        app:r_guide_offset_x="-16dp"
+        app:r_guide_offset_y="-16dp"
         app:r_guide_show_in_anchor="0"
         app:srcCompat="@mipmap/guide_cursor" />
 
