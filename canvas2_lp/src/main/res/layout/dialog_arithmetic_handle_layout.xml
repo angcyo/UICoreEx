@@ -167,6 +167,22 @@
                 android:paddingHorizontal="0dp"
                 android:text="分享日志" />
 
+            <com.angcyo.widget.DslButton
+                android:id="@+id/continue_config_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:text="连发配置" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/continue_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:text="开始连发" />
+
         </com.angcyo.widget.layout.DslFlowLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

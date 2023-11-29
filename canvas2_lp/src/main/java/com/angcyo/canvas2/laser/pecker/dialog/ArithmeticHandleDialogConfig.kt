@@ -5,9 +5,11 @@ import android.content.Context
 import android.text.SpannableStringBuilder
 import androidx.core.widget.NestedScrollView
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
@@ -18,6 +20,7 @@ import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dialog.inputMultiDialog
 import com.angcyo.dialog.numberInputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.paddingHorizontal
@@ -32,6 +35,8 @@ import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.DSL
+import com.angcyo.library.component.hawk.HawkPropertyValue
+import com.angcyo.library.component.onMainDelay
 import com.angcyo.library.ex.MB
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.nowTimeString
@@ -57,6 +62,15 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 
     val fscBleApiModel = vmApp<FscBleApiModel>()
     val transferModel = vmApp<TransferModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
+
+    companion object {
+        /**需要连续发送几条指令*/
+        internal var continueSendCount: Int by HawkPropertyValue<Any, Int>(2)
+
+        /**连续发送延迟*/
+        internal var continueSendDelay: Long by HawkPropertyValue<Any, Long>(16)
+    }
 
     init {
         dialogLayoutId = R.layout.dialog_arithmetic_handle_layout
@@ -262,6 +276,27 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
                 }
             }
         }
+        dialogViewHolder.click(R.id.continue_config_button) {
+            it.context.inputMultiDialog {
+                dialogTitle = "连续发送配置"
+                hintInputString =
+                    mutableListOf("连续发送次数", "连续发送延迟ms")
+                defaultInputString = mutableListOf(
+                    continueSendCount.toString(),
+                    continueSendDelay.toString()
+                )
+                onInputResult = { dialog, inputText ->
+                    inputText.let {
+                        continueSendCount = it[0].toIntOrNull() ?: continueSendCount
+                        continueSendDelay = it[1].toLongOrNull() ?: continueSendDelay
+                    }
+                    false
+                }
+            }
+        }
+        dialogViewHolder.click(R.id.continue_button) {
+            startContinueSend()
+        }
     }
 
     private fun transferDataTest(dialogViewHolder: DslViewHolder, size: Any) {
@@ -288,6 +323,54 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         engraveLoadingAsync({
             action()
         })
+    }
+
+    /**开始连续发送测试*/
+    private fun startContinueSend(start: Int = 1) {
+        //延迟1秒后, 继续查询状态
+        nextQueryDeviceState(start) { count, end ->
+            if (end) {
+                //结束, 发送雕刻指令
+                EngraveCmd.batchEngrave(
+                    count,
+                    listOf(count),
+                    listOf(2),
+                    listOf(3),
+                    listOf(4),
+                    listOf(0),
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    60,
+                    60,
+                    60,
+                    60,
+                    4000,
+                    4000,
+                    4000,
+                    4000,
+                ).enqueue()
+            } else {
+                startContinueSend(count)
+            }
+        }
+    }
+
+    private fun nextQueryDeviceState(count: Int, action: (count: Int, end: Boolean) -> Unit) {
+        if (count >= continueSendCount) {
+            onMainDelay(continueSendDelay) {
+                action(count, true)
+            }
+        } else {
+            deviceStateModel.queryDeviceState { bean, error ->
+                onMainDelay(continueSendDelay) {
+                    action(count + 1, false)
+                }
+            }
+        }
     }
 }
 
