@@ -87,6 +87,9 @@ class EngravePropertyItem : DslAdapterItem() {
     /**是否要显示雕刻速度(深度)设置*/
     var itemShowSpeed: Boolean = true
 
+    /**是否要显示功率*/
+    var itemShowPower: Boolean = true
+
     /**需要显示的文本标签*/
     var itemLabelText: CharSequence? = null
 
@@ -122,6 +125,7 @@ class EngravePropertyItem : DslAdapterItem() {
         val powerLabel = _string(R.string.custom_power)
         val power = itemEngraveConfigEntity?.power ?: (itemEngraveItemBean?.printPower
             ?: HawkEngraveKeys.lastPower)
+        itemHolder.visible(R.id.power_view, itemShowPower)
         itemHolder.tv(R.id.power_view)?.apply {
             text = span {
                 if (HawkEngraveKeys.enableConfigIcon) {
@@ -137,7 +141,9 @@ class EngravePropertyItem : DslAdapterItem() {
                 }
                 append("%")
             }
-            checkAndShowTip(this, powerLabel, HawkEngraveKeys::showPowerTipVersion.name)
+            if (itemShowPower) {
+                checkAndShowTip(this, powerLabel, HawkEngraveKeys::showPowerTipVersion.name)
+            }
         }
 
         //深度-速度
@@ -160,7 +166,9 @@ class EngravePropertyItem : DslAdapterItem() {
                 }
                 append("%")
             }
-            checkAndShowTip(this, speedLabel, HawkEngraveKeys::showSpeedTipVersion.name)
+            if (itemShowSpeed) {
+                checkAndShowTip(this, speedLabel, HawkEngraveKeys::showSpeedTipVersion.name)
+            }
         }
 
         //雕刻次数
@@ -181,7 +189,9 @@ class EngravePropertyItem : DslAdapterItem() {
                     foregroundColor = _color(R.color.device_primary_color)
                 }
             }
-            checkAndShowTip(this, timesLabel, HawkEngraveKeys::showTimesTipVersion.name)
+            if (itemShowTimes) {
+                checkAndShowTip(this, timesLabel, HawkEngraveKeys::showTimesTipVersion.name)
+            }
         }
 
         //事件
