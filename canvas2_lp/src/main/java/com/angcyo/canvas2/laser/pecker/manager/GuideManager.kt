@@ -170,7 +170,7 @@ object GuideManager {
         }
         //45°平移动画
         animationOf(id = R.anim.guide_cursor_animation)?.let {
-            it.duration = 600
+            it.duration = 200
             it.infinite(ValueAnimator.REVERSE)
             rootView.findViewById<View>(R.id.guide_cursor_view)?.startAnimation(it)
         }
