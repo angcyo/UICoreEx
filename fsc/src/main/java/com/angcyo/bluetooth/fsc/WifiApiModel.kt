@@ -31,7 +31,8 @@ class WifiApiModel : ViewModel(), IViewModel {
 
         /**是否强制使用配置的wifi连接*/
         val forceUseWifiConnect: Boolean
-            get() = LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
+            get() = HawkEngraveKeys.forceUseWifi ||
+                    (LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true)
 
         /**配置的wifi地址信息*/
         val wifiAddressInfo: List<String>
@@ -147,6 +148,7 @@ class WifiApiModel : ViewModel(), IViewModel {
      * [info] true 表示自动连接, false 表示手动连接
      * */
     fun connect(device: TcpDevice, info: TcpConnectInfo?) {
+        HawkEngraveKeys.forceUseWifi = true
         HawkEngraveKeys.lastWifiConnect = true
         HawkEngraveKeys.lastWifiIp = device.address
         if (tcp.tcpDevice == null || tcp.tcpDevice == device) {

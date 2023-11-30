@@ -412,6 +412,9 @@ object HawkEngraveKeys {
 
     //2023-8-2
 
+    /**强制显示wifi列表*/
+    var forceUseWifi: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     /**最后一次是否是使用wifi连接的*/
     var lastWifiConnect: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
