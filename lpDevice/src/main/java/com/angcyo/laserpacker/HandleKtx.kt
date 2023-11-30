@@ -8,7 +8,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bitmap.handle.BitmapHandle
-import com.angcyo.bitmap.handle.BuildConfig
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
@@ -26,6 +25,7 @@ import com.angcyo.library.ex.getScaleX
 import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.getSkewX
 import com.angcyo.library.ex.getSkewY
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.mapPoint
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBase64Data
@@ -282,11 +282,7 @@ fun parseSvgElementList(
                         data = drawElement.data
 
                         val matrix = drawElement.matrix
-                        (drawElement.element as? Path)?.run {
-                            if (matrix != null)
-                                Path(this).apply { transform(matrix) }
-                            else this
-                        }?.let {
+                        (drawElement.element as? Path)?.let {
                             val rect = acquireTempRectF()
                             it.computePathBounds(rect, true)
                             initSizeFromRect(this, rect, matrix)
@@ -350,7 +346,7 @@ fun parseSvgElementList(
             }
         })
         val sharpPicture = sharp.sharpPicture //触发解析
-        if (BuildConfig.DEBUG) {
+        if (isDebugType()) {
             val bitmap = sharpPicture.drawable.toBitmap()
             L.d("svg size:${bitmap?.width}x${bitmap?.height}")
         }

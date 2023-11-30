@@ -695,8 +695,8 @@ data class LPElementBean(
      * 高度为0的svg也视为线条
      * */
     val isLineShape: Boolean
-        get() = mtype == LPDataConstant.DATA_TYPE_LINE /*||
-                (mtype == LPDataConstant.DATA_TYPE_SVG && _height == 0f)*/
+        get() = mtype == LPDataConstant.DATA_TYPE_LINE ||
+                (mtype == LPDataConstant.DATA_TYPE_SVG && ((_width == 0f && _height > 0f) || (_height == 0f && _width > 0f)))
 
     /**是否是时间变量文本*/
     val isDateTimeVariable: Boolean
