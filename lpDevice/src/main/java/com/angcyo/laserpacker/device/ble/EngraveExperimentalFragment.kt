@@ -1,12 +1,15 @@
 package com.angcyo.laserpacker.device.ble
 
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean._pathTolerance
-import com.angcyo.drawable.base.dslGradientDrawable
+import com.angcyo.core.component.model._isDarkMode
+import com.angcyo.core.fragment.lightStyle
+import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.device.R
@@ -18,7 +21,7 @@ import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.toColor
+import com.angcyo.library.ex.toDpi
 
 /**
  * 实验性功能
@@ -30,19 +33,23 @@ class EngraveExperimentalFragment : DebugFragment() {
     init {
         fragmentTitle = _string(R.string.engrave_experimental)
 
-        fragmentConfig.isLightStyle = true
-        fragmentConfig.showTitleLineView = true
+        fragmentConfig.isLightStyle = false
+        fragmentConfig.showTitleLineView = false
+        fragmentConfig.lightStyle()
+        fragmentLayoutId = R.layout.fragment_engrave_experimental
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
+        _vh.visible(R.id.background_view, !_isDarkMode)
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
         val themeWhite = _color(R.color.lib_theme_white_color)
+        fragmentConfig.titleBarBackgroundDrawable = null
         fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(themeWhite)
         super.onInitFragment(savedInstanceState)
-        rootControl().view(R.id.lib_content_wrap_layout)?.background = dslGradientDrawable {
+        /*rootControl().view(R.id.lib_content_wrap_layout)?.background = dslGradientDrawable {
             gradientColors = intArrayOf(
                 "#2d8dfb".toColor(),
                 "#8ae7f6".toColor(),
@@ -52,12 +59,20 @@ class EngraveExperimentalFragment : DebugFragment() {
                 themeWhite
             )
             gradientOrientation = GradientDrawable.Orientation.TOP_BOTTOM
+        }*/
+    }
+
+    override fun onCreateBehavior(child: View): CoordinatorLayout.Behavior<*>? {
+        if (child.id == com.angcyo.core.R.id.lib_title_wrap_layout) {
+            return null
         }
+        return super.onCreateBehavior(child)
     }
 
     override fun renderActions() {
         renderDslAdapter {
             ExperimentalTopItem()()
+            renderEmptyItem(30.toDpi())
 
             if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableTransferIndexCheck.name)) {
                 renderDebugAction(DebugAction().apply {
