@@ -60,6 +60,7 @@ import com.feasycom.spp.controler.FscSppCentralCallbacksImp
 import java.io.InputStream
 import java.util.UUID
 import java.util.concurrent.CopyOnWriteArraySet
+import kotlin.math.roundToInt
 
 /**
  * 蓝牙模型
@@ -337,9 +338,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param percentage 进度
          *  @param status 状态
          */
-        override fun otaProgressUpdate(address: String, percentage: Int, status: Int) {
+        override fun otaProgressUpdate(address: String, percentage: Float, status: Int) {
             super.otaProgressUpdate(address, percentage, status)
-            _otaProgressUpdate(address, percentage, status)
+            _otaProgressUpdate(address, percentage.roundToInt(), status)
         }
 
         /**
@@ -469,13 +470,13 @@ class FscBleApiModel : ViewModel(), IViewModel {
         /**
          *  OTA 升级进度
          *  @param address 设备地址
-         *  @param percentage 进度
+         *  @param percentage 进度 [0~100f]
          *  @param status 状态 120
          */
         @WorkerThread
-        override fun otaProgressUpdate(address: String, percentage: Int, status: Int) {
+        override fun otaProgressUpdate(address: String, percentage: Float, status: Int) {
             super.otaProgressUpdate(address, percentage, status)
-            _otaProgressUpdate(address, percentage, status)
+            _otaProgressUpdate(address, percentage.roundToInt(), status)
         }
 
         /**
