@@ -609,7 +609,7 @@ object EngraveTransitionHelper {
                 var pointList: List<CollectPoint>? = null
 
                 val gCodeFile = if (params.useOpenCvHandleGCode) {
-                    /*transferConfigEntity.gcodeUsePathData = params.gcodeUsePathData
+                    transferConfigEntity.gcodeUsePathData = params.gcodeUsePathData
                     if (transferConfigEntity.gcodeUsePathData) {
                         //2023-11-30, 0x30数据支持
                         pointList = transition.covertBitmap2GCodePoint(
@@ -618,7 +618,7 @@ object EngraveTransitionHelper {
                             bounds,
                             params
                         )
-                    }*/
+                    }
                     transition.covertBitmap2GCode(bitmap, bitmapFile.absolutePath, bounds, params)
                 } else {
                     transition.covertBitmapPixel2GCode(bitmap, bounds, params)

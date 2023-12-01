@@ -125,7 +125,7 @@ class SimpleTransition : ITransition {
         bounds: RectF,
         params: TransitionParam
     ): List<CollectPoint> {
-        val pointString = OpenCV.bitmapToGCodePoint(
+        val outputFile = OpenCV.bitmapToGCode(
             app(),
             bitmap,
             (1 / 1f.toPixel()).toDouble(),
@@ -140,9 +140,11 @@ class SimpleTransition : ITransition {
                 ?: LibHawkKeys._pathAcceptableError).roundToInt(),
             autoLaser = params.isAutoCnc,
             bitmapPath = bitmapPath,
+            outputGcode = false
         )
         val result = mutableListOf<CollectPoint>()
         //x,y:x,y;x,y:x,y;
+        val pointString = outputFile.readText()
         pointString?.let {
             it.writeTo(libCacheFile("point.txt"), false)
             it.split(";").forEach { lines ->
@@ -162,6 +164,7 @@ class SimpleTransition : ITransition {
                 }
             }
         }
+        outputFile.deleteSafe()
         return result
     }
 
