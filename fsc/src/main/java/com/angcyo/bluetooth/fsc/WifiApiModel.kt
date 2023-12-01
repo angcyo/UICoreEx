@@ -29,16 +29,15 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     companion object {
 
-        /**是否强制使用配置的wifi连接*/
+        /**是否使用强制的wifi配置信息进行连接, 否则使用上一次连接的设备进行连接*/
         val forceUseWifiConnect: Boolean
-            get() = HawkEngraveKeys.forceUseWifi ||
-                    (LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true)
+            get() = (LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true)
 
         /**配置的wifi地址信息*/
         val wifiAddressInfo: List<String>
             get() = LibLpHawkKeys.wifiAddress?.split(":") ?: emptyList()
 
-        /**是否要使用wifi传输*/
+        /**是否要使用wifi进行数据传输传输*/
         fun useWifi(): Boolean {
             if (forceUseWifiConnect) {
                 return true
