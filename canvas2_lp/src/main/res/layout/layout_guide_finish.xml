@@ -58,7 +58,8 @@
                 android:lineSpacingExtra="4dp"
                 android:padding="@dimen/lib_xhdpi"
                 android:text="@string/canvas_guid_finish_title"
-                android:textSize="@dimen/text_main_size" />
+                android:textSize="@dimen/text_main_size"
+                android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/LibBodyTextStyle"
@@ -81,7 +82,8 @@
                 android:minWidth="240dp"
                 android:paddingHorizontal="@dimen/lib_xxxhdpi"
                 android:text="@string/canvas_guid_know"
-                android:textColor="@color/text_primary_color" />
+                android:textColor="@color/text_primary_color"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
