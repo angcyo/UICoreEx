@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
+import com.angcyo.bluetooth.fsc.laserpacker.bean._pathTolerance
 import com.angcyo.drawable.base.dslGradientDrawable
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
@@ -91,7 +92,7 @@ class EngraveExperimentalFragment : DebugFragment() {
             if (isDebug() || LaserPeckerConfigHelper.isOpenFun(LibLpHawkKeys::enableVectorRadiansSample.name)) {
                 renderDebugAction(DebugAction().apply {
                     label = "激活矢量数据的弧度采样"
-                    des = "激活后,弧形凸起变化达到(${LibHawkKeys.pathTolerance}mm)时,视为关键点"
+                    des = "激活后,弧形凸起变化达到(${_pathTolerance}mm)时,视为关键点"
                     key = LibLpHawkKeys::enableVectorRadiansSample.name
                     type = Boolean::class.java
                     defValue = LibLpHawkKeys.enableVectorRadiansSample

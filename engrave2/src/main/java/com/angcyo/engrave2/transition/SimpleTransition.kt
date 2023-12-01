@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.bean._pathTolerance
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.gcode.GCodeWriteHandler
@@ -142,7 +143,7 @@ class SimpleTransition : ITransition {
         gCodeHandler.enableVectorRadiansSample = LibLpHawkKeys.enableVectorRadiansSample
         gCodeHandler.pathSampleStepRadians = LibHawkKeys.pathSampleStepRadians
         gCodeHandler.updatePathToleranceByPixel(
-            (params.pathTolerance ?: LibHawkKeys.pathTolerance).toPixel()
+            (params.pathTolerance ?: _pathTolerance).toPixel()
         )
 
         //平移

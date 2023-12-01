@@ -147,7 +147,12 @@ data class DeviceConfigBean(
 
     /**最大支持的文件发送大小字节*/
     var maxTransferDataSize: Long? = null,
-) {
+
+    /**路径公差*/
+    @MM
+    var pathTolerance: Float? = null,
+
+    ) {
 
     /**是否有特殊图层配置*/
     fun haveLayerConfig(): Boolean {
@@ -190,6 +195,11 @@ val _sliceGranularity: Int?
     get() = _deviceConfigBean?.sliceGranularity
 val _gcodeLineSpace: Double
     get() = _deviceConfigBean?.gcodeLineSpace ?: 0.125
+
+/**路径公差*/
+val _pathTolerance: Float
+    get() = LibHawkKeys.pathTolerance ?: _deviceConfigBean?.pathTolerance
+    ?: LibHawkKeys.defPathTolerance
 
 /**将切片数量转换成对应的切片色阶阈值数组*/
 fun Int.toSliceLevelList(): List<Int> {
