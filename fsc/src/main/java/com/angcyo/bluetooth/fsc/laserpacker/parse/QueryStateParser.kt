@@ -63,7 +63,7 @@ data class QueryStateParser(
     //当前正在打印的文件编号(文本编号对应本地存储的文件信息)
     var index: Int = 0,
     //工作温度, 精度1度
-    var temp: Int = 0,
+    var temp: Byte = 0,
     //发送指令时, 自定义的数据
     var custom: Int = -1,
     //Z轴连接状态, 0未连接, 1连接
@@ -167,7 +167,7 @@ data class QueryStateParser(
                 error = readInt(1, error)
                 state = readInt(1, state)
                 index = readInt(4, index)
-                temp = readInt(1, temp)
+                temp = readByte(temp)
                 custom = readInt(1, custom)
                 zConnect = readInt(1, zConnect)
                 printTimes = readInt(1, printTimes)
