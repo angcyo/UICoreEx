@@ -136,9 +136,8 @@ class SimpleTransition : ITransition {
             isLast = params.bitmapToGCodeIsLast,
             boundFirst = params.bitmapToGCodeBoundFirst,
             /*1~10*/
-            numPixel = 1,
-            /*(params.pathStep?.toPixel()
-                            ?: LibHawkKeys._pathAcceptableError).roundToInt()*/
+            numPixel = (params.pathStep?.toPixel()
+                ?: LibHawkKeys._pathAcceptableError).roundToInt(),
             autoLaser = params.isAutoCnc,
             bitmapPath = bitmapPath,
         )
