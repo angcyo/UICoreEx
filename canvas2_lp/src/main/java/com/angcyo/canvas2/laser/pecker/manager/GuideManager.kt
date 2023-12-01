@@ -47,6 +47,9 @@ object GuideManager {
         R.layout.layout_guide_finish
     )
 
+    /**是否需要暂停当前的引导索引*/
+    var pauseGuideIndex: Int = -1
+
     /**当前指引到了哪一步, 从1开始*/
     var guideIndex: Int = 0
 
@@ -106,7 +109,7 @@ object GuideManager {
         }
         if (anchor != null) {
             val screenRect = anchor.screenRect()
-            if (screenRect.isNoSize()) {
+            if (screenRect.isNoSize() || pauseGuideIndex == index) {
                 anchor.postDelay(160) {
                     showGuide(container, anchor, index, delay)
                 }
