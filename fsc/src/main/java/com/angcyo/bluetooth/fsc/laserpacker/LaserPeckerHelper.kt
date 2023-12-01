@@ -737,7 +737,10 @@ object LaserPeckerHelper {
 
         val uuid = command.uuid
         val commandLogString = command.toCommandLogString()
-        "发送指令[$address]:${uuid}:${command.getReceiveTimeout()}ms->$commandLogString".writeBleLog()
+        "发送指令[$address]:${uuid}:${command.getReceiveTimeout()}ms->$commandLogString".apply {
+            writeBleLog()
+            dataShareModel.shareTextOnceData.postValue(this) //指令日志
+        }
 
         val func = command.commandFunc().toInt()
         val state = if (command is QueryCmd) {
@@ -779,7 +782,10 @@ object LaserPeckerHelper {
                 } else {
                     append("\n$error")
                 }
-            }.writeBleLog()
+            }.apply {
+                writeBleLog()
+                dataShareModel.shareTextOnceData.postValue(this) //指令日志
+            }
             CommandEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(CommandEntity_.uuid.equal(uuid))
             }?.apply {

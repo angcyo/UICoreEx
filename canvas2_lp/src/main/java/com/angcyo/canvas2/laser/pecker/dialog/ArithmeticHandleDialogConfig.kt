@@ -42,6 +42,7 @@ import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.viewmodel.updateValue
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.base.scrollToEnd
@@ -63,6 +64,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
     val fscBleApiModel = vmApp<FscBleApiModel>()
     val transferModel = vmApp<TransferModel>()
     val deviceStateModel = vmApp<DeviceStateModel>()
+    val dataShareModel = vmApp<DataShareModel>()
 
     companion object {
         /**需要连续发送几条指令*/
@@ -82,7 +84,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 
         //接收返回消息
         val messageBuilder = SpannableStringBuilder()
-        vmApp<DataShareModel>().shareTextOnceData.observe(this) { message ->
+        dataShareModel.shareTextOnceData.observe(this) { message ->
             message?.let {
                 if (messageBuilder.isNotBlank()) {
                     messageBuilder.appendLine()
@@ -328,6 +330,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
     /**开始连续发送测试*/
     private fun startContinueSend(start: Int = 1) {
         //延迟1秒后, 继续查询状态
+        dataShareModel.shareTextOnceData.updateValue("连发[$start/$continueSendCount]...")
         nextQueryDeviceState(start) { count, end ->
             if (end) {
                 //结束, 发送雕刻指令
@@ -361,11 +364,13 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 
     private fun nextQueryDeviceState(count: Int, action: (count: Int, end: Boolean) -> Unit) {
         if (count >= continueSendCount) {
+            dataShareModel.shareTextOnceData.postValue("延迟${continueSendDelay}ms后, 继续...")
             onMainDelay(continueSendDelay) {
                 action(count, true)
             }
         } else {
             deviceStateModel.queryDeviceState { bean, error ->
+                dataShareModel.shareTextOnceData.postValue("延迟${continueSendDelay}ms后, 继续...")
                 onMainDelay(continueSendDelay) {
                     action(count + 1, false)
                 }

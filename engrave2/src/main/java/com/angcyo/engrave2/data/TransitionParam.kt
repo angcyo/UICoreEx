@@ -54,7 +54,7 @@ data class TransitionParam(
     /**转GCode时, 是否要自动开关激光*/
     val isAutoCnc: Boolean = _isAutoCnc,
 
-    /**[_isGCodeUsePathData]*/
+    /**GCode数据是否使用0x30路径数据[_isGCodeUsePathData]*/
     val gcodeUsePathData: Boolean = _isGCodeUsePathData,
 
     /**图片转GCode时, 是否是简单的线生成的图片.
