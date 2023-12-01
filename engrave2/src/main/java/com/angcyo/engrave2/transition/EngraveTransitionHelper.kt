@@ -510,6 +510,7 @@ object EngraveTransitionHelper {
                 val thresholdList = getSliceThresholdList(colors, params.sliceCount)
 
                 DeviceHelper.tempEngraveLogPathList.clear()
+                val sliceHeight = (params.sliceHeight * 10).roundToInt() / 10f //切片高度
                 val controlHeight = buildString {
                     appendLine()
                     if (params.isAutoCnc) {
@@ -521,7 +522,7 @@ object EngraveTransitionHelper {
                     }
                     appendLine()
                     append("M3021")
-                    append("S${params.sliceHeight}")
+                    append("S$sliceHeight")
                     appendLine()
                 }
 
@@ -541,7 +542,7 @@ object EngraveTransitionHelper {
                             BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
                                 val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
                                 bitmap.save(cacheBitmapFile)
-                                L.i("切片[$levelIndex/${thresholdList.size}]:$threshold->${cacheBitmapFile.absolutePath}")
+                                L.i("切片[$levelIndex/${thresholdList.size}]:$threshold->$controlHeight:${cacheBitmapFile.absolutePath}".writePerfLog())
                                 DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
 
                                 params.bitmapToGCodeType = 1
@@ -587,7 +588,7 @@ object EngraveTransitionHelper {
                     }
                     append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
                     append(" ${bitmap.byteCount.toSizeString()}->${fileSize.toSizeString()}")
-                    append(" ${colors}->${params.sliceCount}:${params.sliceHeight}")
+                    append(" ${colors}->${params.sliceCount}:$sliceHeight")
                     append(" 耗时:${LTime.time()}") {
                         foregroundColor = accentColor
                     }

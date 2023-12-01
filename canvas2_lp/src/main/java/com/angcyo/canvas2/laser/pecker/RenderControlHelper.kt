@@ -429,12 +429,13 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
         //位图临摹
         if (!closeImageEditItemsFun.have("_tracer_")) {
-            CanvasIconItem()() {
+            ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_tracer
                 itemText = _string(R.string.canvas_tracer)
                 initItem(renderer)
                 itemNewHawkKeyStr = "tracer"
                 itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                itemIsReliefItem = true
                 itemEnable = _elementBean?.isSupportSliceElement == true
                 itemClick = {
                     itemHaveNew = false
@@ -453,9 +454,9 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_slice_ico
                 itemText = _string(R.string.canvas_relief)
-                itemIsReliefItem = true
                 itemNewHawkKeyStr = "slice"
                 itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                itemIsReliefItem = true
                 itemEnable = _elementBean?.isSupportSliceElement == true
                 initItem(renderer)
                 itemClick = {

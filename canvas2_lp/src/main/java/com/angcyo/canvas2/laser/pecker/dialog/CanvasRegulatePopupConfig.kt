@@ -447,6 +447,19 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
             //切片下降高度
             if (regulateList.contains(KEY_SLICE_HEIGHT)) {
+                /*val precision = 100
+                renderSeekBarItem(
+                    KEY_SLICE_HEIGHT,
+                    _string(R.string.canvas_slice_height),
+                    (getFloatOrDef(
+                        KEY_SLICE_HEIGHT,
+                        HawkEngraveKeys.minSliceHeight
+                    ) * precision).roundToInt(),
+                    (HawkEngraveKeys.minSliceHeight * precision).roundToInt(),
+                    (HawkEngraveKeys.maxSliceHeight * precision).roundToInt(),
+                    precision = precision,
+                    unit = "mm"
+                )*/
                 renderSeekBarItem(
                     KEY_SLICE_HEIGHT,
                     _string(R.string.canvas_slice_height),
@@ -641,7 +654,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             }
 
             val def = getFloatOrDef(key, defValue)
-            val ratio = def / sum
+            val ratio = (def - minValue) / sum
             itemSeekProgress = ratio * 100
             property[key] = def
 
@@ -653,7 +666,8 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         }
     }
 
-    /**int类型 [renderSeekBarItem]*/
+    /**int类型 [renderSeekBarItem]
+     * [precision] 精度, 指定了精度后, 值会除以此值, 变成浮点数*/
     fun DslAdapter.renderSeekBarItem(
         key: String,
         label: CharSequence?,
@@ -676,8 +690,9 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             }
 
             val def = getIntOrDef(key, defValue)
-            val ratio = def * 1f / sum
+            val ratio = (def * 1f - minValue) / sum
             itemSeekProgress = ratio * 100
+
             property[key] = def
 
             itemSeekTouchEnd = { value, fraction ->

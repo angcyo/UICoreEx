@@ -56,6 +56,7 @@ import com.angcyo.opencv.OpenCV
 import com.angcyo.rust.handle.RustBitmapHandle
 import com.hingin.rn.image.ImageProcess
 import java.io.File
+import kotlin.math.roundToInt
 
 /**
  * 图片编辑处理, 实时改变, 不需要确定按钮, 模式恢复
@@ -1077,27 +1078,26 @@ object LPBitmapHandler {
             setProperty(CanvasRegulatePopupConfig.KEY_SLICE_MAX, maxSliceCount)
             firstApply = false
             onApplyAction = { dismiss ->
+                bean.sliceHeight =
+                    getFloatOrDef(CanvasRegulatePopupConfig.KEY_SLICE_HEIGHT, bean.sliceHeight)
+                bean.sliceCount =
+                    getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
+                if (isDebugType()) {
+                    //测试切片后的阈值
+                    val sliceHeight = (bean.sliceHeight * 10).roundToInt() / 10f //切片高度
+                    val thresholdList =
+                        EngraveTransitionHelper.getSliceThresholdList(colors, bean.sliceCount)
+                    L.i(buildString {
+                        append("切片[${bean.sliceHeight}/${sliceHeight}][${bean.sliceCount}/${maxSliceCount}]:")
+                        append("${colors}->")
+                        append("$thresholdList")
+                    })
+                }
                 if (dismiss) {
                     renderer.requestUpdatePropertyFlag(Reason.user.apply {
                         controlType = BaseControlPoint.CONTROL_TYPE_DATA
                     }, delegate)
                     onDismissAction()
-                } else {
-                    bean.sliceHeight =
-                        getFloatOrDef(CanvasRegulatePopupConfig.KEY_SLICE_HEIGHT, bean.sliceHeight)
-                    bean.sliceCount =
-                        getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
-
-                    if (isDebugType()) {
-                        //测试切片后的阈值
-                        val thresholdList =
-                            EngraveTransitionHelper.getSliceThresholdList(colors, bean.sliceCount)
-                        L.i(buildString {
-                            append("切片[${bean.sliceCount}/${maxSliceCount}]:")
-                            append("${colors}->")
-                            append("$thresholdList")
-                        })
-                    }
                 }
             }
         }

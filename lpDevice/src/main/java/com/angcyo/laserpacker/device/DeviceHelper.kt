@@ -91,7 +91,6 @@ object DeviceHelper {
 
     /**截图之后的意见反馈*/
     fun showEngraveScreenShotShare(path: String) {
-        tempEngraveLogPathList.clear()
         tempEngraveLogPathList.add(path)
         renderLayout(R.layout.layout_engrave_screen_shot_share) {
             renderLayoutAction = {
