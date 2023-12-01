@@ -5,6 +5,7 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.engrave2.data.TransitionParam
+import com.angcyo.gcode.CollectPoint
 import java.io.File
 
 /**
@@ -47,8 +48,22 @@ interface ITransition {
     ): Boolean
 
     /**将图片[bitmap]转换成的GCode数据
+     * [bitmapPath] 图片路径
      * [bounds] 用来平移GCode到这个坐标*/
-    fun covertBitmap2GCode(bitmap: Bitmap, bounds: RectF, params: TransitionParam): File
+    fun covertBitmap2GCode(
+        bitmap: Bitmap,
+        bitmapPath: String?,
+        bounds: RectF,
+        params: TransitionParam
+    ): File
+
+    /**[covertBitmap2GCode]*/
+    fun covertBitmap2GCodePoint(
+        bitmap: Bitmap,
+        bitmapPath: String?,
+        bounds: RectF,
+        params: TransitionParam
+    ): List<CollectPoint>
 
     /**将图片[bitmap]转换成的GCode数据, 用像素的方式转换数据
      * [bounds] 用来平移GCode到这个坐标

@@ -548,7 +548,7 @@ object EngraveTransitionHelper {
                                 params.bitmapToGCodeIsLast = levelIndex == lastIndex
                                 val bounds = provider.getEngraveDataBounds(RectF())
                                 val gCodeFile = if (params.useOpenCvHandleGCode) {
-                                    transition.covertBitmap2GCode(bitmap, bounds, params)
+                                    transition.covertBitmap2GCode(bitmap, null, bounds, params)
                                 } else {
                                     transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                                 }
@@ -602,16 +602,42 @@ object EngraveTransitionHelper {
                 val offsetY =
                     renderUnit.convertValueToPixel(transferDataEntity.y.toFloat()).ceilInt()*/
                 val bounds = provider.getEngraveDataBounds(RectF())
+                val bitmapFile = bitmap.save(libCacheFile())
+
+                var fileSize = 0L
+                var pointList: List<CollectPoint>? = null
+
                 val gCodeFile = if (params.useOpenCvHandleGCode) {
-                    transition.covertBitmap2GCode(bitmap, bounds, params)
+                    /*transferConfigEntity.gcodeUsePathData = params.gcodeUsePathData
+                    if (transferConfigEntity.gcodeUsePathData) {
+                        //2023-11-30, 0x30数据支持
+                        pointList = transition.covertBitmap2GCodePoint(
+                            bitmap,
+                            bitmapFile.absolutePath,
+                            bounds,
+                            params
+                        )
+                    }*/
+                    transition.covertBitmap2GCode(bitmap, bitmapFile.absolutePath, bounds, params)
                 } else {
                     transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                 }
-                val fileSize = gCodeFile.length()
+                fileSize = gCodeFile.length()
                 saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
+                if (!pointList.isNullOrEmpty()) {
+                    fileSize = transitionToPoint(
+                        transferDataEntity,
+                        pointList,
+                        false
+                    )
+                }
+
+                bitmapFile.deleteSafe()
+
                 span {
-                    append("转GCode") {
+                    val type = if (transferConfigEntity.gcodeUsePathData) "PathData" else "GCode"
+                    append("转${type}") {
                         foregroundColor = accentColor
                     }
                     append("[$index]->")
@@ -647,59 +673,7 @@ object EngraveTransitionHelper {
 
             if (transferConfigEntity.gcodeUsePathData) {
                 //2023-10-23
-                fileWrap.collectPointList?.apply {
-                    transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_PATH
-
-                    val targetList = mutableListOf<CollectPoint>()
-                    forEach { line ->
-                        if (line.pointList.isNotEmpty()) {
-                            //每N个数据, 生成一组新的集合
-                            var pointList = mutableListOf<PointF>()
-                            line.pointList.forEachIndexed { index, point ->
-                                pointList.add(point)
-                                if ((index + 1) % HawkEngraveKeys.pathDataPointLimit == 0) {
-                                    targetList.add(CollectPoint(pointList))
-                                    pointList = mutableListOf()
-                                }
-                            }
-                            if (pointList.isNotEmpty()) {
-                                targetList.add(CollectPoint(pointList))
-                            }
-                        }
-                    }
-
-                    transferDataEntity.lines = targetList.size()
-
-                    val logBuilder =
-                        if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) StringBuilder() else null
-                    val bytes = byteWriter {
-                        targetList.forEach { line ->
-                            write(0x7f)
-                            write(0xfe)
-                            val len = line.pointList.size()
-                            write(len, 2)
-                            logBuilder?.append("${len}:")
-                            line.pointList.forEach { section ->
-                                val x =
-                                    (section.x * 10 * 10 - transferDataEntity.x * 10).roundToInt()
-                                val y =
-                                    (section.y * 10 * 10 - transferDataEntity.y * 10).roundToInt()
-                                write(x, 2)
-                                write(y, 2)
-                                logBuilder?.append("(${x},${y})")
-                            }
-                            write(0x7f)
-                            write(0xfa)
-                            logBuilder?.appendLine()
-                        }
-                    }
-                    fileSize = bytes.size().toLong()
-                    transferDataEntity.dataPath = bytes.writeTransferDataPath("$index")
-
-                    logBuilder?.let { log ->
-                        EngraveHelper.saveEngraveData(index, log, LPDataConstant.EXT_PATH)
-                    }
-                }
+                fileSize = transitionToPoint(transferDataEntity, fileWrap.collectPointList, true)
             }
 
             span {
@@ -718,6 +692,76 @@ object EngraveTransitionHelper {
             }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
         }
         return transferDataEntity
+    }
+
+    /**转换成0x30路径数据
+     * [isAbsolutePoint] 当前的点是绝对位置(画布左上角), 还是相对位置(图片左上角)
+     * @return 返回字节大小*/
+    private fun transitionToPoint(
+        transferDataEntity: TransferDataEntity,
+        collectPointList: List<CollectPoint>?,
+        isAbsolutePoint: Boolean
+    ): Long {
+        var fileSize = 0L
+        collectPointList?.apply {
+            transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_PATH
+
+            val targetList = mutableListOf<CollectPoint>()
+            forEach { line ->
+                if (line.pointList.isNotEmpty()) {
+                    //每N个数据, 生成一组新的集合
+                    var pointList = mutableListOf<PointF>()
+                    line.pointList.forEachIndexed { index, point ->
+                        pointList.add(point)
+                        if ((index + 1) % HawkEngraveKeys.pathDataPointLimit == 0) {
+                            targetList.add(CollectPoint(pointList))
+                            pointList = mutableListOf()
+                        }
+                    }
+                    if (pointList.isNotEmpty()) {
+                        targetList.add(CollectPoint(pointList))
+                    }
+                }
+            }
+
+            transferDataEntity.lines = targetList.size()
+
+            val logBuilder =
+                if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) StringBuilder() else null
+            val bytes = byteWriter {
+                targetList.forEach { line ->
+                    write(0x7f)
+                    write(0xfe)
+                    val len = line.pointList.size()
+                    write(len, 2)
+                    logBuilder?.append("${len}:")
+                    line.pointList.forEach { section ->
+                        val x =
+                            (section.x * 10 * 10 - if (isAbsolutePoint) transferDataEntity.x * 10 else 0).roundToInt()
+                        val y =
+                            (section.y * 10 * 10 - if (isAbsolutePoint) transferDataEntity.y * 10 else 0).roundToInt()
+
+                        write(x, 2)
+                        write(y, 2)
+                        logBuilder?.append("(${x},${y})")
+                    }
+                    write(0x7f)
+                    write(0xfa)
+                    logBuilder?.appendLine()
+                }
+            }
+            fileSize = bytes.size().toLong()
+            transferDataEntity.dataPath = bytes.writeTransferDataPath("${transferDataEntity.index}")
+
+            logBuilder?.let { log ->
+                EngraveHelper.saveEngraveData(
+                    transferDataEntity.index,
+                    log,
+                    LPDataConstant.EXT_PATH
+                )
+            }
+        }
+        return fileSize
     }
 
     /**原封不动转发数据*/

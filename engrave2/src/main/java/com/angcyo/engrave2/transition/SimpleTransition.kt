@@ -3,6 +3,7 @@ package com.angcyo.engrave2.transition
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Path
+import android.graphics.PointF
 import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.bitmap.handle.BitmapHandle
@@ -10,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.bean._pathTolerance
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.engrave2.data.TransitionParam
+import com.angcyo.gcode.CollectPoint
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.library.annotation.MM
@@ -20,11 +22,14 @@ import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.bounds
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.rotate
 import com.angcyo.library.ex.transform
+import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
+import com.angcyo.library.utils.writeTo
 import com.angcyo.opencv.OpenCV
 import java.io.File
 import java.io.FileOutputStream
@@ -74,7 +79,12 @@ class SimpleTransition : ITransition {
         orientation
     )
 
-    override fun covertBitmap2GCode(bitmap: Bitmap, bounds: RectF, params: TransitionParam): File {
+    override fun covertBitmap2GCode(
+        bitmap: Bitmap,
+        bitmapPath: String?,
+        bounds: RectF,
+        params: TransitionParam
+    ): File {
         val file = OpenCV.bitmapToGCode(
             app(),
             bitmap,
@@ -89,6 +99,7 @@ class SimpleTransition : ITransition {
             numPixel = (params.pathStep?.toPixel()
                 ?: LibHawkKeys._pathAcceptableError).roundToInt(),
             autoLaser = params.isAutoCnc,
+            bitmapPath = bitmapPath,
         )
         val gCodeText = file.readText()
         file.deleteSafe()
@@ -101,11 +112,58 @@ class SimpleTransition : ITransition {
         }*/
 
         return gCodeTranslation(
-            gCodeText,
+            gCodeText!!,
             bounds.left,
             bounds.top,
             params
         )
+    }
+
+    override fun covertBitmap2GCodePoint(
+        bitmap: Bitmap,
+        bitmapPath: String?,
+        bounds: RectF,
+        params: TransitionParam
+    ): List<CollectPoint> {
+        val pointString = OpenCV.bitmapToGCodePoint(
+            app(),
+            bitmap,
+            (1 / 1f.toPixel()).toDouble(),
+            params.bitmapToGCodeLineSpace,
+            0,
+            0.0,
+            type = params.bitmapToGCodeType, //只获取轮廓
+            isLast = params.bitmapToGCodeIsLast,
+            boundFirst = params.bitmapToGCodeBoundFirst,
+            /*1~10*/
+            numPixel = 1,
+            /*(params.pathStep?.toPixel()
+                            ?: LibHawkKeys._pathAcceptableError).roundToInt()*/
+            autoLaser = params.isAutoCnc,
+            bitmapPath = bitmapPath,
+        )
+        val result = mutableListOf<CollectPoint>()
+        //x,y:x,y;x,y:x,y;
+        pointString?.let {
+            it.writeTo(libCacheFile("point.txt"), false)
+            it.split(";").forEach { lines ->
+                val pointList = mutableListOf<PointF>()
+                lines.split(":").forEach { points ->
+                    val xy = points.split(",")
+                    if (xy.size >= 2) {
+                        val x = xy[0].toFloatOrNull()
+                        val y = xy[1].toFloatOrNull()
+                        if (x != null && y != null) {
+                            pointList.add(PointF(x, y))
+                        }
+                    }
+                }
+                if (pointList.isNotEmpty()) {
+                    result.add(CollectPoint(pointList))
+                }
+            }
+        }
+        return result
     }
 
     override fun covertBitmapPixel2GCode(
