@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker._showLaserFrequencyConfig
 import com.angcyo.bluetooth.fsc.laserpacker._showPumpConfig
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
+import com.angcyo.bluetooth.fsc.laserpacker.bean._showSpeedRange
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
@@ -961,7 +962,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
                 //2023-11-7 big雕刻速度
                 val supportMaxSpeed = _deviceConfigBean?.supportMaxSpeed
-                if (supportMaxSpeed == null) {
+                if (!_showSpeedRange || supportMaxSpeed == null) {
                     engraveConfigEntity.bigSpeed = null
                 } else {
                     EngraveBigValueItem()() {

@@ -49,6 +49,8 @@ data class DeviceSettingBean(
     /**显示风速设置的固件范围, 同时还要对应的模块支持
      * [com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo.showPump]*/
     var showPumpRange: String? = null,
+    /**显示速度输入设置固件范围*/
+    var showSpeedRange: String? = null,
     /**支持自动激光的固件版本*/
     var autoCncRange: String? = null,
     /**显示速度参考的固件范围*/
@@ -251,3 +253,7 @@ val String.isSupportFileExt: Boolean
 /**是否要显示社区*/
 val _showCommunity: Boolean
     get() = _deviceSettingBean?.showCommunity == true
+
+/**是否要显示速度设置框*/
+val _showSpeedRange: Boolean
+    get() = _deviceSettingBean?.showSpeedRange?.matchesProductVersion() == true
