@@ -40,7 +40,7 @@ object HawkEngraveKeys {
     var minQueryDelayTime: Long by HawkPropertyValue<Any, Long>(1_000)
 
     /**最小温度显示阈值*/
-    var minTempShowThreshold: Int by HawkPropertyValue<Any, Int>(0)
+    var minTempShowThreshold: Int by HawkPropertyValue<Any, Int>(-127)
 
     /**倾斜角度显示阈值, 角度不等于这个值时, 则显示*/
     var angleShowThreshold: Int by HawkPropertyValue<Any, Int>(0)
