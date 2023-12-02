@@ -7,7 +7,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean._pathTolerance
-import com.angcyo.core.component.model._isDarkMode
 import com.angcyo.core.fragment.lightStyle
 import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.item.component.DebugAction
@@ -41,7 +40,7 @@ class EngraveExperimentalFragment : DebugFragment() {
 
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
-        _vh.visible(R.id.background_view, !_isDarkMode)
+        //_vh.visible(R.id.background_view, !_isDarkMode)
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
