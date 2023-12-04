@@ -28,7 +28,6 @@ class AddDoodleItem : CanvasIconItem() {
                 }
             }
         }
-        drawCanvasRight()
     }
 
 }

@@ -190,6 +190,10 @@ fun String.umengEventValue() {
     UM.event(this, 1)
 }
 
+fun String.umengEventValue2() {
+    umengEventValue()
+}
+
 fun String.umengEventValue(map: Map<String, String>) {
     UM.event(this, 1, map)
 }

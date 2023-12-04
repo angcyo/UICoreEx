@@ -71,6 +71,9 @@ object UMEvent {
     /**创作涂鸦*/
     const val CANVAS_DOODLE = "canvas_doodle"
 
+    /**材料测试阵列*/
+    const val CANVAS_MATERIAL_TEST = "canvas_material_test"
+
     /**智能指南*/
     const val SMART_ASSISTANT = "smart_assistant"
 

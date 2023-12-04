@@ -267,4 +267,6 @@
     <string name="canvas_guid_finish_des">If you want to experience the beginner guide again, you can go to the "My" screen</string>
     <string name="canvas_guid_know">Well</string>
 
+    <string name="canvas_material_test">Materials test</string>
+
 </resources>

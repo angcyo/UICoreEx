@@ -150,6 +150,13 @@ class EngraveExperimentalFragment : DebugFragment() {
                     key = HawkEngraveKeys::enableItemEngraveParams.name
                     type = Boolean::class.java
                     defValue = HawkEngraveKeys.enableItemEngraveParams
+
+                    action = { _, value ->
+                        if (value is Boolean) {
+                            //触发通知
+                            HawkEngraveKeys.enableItemEngraveParams = value
+                        }
+                    }
                 })
             }
 
@@ -164,6 +171,8 @@ class EngraveExperimentalFragment : DebugFragment() {
                     action = { _, value ->
                         if (value is Boolean) {
                             LibHawkKeys.enableCanvasRenderLimit = !value
+                            //触发通知
+                            HawkEngraveKeys.enableSingleItemTransfer = value
                         }
                     }
                 })

@@ -41,6 +41,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlExportItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlOperateItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlSettingItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.MaterialTestItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ShapesItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.VariableTextItem
 import com.angcyo.canvas2.laser.pecker.element.haveBarcodeElement
@@ -166,6 +167,17 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     initItem()
                 }
             }
+            if (!closeCanvasItemsFun.have("_materialTest_")) {
+                MaterialTestItem()() {
+                    initItem()
+                }
+            }
+            CanvasIconItem()() {
+                itemText = ""
+                itemWidth = 0
+                drawCanvasRight()
+            }
+
             //
 
             ControlEditItem()() {//edit
