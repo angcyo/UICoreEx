@@ -2,9 +2,8 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.addParameterComparisonTableDialog
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
-import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.library.component.hawk.HawkProperty
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent
@@ -31,9 +30,9 @@ class MaterialTestItem : CanvasIconItem() {
         itemHidden = !canShowMaterialTest
         itemClick = {
             UMEvent.CANVAS_MATERIAL_TEST.umengEventValue2()
-            it.context.doodleDialog {
-                onDoodleResultAction = { bitmap ->
-                    LPElementHelper.addBitmapElement(itemRenderDelegate, bitmap)
+            it.context.addParameterComparisonTableDialog {
+                it.context.addParameterComparisonTableDialog {
+                    renderDelegate = itemRenderDelegate
                 }
             }
         }
