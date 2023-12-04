@@ -228,14 +228,16 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
 
             //线型
             params.updateDrawPathPaintStrokeWidth(paint)
-            renderPath(canvas, paint, elementBean.isLineShape, drawPathList, params._renderMatrix)
+            renderPath(canvas, paint, elementBean.isLineType, drawPathList, params._renderMatrix)
         }
     }
 
     override fun updateBeanToElement(renderer: BaseRenderer?) {
         if (elementBean.isLineShape) {
             //elementBean.height = 1f.toMm()//线的高度 1px
-            elementBean.height = 0f
+            if (elementBean.mtype == LPDataConstant.DATA_TYPE_LINE) {
+                elementBean.height = 0f
+            }
         }
         super.updateBeanToElement(renderer)
         if (pathList == null) {
