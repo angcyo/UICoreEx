@@ -31,9 +31,7 @@ class MaterialTestItem : CanvasIconItem() {
         itemClick = {
             UMEvent.CANVAS_MATERIAL_TEST.umengEventValue2()
             it.context.addParameterComparisonTableDialog {
-                it.context.addParameterComparisonTableDialog {
-                    renderDelegate = itemRenderDelegate
-                }
+                renderDelegate = itemRenderDelegate
             }
         }
 
