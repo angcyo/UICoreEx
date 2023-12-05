@@ -101,7 +101,7 @@ class SimpleTransition : ITransition {
             autoLaser = params.isAutoCnc,
             bitmapPath = bitmapPath,
         )
-        val gCodeText = file.readText()
+        val gCodeText = file.readText() + "\n" //2023-12-5
         file.deleteSafe()
         //添加关闭激光的指令
 
