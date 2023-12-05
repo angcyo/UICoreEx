@@ -67,6 +67,7 @@ import com.angcyo.library.ex.have
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.uuid
+import com.angcyo.library.ex.withMinValue
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
@@ -76,6 +77,7 @@ import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 /**
@@ -83,7 +85,8 @@ import kotlin.random.Random
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/04/04
  */
-class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
+class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig(),
+    IParameterComparisonTableProvider {
 
     @Keep
     companion object {
@@ -95,7 +98,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             )
 
         /**功率深度阈值, 小于值才需要绘制格子*/
-        internal var powerDepthThreshold: Float by HawkPropertyValue<Any, Float>(2400f)
+        internal var powerDepthThreshold: Float by HawkPropertyValue<Any, Float>(100 * 100f)
 
         /**最小阈值*/
         internal var minPowerDepthThreshold: Float by HawkPropertyValue<Any, Float>(0f)
@@ -105,10 +108,16 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         internal var gridItemSize: Float by HawkPropertyValue<Any, Float>(14f)
 
         /**竖向网格的数量, 有多少行*/
-        internal var verticalGridCount: Int by HawkPropertyValue<Any, Int>(10)
+        internal var verticalGridCount: Int by HawkPropertyValue<Any, Int>(5)
 
         /**横向网格的数量, 有多少列*/
-        internal var horizontalGridCount: Int by HawkPropertyValue<Any, Int>(10)
+        internal var horizontalGridCount: Int by HawkPropertyValue<Any, Int>(5)
+
+        internal var minPower: Int by HawkPropertyValue<Any, Int>(10)
+        internal var maxPower: Int by HawkPropertyValue<Any, Int>(100)
+
+        internal var minDepth: Int by HawkPropertyValue<Any, Int>(10)
+        internal var maxDepth: Int by HawkPropertyValue<Any, Int>(100)
 
         /**网格格子的边距*/
         @MM
@@ -336,6 +345,376 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             LPRendererHelper.renderElementList(delegate, beanList, true, Strategy.normal)
         }
+
+        /**解析pct参数表 */
+        fun parseParameterComparisonTable(provider: IParameterComparisonTableProvider?): List<BaseRenderer> {
+            provider ?: return emptyList()
+            //最终结果
+            val beanList = mutableListOf<LPElementBean>()
+            //标签集合
+            val labelBeanList = mutableListOf<LPElementBean>()
+            //功率集合
+            val powerBeanList = mutableListOf<LPElementBean>()
+            //深度集合
+            val depthBeanList = mutableListOf<LPElementBean>()
+            //存放网格item
+            val gridBeanList = mutableListOf<LPElementBean>()
+
+            val elementMargin = provider.elementMargin.toPixel()
+            val gridMargin = gridItemMargin.toPixel()
+
+            val numberTextItem = LPTextElement(LPElementBean().apply {
+                text = "100"
+                fontSize = pctTextFontSize
+                charSpacing = ptcCharSpace
+                name = text
+
+                //参数, 使用最后一次的默认
+                //com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig
+            })
+
+            //功率/深度文本的宽高
+            val powerTextItem = LPTextElement(LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                fontSize = provider.labelTextFontSize
+                text = "Power(%)"
+                name = text
+
+                charSpacing = numberTextItem.elementBean.charSpacing
+                printPrecision = numberTextItem.elementBean.printPrecision
+                printCount = numberTextItem.elementBean.printCount
+            })
+            val depthTextItem = LPTextElement(LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                fontSize = powerTextItem.elementBean.fontSize
+                text = "Depth(%)"
+                name = text
+                angle = -90f
+
+                charSpacing = numberTextItem.elementBean.charSpacing
+                printPrecision = numberTextItem.elementBean.printPrecision
+                printCount = numberTextItem.elementBean.printCount
+            })
+            //左上角标签文本
+            val labelTextItem = LPTextElement(LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                fontSize = provider.titleTextFontSize
+                val defaultLabel = buildString {
+                    val deviceStateModel = vmApp<DeviceStateModel>()
+                    deviceStateModel.getDeviceConfig(provider.gridPrintType)?.name?.let {
+                        append(it)
+                        append(" ")
+                    }
+                    append(gridLayerId.toLayerInfo()?.label ?: "")
+                    val layerInfo = deviceStateModel.getDeviceLaserModule(provider.gridPrintType)
+                    appendSpaceIfNotEmpty()
+                    append(layerInfo?.toLabel() ?: "${provider.gridPrintType.toLaserWave()}nm")
+                    if (LayerHelper.showDpiConfig(gridLayerId)) {
+                        val layerDpi = LayerHelper.getProductLastLayerDpi(gridLayerId)
+                        appendSpaceIfNotEmpty()
+                        append(LaserPeckerHelper.findPxInfo(gridLayerId, layerDpi).toText())
+                    }
+                }
+                text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
+                    "%1", defaultLabel
+                )
+                name = text
+
+                charSpacing = numberTextItem.elementBean.charSpacing
+                printPrecision = numberTextItem.elementBean.printPrecision
+                printCount = numberTextItem.elementBean.printCount
+            })
+
+            val offsetTop = if (!hideFunInt.have(HIDE_LABEL)) {
+                labelTextItem.getTextHeight() + elementMargin
+            } else {
+                0f
+            }
+
+            //LPElementBean
+            fun createGridItemBean(): LPElementBean = LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                fontSize = numberTextItem.elementBean.fontSize
+                charSpacing = numberTextItem.elementBean.charSpacing
+
+                //参数
+                printPrecision = numberTextItem.elementBean.printPrecision
+                printCount = numberTextItem.elementBean.printCount
+                printPower = numberTextItem.elementBean.printPower
+                printDepth = numberTextItem.elementBean.printDepth
+            }
+
+            val powerTextHeight =
+                if (hideFunInt.have(HIDE_POWER)) 0f else powerTextItem.getTextHeight()
+            val depthTextWidth =
+                if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextWidth()
+            val depthTextHeight =
+                if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextHeight()
+            val topPowderHeight =
+                if (hideFunInt.have(HIDE_POWER_LABEL)) 0f else numberTextItem.getTextHeight()
+            val leftDepthWith =
+                if (hideFunInt.have(HIDE_DEPTH_LABEL)) 0f else numberTextItem.getTextWidth()
+
+            val leftTextWidth = depthTextHeight + leftDepthWith + elementMargin
+            val topTextHeight = offsetTop + powerTextHeight + topPowderHeight + elementMargin
+
+            //格子开始的地方
+            val gridLeft = elementMargin + leftTextWidth
+            val gridTop = elementMargin + topTextHeight
+
+            //每个格子的宽高, 不包含margin
+            val gridWidth = gridItemSize.toPixel()
+            val gridHeight = gridItemSize.toPixel()
+
+            //格子总共占用的宽高
+            val gridWidthSum = gridWidth * horizontalGridCount
+            val gridHeightSum = gridHeight * verticalGridCount
+
+            //表格总宽度
+            val pctWidth = leftTextWidth + elementMargin + gridWidthSum
+            //表格总高度
+            val pctHeight = topTextHeight + elementMargin + gridHeightSum
+
+            //横竖线
+            @Pixel val powerList = mutableListOf<Float>() //功率分割线, 竖线
+            val depthList = mutableListOf<Float>() //深度分割线, 横线
+
+            val horizontalStep =
+                (maxPower - minPower) * 1f / (horizontalGridCount - 1).withMinValue(1)
+            val verticalStep = (maxDepth - minDepth) * 1f / (verticalGridCount).withMinValue(1)
+
+            //--格子
+            @Pixel var x = gridLeft
+            var y = gridTop
+
+            //需要创建的功率和深度的数值
+            val powerValueList = mutableListOf<Int>()
+            val depthValueList = mutableListOf<Int>()
+
+            //默认功率和深度列表
+            for (power in 0 until horizontalGridCount) {
+                powerValueList.add((minPower + power * horizontalStep).roundToInt())
+            }
+            for (depth in 0 until verticalGridCount) {
+                depthValueList.add((minDepth + depth * verticalStep).roundToInt())
+            }
+
+            if (appointPowerDepth.isNotBlank()) {
+                //指定功率和深度
+                val splitList = if (appointPowerDepth.contains(":")) appointPowerDepth.split(":")
+                else appointPowerDepth.split(".") //功率 深度
+                splitList.getOrNull(0)?.split(" ")?.filter { it.isNotBlank() }?.apply {
+                    powerValueList.clear()
+                    mapTo(powerValueList) {
+                        it.toIntOrNull() ?: 0
+                    }
+                }
+                splitList.getOrNull(1)?.split(" ")?.filter { it.isNotBlank() }?.apply {
+                    depthValueList.clear()
+                    mapTo(depthValueList) {
+                        it.toIntOrNull() ?: 0
+                    }
+                }
+            }
+
+            powerValueList.forEachIndexed { powerIndex, powerValue ->
+                if (powerIndex >= horizontalGridCount) {
+                    return@forEachIndexed
+                }
+                //功率值文本
+                x = gridLeft + powerIndex * gridWidth
+
+                if (powerIndex > 0) {
+                    powerList.add(x)
+                }
+                val powerNumberItem = LPTextElement(createGridItemBean().apply {
+                    text = "$powerValue"
+                    name = "power[${text}]"
+                })
+                powerNumberItem.elementBean.left =
+                    (x + gridWidth / 2 - powerNumberItem.getTextWidth() / 2).toMm()
+                powerNumberItem.elementBean.top =
+                    (offsetTop + powerTextHeight + elementMargin).toMm()
+                powerBeanList.add(powerNumberItem.elementBean)
+
+                if (powerIndex == 0 && depthValueList.isEmpty()) {
+                    //没有深度值时, 画一根线
+                    depthList.add(gridTop)
+                }
+                depthValueList.forEachIndexed { depthIndex, depthValue ->
+                    if (depthIndex >= verticalGridCount) {
+                        return@forEachIndexed
+                    }
+                    //深度值文本
+                    y = gridTop + depthIndex * gridHeight
+
+                    if (powerIndex == 0) {
+                        if (depthIndex > 0) {
+                            depthList.add(y)
+                        } else if (depthValueList.size() <= 1) {
+                            //只有一个深度值时, 在尾部画一根线
+                            depthList.add(gridTop + (depthIndex + 1) * gridHeight)
+                        }
+                        val depthNumberItem = LPTextElement(createGridItemBean().apply {
+                            text = "$depthValue"
+                            name = "depth[${text}]"
+                        })
+                        depthNumberItem.elementBean.left =
+                            (gridLeft - elementMargin - depthNumberItem.getTextWidth()).toMm()
+                        depthNumberItem.elementBean.top =
+                            (y + gridHeight / 2 - depthNumberItem.getTextHeight() / 2).toMm()
+                        depthBeanList.add(depthNumberItem.elementBean)
+                    }
+
+                    //格子数据
+                    val refPDValue = powerValue * depthValue
+                    if ((refPDValue > minPowerDepthThreshold && refPDValue <= powerDepthThreshold) ||
+                        RowsColumnsRangeItem.isRowColumnInRange(depthIndex + 1, powerIndex + 1)
+                    ) {
+                        gridBeanList.add(LPElementBean().apply {
+                            val isCut = gridLayerId == LaserPeckerHelper.LAYER_CUT
+                            this.isCut = isCut
+                            //_layerId
+                            mtype = LPDataConstant.DATA_TYPE_RECT
+                            paintStyle =
+                                if (isCut) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
+                            val w = max(2f, (gridWidth - gridMargin * 2))
+                            val h = max(2f, (gridHeight - gridMargin * 2))
+                            width = w.toMm()
+                            height = h.toMm()
+                            left = (x + gridMargin).toMm()
+                            top = (y + gridMargin).toMm()
+                            name = "grid[${powerValue},${depthValue}]"
+
+                            //2023-11-8 支持设置图片
+                            if (selectImage != null) {
+                                mtype = LPDataConstant.DATA_TYPE_BITMAP
+                                imageOriginal = selectImage!!.toBase64Data()
+                                if (gridLayerId == LaserPeckerHelper.LAYER_FILL) {
+                                    //图片图层
+                                    imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
+                                } else {
+                                    imageFilter = LPDataConstant.DATA_MODE_DITHERING
+                                }
+                                scaleX = w / selectImage!!.width.toPixel()
+                                scaleY = h / selectImage!!.height.toPixel()
+                            }
+
+                            //参数
+                            dataMode = if (HawkEngraveKeys.checkCpu32 &&
+                                !BuildHelper.isCpu64 &&
+                                gridLayerId == LaserPeckerHelper.LAYER_PICTURE
+                            ) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/ else gridLayerId.toDataMode()
+
+                            printCount =
+                                PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)
+                            printPower = powerValue
+                            printDepth = depthValue
+                            printType = provider.gridPrintType.toInt()
+                            //printPrecision = numberTextItem.elementBean.printPrecision //HawkEngraveKeys.lastPrecision
+                            printPrecision = gridPrintPrecision.ensurePrintPrecision()
+                            dpi = gridLayerId.filterLayerDpi(
+                                LayerHelper.getProductLastLayerDpi(gridLayerId)
+                            )
+                        })
+                    }
+                }
+            }
+
+            //---横竖线
+            val gCodeHandler = GCodeWriteHandler()
+            gCodeHandler.unit = IValueUnit.MM_UNIT
+            gCodeHandler.isAutoCnc = _isAutoCnc
+            val gCodeWriter = StringWriter()
+            gCodeHandler.writer = gCodeWriter
+            gCodeHandler.onPathStart()
+
+            //功率分割线, 竖线
+            powerList.forEach {
+                gCodeHandler.closeCnc()
+                gCodeWriter.appendLine("G0X${it.toMm()}Y${gridTop.toMm()}")
+                gCodeHandler.openCnc()
+                gCodeWriter.appendLine("G1Y${(gridTop + gridHeightSum).toMm()}")
+            }
+            //深度分割线, 横线
+            depthList.forEach {
+                gCodeHandler.closeCnc()
+                gCodeWriter.appendLine("G0X${gridLeft.toMm()}Y${it.toMm()}")
+                gCodeHandler.openCnc()
+                gCodeWriter.appendLine("G1X${(gridLeft + gridWidthSum).toMm()}")
+            }
+
+            gCodeHandler.onPathEnd(true)
+            gCodeWriter.flush()
+            gCodeWriter.close()
+
+            if (!hideFunInt.have(HIDE_GRID)) {
+                val gcode = gCodeWriter.toString()
+                beanList.add(createGridItemBean().apply {
+                    mtype = LPDataConstant.DATA_TYPE_GCODE
+                    paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+                    data = gcode
+                    left = gridLeft.toMm()
+                    top = gridTop.toMm()
+                    name = "gridLine"
+                })
+            }
+
+            //Label
+            labelTextItem.elementBean.left =
+                (pctWidth / 2 - labelTextItem.getTextWidth() / 2).toMm()
+            labelTextItem.elementBean.top = 0f
+            if (!hideFunInt.have(HIDE_LABEL)) {
+                labelBeanList.add(labelTextItem.elementBean)
+            }
+
+            //---文本
+            powerTextItem.elementBean.left =
+                (gridLeft + gridWidthSum / 2 - powerTextItem.getTextWidth() / 2).toMm()
+            powerTextItem.elementBean.top = offsetTop.toMm()
+            if (!hideFunInt.have(HIDE_POWER)) {
+                labelBeanList.add(powerTextItem.elementBean)
+            }
+
+            //左边的深度文本, 旋转了-90度, 所以需要特殊处理
+            depthTextItem.elementBean.left =
+                (gridLeft - leftDepthWith - elementMargin * 2 - depthTextHeight).toMm()
+            depthTextItem.elementBean.top =
+                (gridTop + gridHeightSum / 2 + depthTextWidth / 2).toMm()
+            if (!hideFunInt.have(HIDE_DEPTH)) {
+                labelBeanList.add(depthTextItem.elementBean)
+            }
+
+            //归一
+            beanList.addAll(labelBeanList)
+            if (!hideFunInt.have(HIDE_POWER_LABEL)) {
+                beanList.addAll(powerBeanList)
+            }
+            if (!hideFunInt.have(HIDE_DEPTH_LABEL)) {
+                beanList.addAll(depthBeanList)
+            }
+            beanList.addAll(gridBeanList)
+
+            //组合在一起
+            val groupId = uuid()
+            for (bean in beanList) {
+                bean.groupId = groupId
+
+                //一致打印参数
+                bean.printType = provider.gridPrintType.toInt()
+                bean.dpi =
+                    LayerHelper.getProductLastLayerDpi(
+                        bean._layerId ?: LaserPeckerHelper.LAYER_LINE
+                    )
+                if (bean.dataMode == null) {
+                    bean.printPrecision = HawkEngraveKeys.lastPrecision
+                    bean.printPower = HawkEngraveKeys.lastPower
+                    bean.printDepth = HawkEngraveKeys.lastDepth
+                    bean.printCount = 1
+                }
+            }
+            return LPRendererHelper.renderElementList(null, beanList, true, Strategy.normal)
+        }
     }
 
     var renderDelegate: CanvasRenderDelegate? = null
@@ -365,7 +744,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             if (needPreview) {
                 TablePreviewItem()() {
-                    parameterComparisonTableDialogConfig = this@ParameterComparisonTableDialogConfig
+                    iParameterComparisonTableProvider = this@ParameterComparisonTableDialogConfig
                 }
             }
 
@@ -487,383 +866,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         }
     }
 
-    /**不同类型元素之间的距离*/
-    @MM
-    var elementMargin = 2f
-
-    /**指定激光类型
-     * [LaserPeckerHelper.LASER_TYPE_BLUE]
-     * [LaserPeckerHelper.LASER_TYPE_WHITE]
-     * */
-    var gridPrintType = DeviceHelper.getProductLaserType()
-
-    /**标签 Power/Depth 文本字体大小*/
-    @MM
-    val labelTextFontSize: Float
-        get() = pctTextFontSize * pctLabelTextFontScale
-
-    @MM
-    val titleTextFontSize: Float
-        get() = pctTextFontSize * pctTitleTextFontScale
-
-    fun parseParameterComparisonTable(): List<BaseRenderer> {
-        //最终结果
-        val beanList = mutableListOf<LPElementBean>()
-        //标签集合
-        val labelBeanList = mutableListOf<LPElementBean>()
-        //功率集合
-        val powerBeanList = mutableListOf<LPElementBean>()
-        //深度集合
-        val depthBeanList = mutableListOf<LPElementBean>()
-        //存放网格item
-        val gridBeanList = mutableListOf<LPElementBean>()
-
-        val elementMargin = elementMargin.toPixel()
-        val gridMargin = gridItemMargin.toPixel()
-
-        val numberTextItem = LPTextElement(LPElementBean().apply {
-            text = "100"
-            fontSize = pctTextFontSize
-            charSpacing = ptcCharSpace
-            name = text
-
-            //参数, 使用最后一次的默认
-            //com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig
-        })
-
-        //功率/深度文本的宽高
-        val powerTextItem = LPTextElement(LPElementBean().apply {
-            mtype = LPDataConstant.DATA_TYPE_TEXT
-            fontSize = labelTextFontSize
-            text = "Power(%)"
-            name = text
-
-            charSpacing = numberTextItem.elementBean.charSpacing
-            printPrecision = numberTextItem.elementBean.printPrecision
-            printCount = numberTextItem.elementBean.printCount
-        })
-        val depthTextItem = LPTextElement(LPElementBean().apply {
-            mtype = LPDataConstant.DATA_TYPE_TEXT
-            fontSize = powerTextItem.elementBean.fontSize
-            text = "Depth(%)"
-            name = text
-            angle = -90f
-
-            charSpacing = numberTextItem.elementBean.charSpacing
-            printPrecision = numberTextItem.elementBean.printPrecision
-            printCount = numberTextItem.elementBean.printCount
-        })
-        //左上角标签文本
-        val labelTextItem = LPTextElement(LPElementBean().apply {
-            mtype = LPDataConstant.DATA_TYPE_TEXT
-            fontSize = titleTextFontSize
-            val defaultLabel = buildString {
-                val deviceStateModel = vmApp<DeviceStateModel>()
-                deviceStateModel.getDeviceConfig(gridPrintType)?.name?.let {
-                    append(it)
-                    append(" ")
-                }
-                append(gridLayerId.toLayerInfo()?.label ?: "")
-                val layerInfo = deviceStateModel.getDeviceLaserModule(gridPrintType)
-                appendSpaceIfNotEmpty()
-                append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
-                if (LayerHelper.showDpiConfig(gridLayerId)) {
-                    val layerDpi = LayerHelper.getProductLastLayerDpi(gridLayerId)
-                    appendSpaceIfNotEmpty()
-                    append(LaserPeckerHelper.findPxInfo(gridLayerId, layerDpi).toText())
-                }
-            }
-            text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
-                "%1", defaultLabel
-            )
-            name = text
-
-            charSpacing = numberTextItem.elementBean.charSpacing
-            printPrecision = numberTextItem.elementBean.printPrecision
-            printCount = numberTextItem.elementBean.printCount
-        })
-
-        val offsetTop = if (!hideFunInt.have(HIDE_LABEL)) {
-            labelTextItem.getTextHeight() + elementMargin
-        } else {
-            0f
-        }
-
-        //LPElementBean
-        fun createGridItemBean(): LPElementBean = LPElementBean().apply {
-            mtype = LPDataConstant.DATA_TYPE_TEXT
-            fontSize = numberTextItem.elementBean.fontSize
-            charSpacing = numberTextItem.elementBean.charSpacing
-
-            //参数
-            printPrecision = numberTextItem.elementBean.printPrecision
-            printCount = numberTextItem.elementBean.printCount
-            printPower = numberTextItem.elementBean.printPower
-            printDepth = numberTextItem.elementBean.printDepth
-        }
-
-        val powerTextHeight = if (hideFunInt.have(HIDE_POWER)) 0f else powerTextItem.getTextHeight()
-        val depthTextWidth = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextWidth()
-        val depthTextHeight = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextHeight()
-        val topPowderHeight =
-            if (hideFunInt.have(HIDE_POWER_LABEL)) 0f else numberTextItem.getTextHeight()
-        val leftDepthWith =
-            if (hideFunInt.have(HIDE_DEPTH_LABEL)) 0f else numberTextItem.getTextWidth()
-
-        val leftTextWidth = depthTextHeight + leftDepthWith + elementMargin
-        val topTextHeight = offsetTop + powerTextHeight + topPowderHeight + elementMargin
-
-        //格子开始的地方
-        val gridLeft = elementMargin + leftTextWidth
-        val gridTop = elementMargin + topTextHeight
-
-        //每个格子的宽高, 不包含margin
-        val gridWidth = gridItemSize.toPixel()
-        val gridHeight = gridItemSize.toPixel()
-
-        //格子总共占用的宽高
-        val gridWidthSum = gridWidth * horizontalGridCount
-        val gridHeightSum = gridHeight * verticalGridCount
-
-        //表格总宽度
-        val pctWidth = leftTextWidth + elementMargin + gridWidthSum
-        //表格总高度
-        val pctHeight = topTextHeight + elementMargin + gridHeightSum
-
-        //横竖线
-        @Pixel val powerList = mutableListOf<Float>() //功率分割线, 竖线
-        val depthList = mutableListOf<Float>() //深度分割线, 横线
-
-        val max = 100
-        val horizontalStep = max / horizontalGridCount
-        val verticalStep = max / verticalGridCount
-
-        //--格子
-        @Pixel var x = gridLeft
-        var y = gridTop
-
-        //需要创建的功率和深度的数值
-        val powerValueList = mutableListOf<Int>()
-        val depthValueList = mutableListOf<Int>()
-
-        //默认功率和深度
-        for (power in 0 until horizontalGridCount) {
-            powerValueList.add((power + 1) * horizontalStep)
-        }
-        for (depth in 0 until verticalGridCount) {
-            depthValueList.add((depth + 1) * verticalStep)
-        }
-
-        if (appointPowerDepth.isNotBlank()) {
-            //指定功率和深度
-            val splitList = if (appointPowerDepth.contains(":")) appointPowerDepth.split(":")
-            else appointPowerDepth.split(".") //功率 深度
-            splitList.getOrNull(0)?.split(" ")?.filter { it.isNotBlank() }?.apply {
-                powerValueList.clear()
-                mapTo(powerValueList) {
-                    it.toIntOrNull() ?: 0
-                }
-            }
-            splitList.getOrNull(1)?.split(" ")?.filter { it.isNotBlank() }?.apply {
-                depthValueList.clear()
-                mapTo(depthValueList) {
-                    it.toIntOrNull() ?: 0
-                }
-            }
-        }
-
-        powerValueList.forEachIndexed { powerIndex, powerValue ->
-            if (powerIndex >= horizontalGridCount) {
-                return@forEachIndexed
-            }
-            //功率值文本
-            x = gridLeft + powerIndex * gridWidth
-
-            if (powerIndex > 0) {
-                powerList.add(x)
-            }
-            val powerNumberItem = LPTextElement(createGridItemBean().apply {
-                text = "$powerValue"
-                name = "power[${text}]"
-            })
-            powerNumberItem.elementBean.left =
-                (x + gridWidth / 2 - powerNumberItem.getTextWidth() / 2).toMm()
-            powerNumberItem.elementBean.top = (offsetTop + powerTextHeight + elementMargin).toMm()
-            powerBeanList.add(powerNumberItem.elementBean)
-
-            if (powerIndex == 0 && depthValueList.isEmpty()) {
-                //没有深度值时, 画一根线
-                depthList.add(gridTop)
-            }
-            depthValueList.forEachIndexed { depthIndex, depthValue ->
-                if (depthIndex >= verticalGridCount) {
-                    return@forEachIndexed
-                }
-                //深度值文本
-                y = gridTop + depthIndex * gridHeight
-
-                if (powerIndex == 0) {
-                    if (depthIndex > 0) {
-                        depthList.add(y)
-                    } else if (depthValueList.size() <= 1) {
-                        //只有一个深度值时, 在尾部画一根线
-                        depthList.add(gridTop + (depthIndex + 1) * gridHeight)
-                    }
-                    val depthNumberItem = LPTextElement(createGridItemBean().apply {
-                        text = "$depthValue"
-                        name = "depth[${text}]"
-                    })
-                    depthNumberItem.elementBean.left =
-                        (gridLeft - elementMargin - depthNumberItem.getTextWidth()).toMm()
-                    depthNumberItem.elementBean.top =
-                        (y + gridHeight / 2 - depthNumberItem.getTextHeight() / 2).toMm()
-                    depthBeanList.add(depthNumberItem.elementBean)
-                }
-
-                //格子数据
-                val refPDValue = powerValue * depthValue
-                if ((refPDValue > minPowerDepthThreshold && refPDValue <= powerDepthThreshold) ||
-                    RowsColumnsRangeItem.isRowColumnInRange(depthIndex + 1, powerIndex + 1)
-                ) {
-                    gridBeanList.add(LPElementBean().apply {
-                        val isCut = gridLayerId == LaserPeckerHelper.LAYER_CUT
-                        this.isCut = isCut
-                        //_layerId
-                        mtype = LPDataConstant.DATA_TYPE_RECT
-                        paintStyle =
-                            if (isCut) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
-                        val w = max(2f, (gridWidth - gridMargin * 2))
-                        val h = max(2f, (gridHeight - gridMargin * 2))
-                        width = w.toMm()
-                        height = h.toMm()
-                        left = (x + gridMargin).toMm()
-                        top = (y + gridMargin).toMm()
-                        name = "grid[${powerValue},${depthValue}]"
-
-                        //2023-11-8 支持设置图片
-                        if (selectImage != null) {
-                            mtype = LPDataConstant.DATA_TYPE_BITMAP
-                            imageOriginal = selectImage!!.toBase64Data()
-                            if (gridLayerId == LaserPeckerHelper.LAYER_FILL) {
-                                //图片图层
-                                imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
-                            } else {
-                                imageFilter = LPDataConstant.DATA_MODE_DITHERING
-                            }
-                            scaleX = w / selectImage!!.width.toPixel()
-                            scaleY = h / selectImage!!.height.toPixel()
-                        }
-
-                        //参数
-                        dataMode = if (HawkEngraveKeys.checkCpu32 &&
-                            !BuildHelper.isCpu64 &&
-                            gridLayerId == LaserPeckerHelper.LAYER_PICTURE
-                        ) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/ else gridLayerId.toDataMode()
-
-                        printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)
-                        printPower = powerValue
-                        printDepth = depthValue
-                        printType = gridPrintType.toInt()
-                        //printPrecision = numberTextItem.elementBean.printPrecision //HawkEngraveKeys.lastPrecision
-                        printPrecision = gridPrintPrecision.ensurePrintPrecision()
-                        dpi = gridLayerId.filterLayerDpi(
-                            LayerHelper.getProductLastLayerDpi(gridLayerId)
-                        )
-                    })
-                }
-            }
-        }
-
-        //---横竖线
-        val gCodeHandler = GCodeWriteHandler()
-        gCodeHandler.unit = IValueUnit.MM_UNIT
-        gCodeHandler.isAutoCnc = _isAutoCnc
-        val gCodeWriter = StringWriter()
-        gCodeHandler.writer = gCodeWriter
-        gCodeHandler.onPathStart()
-
-        //功率分割线, 竖线
-        powerList.forEach {
-            gCodeHandler.closeCnc()
-            gCodeWriter.appendLine("G0X${it.toMm()}Y${gridTop.toMm()}")
-            gCodeHandler.openCnc()
-            gCodeWriter.appendLine("G1Y${(gridTop + gridHeightSum).toMm()}")
-        }
-        //深度分割线, 横线
-        depthList.forEach {
-            gCodeHandler.closeCnc()
-            gCodeWriter.appendLine("G0X${gridLeft.toMm()}Y${it.toMm()}")
-            gCodeHandler.openCnc()
-            gCodeWriter.appendLine("G1X${(gridLeft + gridWidthSum).toMm()}")
-        }
-
-        gCodeHandler.onPathEnd(true)
-        gCodeWriter.flush()
-        gCodeWriter.close()
-
-        if (!hideFunInt.have(HIDE_GRID)) {
-            val gcode = gCodeWriter.toString()
-            beanList.add(createGridItemBean().apply {
-                mtype = LPDataConstant.DATA_TYPE_GCODE
-                paintStyle = Paint.Style.STROKE.toPaintStyleInt()
-                data = gcode
-                left = gridLeft.toMm()
-                top = gridTop.toMm()
-                name = "gridLine"
-            })
-        }
-
-        //Label
-        labelTextItem.elementBean.left = (pctWidth / 2 - labelTextItem.getTextWidth() / 2).toMm()
-        labelTextItem.elementBean.top = 0f
-        if (!hideFunInt.have(HIDE_LABEL)) {
-            labelBeanList.add(labelTextItem.elementBean)
-        }
-
-        //---文本
-        powerTextItem.elementBean.left =
-            (gridLeft + gridWidthSum / 2 - powerTextItem.getTextWidth() / 2).toMm()
-        powerTextItem.elementBean.top = offsetTop.toMm()
-        if (!hideFunInt.have(HIDE_POWER)) {
-            labelBeanList.add(powerTextItem.elementBean)
-        }
-
-        //左边的深度文本, 旋转了-90度, 所以需要特殊处理
-        depthTextItem.elementBean.left =
-            (gridLeft - leftDepthWith - elementMargin * 2 - depthTextHeight).toMm()
-        depthTextItem.elementBean.top = (gridTop + gridHeightSum / 2 + depthTextWidth / 2).toMm()
-        if (!hideFunInt.have(HIDE_DEPTH)) {
-            labelBeanList.add(depthTextItem.elementBean)
-        }
-
-        //归一
-        beanList.addAll(labelBeanList)
-        if (!hideFunInt.have(HIDE_POWER_LABEL)) {
-            beanList.addAll(powerBeanList)
-        }
-        if (!hideFunInt.have(HIDE_DEPTH_LABEL)) {
-            beanList.addAll(depthBeanList)
-        }
-        beanList.addAll(gridBeanList)
-
-        //组合在一起
-        val groupId = uuid()
-        for (bean in beanList) {
-            bean.groupId = groupId
-
-            //一致打印参数
-            bean.printType = gridPrintType.toInt()
-            bean.dpi =
-                LayerHelper.getProductLastLayerDpi(bean._layerId ?: LaserPeckerHelper.LAYER_LINE)
-            if (bean.dataMode == null) {
-                bean.printPrecision = HawkEngraveKeys.lastPrecision
-                bean.printPower = HawkEngraveKeys.lastPower
-                bean.printDepth = HawkEngraveKeys.lastDepth
-                bean.printCount = 1
-            }
-        }
-        return LPRendererHelper.renderElementList(null, beanList, true, Strategy.normal)
-    }
 
     /**添加 功率 深度, 雕刻参数对照表. 耗时操作, 建议在子线程中执行*/
     @WorkerThread
@@ -873,7 +875,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         HawkEngraveKeys.enableItemEngraveParams = true //必须
         HawkEngraveKeys.enableSingleItemTransfer = true //必须
 
-        val result = parseParameterComparisonTable()
+        val result = parseParameterComparisonTable(this)
         if (result.size() == 1) {
             result.first().apply {
                 if (this is CanvasGroupRenderer) {
@@ -895,6 +897,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //添加到渲染器
         delegate.renderManager.addElementRenderer(result, true, Reason.user, Strategy.normal)
     }
+
+    override var elementMargin: Float = 2f
+    override var gridPrintType: Byte = DeviceHelper.getProductLaserType()
 }
 
 fun DslAdapter?.updateTablePreview() {

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.IParameterComparisonTableProvider
 import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.model._isDarkMode
@@ -29,7 +30,7 @@ class TablePreviewItem : DslAdapterItem() {
         internal var lastCachePreviewBitmap: WeakReference<Bitmap?>? = null
     }
 
-    var parameterComparisonTableDialogConfig: ParameterComparisonTableDialogConfig? = null
+    var iParameterComparisonTableProvider: IParameterComparisonTableProvider? = null
         set(value) {
             field = value
             updatePreview()
@@ -87,7 +88,9 @@ class TablePreviewItem : DslAdapterItem() {
             )
 
             val bitmap = CanvasGroupRenderer.createRenderBitmap(
-                parameterComparisonTableDialogConfig?.parseParameterComparisonTable(),
+                ParameterComparisonTableDialogConfig.parseParameterComparisonTable(
+                    iParameterComparisonTableProvider
+                ),
                 HawkEngraveKeys.projectOutSize.toFloat()
             ) { renderer, canvas, renderProperty, params ->
                 val printCount = renderer.lpElementBean()?.printCount ?: 0

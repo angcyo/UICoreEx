@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/dialog_title_layout"
-        layout="@layout/lib_dialog_base_ico_layout" />
+        layout="@layout/lib_dialog_base_ico_title_layout" />
 
     <View
         android:id="@+id/dialog_title_line_view"

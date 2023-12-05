@@ -268,5 +268,11 @@
     <string name="canvas_guid_know">Well</string>
 
     <string name="canvas_material_test">Materials test</string>
+    <string name="basics_setting">Basic Settings</string>
+    <string name="engrave_setting">Engrave Settings</string>
+    <string name="max_power_label">Highest Power%</string>
+    <string name="min_power_label">Minimum Power%</string>
+    <string name="max_depth_label">Maximum Depth%</string>
+    <string name="min_depth_label">Minimum Depth%</string>
 
 </resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lib_dialog_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_white_top_round_big_bg_shape"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/dialog_title_layout"
+        layout="@layout/lib_dialog_base_ico_title_layout" />
+
+    <View
+        android:id="@+id/dialog_title_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_line_px"
+        android:background="@color/dialog_line" />
+
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/lib_recycler_view"
+        style="@style/LibRecyclerViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/dialog_white_top_round_bg_shape" />
+
+</com.angcyo.widget.layout.RLinearLayout>

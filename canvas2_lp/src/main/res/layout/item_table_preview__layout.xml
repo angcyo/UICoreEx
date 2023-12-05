@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/lib_theme_white_bg_color">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_image_view"
@@ -21,5 +22,11 @@
         app:layout_constraintLeft_toLeftOf="@id/lib_image_view"
         app:layout_constraintRight_toRightOf="@id/lib_image_view"
         app:layout_constraintTop_toTopOf="@id/lib_image_view" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lib_line_dark"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
