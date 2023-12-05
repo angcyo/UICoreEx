@@ -104,6 +104,7 @@
             style="@style/LibBodyTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_hdpi"
             android:layout_weight="1"
             android:background="@drawable/lib_bottom_line_selector"
             android:ellipsize="end"

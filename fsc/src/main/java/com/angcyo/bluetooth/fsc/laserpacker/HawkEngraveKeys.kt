@@ -61,7 +61,7 @@ object HawkEngraveKeys {
     /**最后一次的加速级别*/
     var lastPrecision: Int by HawkPropertyValue<Any, Int>(1)
 
-    /**默认的激光频率*/
+    /**默认的激光频率,Q值*/
     var defaultLaserFrequency: Int by HawkPropertyValue<Any, Int>(60)
 
     /**[defaultLaserFrequency]*/

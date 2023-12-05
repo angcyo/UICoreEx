@@ -11,6 +11,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker._showLaserFrequencyConfig
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.element.limitElementMaxSizeMatrix
@@ -27,6 +29,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PrintCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserFrequencyItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveOptionWheelItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravePropertyItem
@@ -37,6 +40,7 @@ import com.angcyo.dialog.BaseRecyclerDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
 import com.angcyo.dialog2.dslitem.itemSelectedIndex
+import com.angcyo.dialog2.dslitem.itemWheelBean
 import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.eachItem
@@ -710,6 +714,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig(),
                     bean.printPrecision = HawkEngraveKeys.lastPrecision
                     bean.printPower = HawkEngraveKeys.lastPower
                     bean.printDepth = HawkEngraveKeys.lastDepth
+                    bean.useLaserFrequency = HawkEngraveKeys.lastLaserFrequency != null
+                    bean.laserFrequency = HawkEngraveKeys.lastLaserFrequency
                     bean.printCount = 1
                 }
             }
@@ -815,6 +821,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig(),
                             HawkEngraveKeys.lastType = type.toInt()
 
                             updateTablePreview()
+                            refreshDslAdapter()
                         }
                     }
                 }
@@ -852,6 +859,23 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig(),
                         HawkEngraveKeys.updateLayerDpi(gridLayerId, dpi)
 
                         updateTablePreview()
+                    }
+                }
+            }
+
+            //LP5 白光 出光频率
+            val laserFrequencyList = _deviceConfigBean?.laserFrequencyList
+            if (_showLaserFrequencyConfig &&
+                laserPeckerModel.isL5() &&
+                gridPrintType == LaserPeckerHelper.LASER_TYPE_WHITE &&
+                !laserFrequencyList.isNullOrEmpty()
+            ) {
+                EngraveLaserFrequencyItem()() {
+                    initLaserFrequencyIfNeed()
+                    itemWheelList = laserFrequencyList
+                    itemUpdateAction(EngraveLaserFrequencyItem.PAYLOAD_UPDATE_LASER_FREQUENCY)
+                    observeItemChange {
+                        HawkEngraveKeys.lastLaserFrequency = itemWheelBean()
                     }
                 }
             }
