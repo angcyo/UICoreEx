@@ -617,6 +617,10 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                 itemSeekProgress = (def / 255f) * 100
                 property[key] = def
 
+                itemNumberMinValue = 0
+                itemNumberMaxValue = 255
+                itemSeekProgressType = itemNumberMaxValue
+
                 itemSeekTouchEnd = { value, fraction ->
                     val threshold = 255f * fraction
                     property[key] = threshold
@@ -658,6 +662,10 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             itemSeekProgress = ratio * 100
             property[key] = def
 
+            itemNumberMinValue = minValue
+            itemNumberMaxValue = maxValue
+            itemSeekProgressType = itemNumberMaxValue
+
             itemSeekTouchEnd = { value, fraction ->
                 property[key] = minValue + sum * fraction
             }
@@ -694,6 +702,10 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             itemSeekProgress = ratio * 100
 
             property[key] = def
+
+            itemNumberMinValue = minValue
+            itemNumberMaxValue = maxValue
+            itemSeekProgressType = itemNumberMaxValue
 
             itemSeekTouchEnd = { value, fraction ->
                 property[key] = (minValue + sum * fraction).toInt()
