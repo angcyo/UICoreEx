@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:r_clip_anchor="true"
+    app:r_clip_anchor_inset="0dp"
+    app:r_clip_anchor_radius="@dimen/lib_radius_common"
     app:r_guide_anchors="400,400,80,60"
     app:r_guide_background="@color/canvas_guide_bg_color">
 
@@ -35,6 +37,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:padding="@dimen/lib_xhdpi"
             app:srcCompat="@mipmap/guide_arrows_down" />
 
