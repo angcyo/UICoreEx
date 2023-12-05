@@ -112,7 +112,7 @@ class SimpleTransition : ITransition {
         }*/
 
         return gCodeTranslation(
-            gCodeText!!,
+            gCodeText,
             bounds.left,
             bounds.top,
             params
