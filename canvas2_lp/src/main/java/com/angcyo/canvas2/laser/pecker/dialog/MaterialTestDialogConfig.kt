@@ -25,6 +25,7 @@ import com.angcyo.dialog.normalIosDialog
 import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
 import com.angcyo.dialog2.dslitem.itemSelectedIndex
 import com.angcyo.dialog2.dslitem.itemWheelList
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.DslIncrementNumberItem
 import com.angcyo.item.DslSegmentSolidTabItem
 import com.angcyo.item.style.itemAdjustChangedAfterAction
@@ -42,6 +43,7 @@ import com.angcyo.laserpacker.device.ensurePrintPrecision
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
+import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.add
 import com.angcyo.library.ex.size
@@ -117,6 +119,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                 ?: ParameterComparisonTableDialogConfig.maxPower
                         updateTablePreview()
                     }
+                    initItem()
                 }
                 DslIncrementNumberItem()() {
                     itemLabelText = _string(R.string.max_depth_label)
@@ -129,6 +132,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                 ?: ParameterComparisonTableDialogConfig.maxDepth
                         updateTablePreview()
                     }
+                    initItem()
                 }
                 DslIncrementNumberItem()() {
                     itemLabelText = _string(R.string.min_power_label)
@@ -141,6 +145,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                 ?: ParameterComparisonTableDialogConfig.minPower
                         updateTablePreview()
                     }
+                    initItem()
                 }
                 DslIncrementNumberItem()() {
                     itemLabelText = _string(R.string.min_depth_label)
@@ -153,6 +158,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                 ?: ParameterComparisonTableDialogConfig.minDepth
                         updateTablePreview()
                     }
+                    initItem()
                 }
                 DslIncrementNumberItem()() {
                     itemLabelText = _string(R.string.add_parameter_comparison_table_columns)
@@ -165,6 +171,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                 ?: ParameterComparisonTableDialogConfig.horizontalGridCount
                         updateTablePreview()
                     }
+                    initItem()
                 }
                 DslIncrementNumberItem()() {
                     itemLabelText = _string(R.string.add_parameter_comparison_table_rows)
@@ -177,6 +184,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                 ?: ParameterComparisonTableDialogConfig.verticalGridCount
                         updateTablePreview()
                     }
+                    initItem()
                 }
             } else {
                 //图层选择
@@ -306,6 +314,13 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                 }
             }*/
         }
+    }
+
+    private fun DslAdapterItem.initItem() {
+        itemPaddingLeft = _dimen(R.dimen.lib_xxhdpi)
+        itemPaddingRight = itemPaddingLeft
+        itemPaddingTop = itemPaddingLeft / 2
+        itemPaddingBottom = itemPaddingLeft / 2
     }
 
     /**添加 功率 深度, 雕刻参数对照表. 耗时操作, 建议在子线程中执行*/
