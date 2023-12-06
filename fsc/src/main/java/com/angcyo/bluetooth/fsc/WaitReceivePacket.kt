@@ -180,7 +180,12 @@ class WaitReceivePacket(
             }
         }
 
-        override fun onSendStateChanged(tcp: Tcp, state: Int, sendAllSize: Int, error: Exception?) {
+        override fun onSendStateChanged(
+            tcp: Tcp,
+            state: Int,
+            sendAllSize: Long,
+            error: Exception?
+        ) {
             if (state == Tcp.SEND_STATE_ERROR) {
                 end()
                 error(error ?: IllegalArgumentException())
@@ -193,8 +198,8 @@ class WaitReceivePacket(
             onReceive(bytes)
         }
 
-        override fun onSendProgress(tcp: Tcp, allSize: Int, sendSize: Int, progress: Float) {
-            onSendPacket(sendSize.toLong())
+        override fun onSendProgress(tcp: Tcp, allSize: Long, sendSize: Long, progress: Float) {
+            onSendPacket(sendSize)
             onSendPacketProgress(progress.toInt())
         }
     }
@@ -210,6 +215,7 @@ class WaitReceivePacket(
         //自动发送数据
         if (autoSend) {
             if (WifiApiModel.useWifi()) {
+                wifiApi.initTcpConfig()
                 wifiApi.tcp.send(sendPacket, receiveTimeout)
             } else {
                 api.send(address, sendPacket)

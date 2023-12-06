@@ -118,7 +118,7 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     /**初始化配置*/
     @CallPoint
-    fun initTcpConfig(tcp: Tcp) {
+    fun initTcpConfig(tcp: Tcp = this.tcp) {
         /*val wifiAddress = LibLpHawkKeys.wifiAddress
         val list = wifiAddress?.split(":")
 
@@ -128,6 +128,7 @@ class WifiApiModel : ViewModel(), IViewModel {
         }*/
         tcp.bufferSize = LibLpHawkKeys.wifiBufferSize
         tcp.sendDelay = LibLpHawkKeys.wifiSendDelay
+        tcp.sendDelayByteCount = LibLpHawkKeys.wifiSendDelayByteCount
     }
 
     /**网络是否连接上了*/
