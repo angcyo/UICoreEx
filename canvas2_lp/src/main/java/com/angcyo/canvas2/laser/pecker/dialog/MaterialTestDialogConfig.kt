@@ -199,6 +199,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             //updateTablePreview()
                             refreshDslAdapter()
                         }
+                        itemTabEquWidthCountRange = ""
                     }
                     if (ParameterComparisonTableDialogConfig.gridLayerId == LaserPeckerHelper.LAYER_PICTURE) {
                         PCTImageItem()()

@@ -1209,7 +1209,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         }
                     })
                 }
-                itemShowSkipButton = HawkEngraveKeys.enableSingleItemTransfer
+                itemShowSkipButton = isDebug() && HawkEngraveKeys.enableSingleItemTransfer
                 itemSkipAction = {
                     //强制退出
                     engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
