@@ -8,19 +8,16 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean._pathTolerance
 import com.angcyo.core.fragment.lightStyle
-import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.DebugWifiConfigItem
 import com.angcyo.laserpacker.device.ble.dslitem.DitherModeConfigItem
-import com.angcyo.laserpacker.device.ble.dslitem.ExperimentalTopItem
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.toDpi
 
 /**
  * 实验性功能
@@ -62,16 +59,16 @@ class EngraveExperimentalFragment : DebugFragment() {
     }
 
     override fun onCreateBehavior(child: View): CoordinatorLayout.Behavior<*>? {
-        if (child.id == com.angcyo.core.R.id.lib_title_wrap_layout) {
+        /*if (child.id == com.angcyo.core.R.id.lib_title_wrap_layout) {
             return null
-        }
+        }*/
         return super.onCreateBehavior(child)
     }
 
     override fun renderActions() {
         renderDslAdapter {
-            ExperimentalTopItem()()
-            renderEmptyItem(30.toDpi())
+            //ExperimentalTopItem()()
+            //renderEmptyItem(30.toDpi())
 
             if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableTransferIndexCheck.name)) {
                 renderDebugAction(DebugAction().apply {
