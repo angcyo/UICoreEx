@@ -32,6 +32,7 @@ import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.device.exception.OutOfSizeException
 import com.angcyo.laserpacker.device.exception.TransferException
@@ -49,6 +50,7 @@ import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.ex.trimAndPad
+import com.angcyo.library.libCacheFile
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -676,7 +678,11 @@ class TransferModel : ViewModel() {
                         //成功进入大数据模式, 开始发送数据
                         LTime.tick()
                         //DataCmd(ByteArray(0), ByteArray(sizeInt))
-                        val dataCmd = DataCmd.testDataCmd(sizeInt)
+
+                        val cacheFile = libCacheFile("test_data.txt")
+                        DeviceHelper.tempEngraveLogPathList.add(cacheFile.absolutePath)
+
+                        val dataCmd = DataCmd.testDataCmd(sizeInt, cacheFile)
                         var minSpeed: Float? = null
                         var maxSpeed: Float? = null
                         val speedList = mutableListOf<Float>()

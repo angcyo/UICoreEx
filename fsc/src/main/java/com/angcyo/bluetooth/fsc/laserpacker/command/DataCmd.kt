@@ -9,6 +9,7 @@ import com.angcyo.library.ex.low16Bit
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.trimAndPad
+import java.io.File
 
 /**
  *
@@ -524,27 +525,32 @@ data class DataCmd(
 
         /**生成指定个字节数的测试数据指令
          * [size] 字节数量*/
-        fun testDataCmd(size: Int): DataCmd {
+        fun testDataCmd(size: Int, dataFile: File): DataCmd {
             //[00000000][00000001]
             val data = ByteArray(size)
             var count = 0
             var num = 0
-            while (count < size) {
-                val before = '['
-                data[count++] = before.code.toByte()
-                if (count >= size) {
-                    break
-                }
-                val numHexString = num.toHexString(8)
-                for (element in numHexString) {
-                    data[count++] = element.code.toByte()
+            dataFile.writer().use {
+                while (count < size) {
+                    val before = '['
+                    data[count++] = before.code.toByte()
+                    it.write("$before")
                     if (count >= size) {
                         break
                     }
+                    val numHexString = num.toHexString(8)
+                    it.write(numHexString)
+                    for (element in numHexString) {
+                        data[count++] = element.code.toByte()
+                        if (count >= size) {
+                            break
+                        }
+                    }
+                    num++
+                    val after = ']'
+                    it.write("$after")
+                    data[count++] = after.code.toByte()
                 }
-                num++
-                val after = ']'
-                data[count++] = after.code.toByte()
             }
             return data(data)
         }
