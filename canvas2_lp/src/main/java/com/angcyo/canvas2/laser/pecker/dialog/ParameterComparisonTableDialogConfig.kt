@@ -485,7 +485,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig(),
 
             val horizontalStep =
                 (maxPower - minPower) * 1f / (horizontalGridCount - 1).withMinValue(1)
-            val verticalStep = (maxDepth - minDepth) * 1f / (verticalGridCount).withMinValue(1)
+            val verticalStep = (maxDepth - minDepth) * 1f / (verticalGridCount - 1).withMinValue(1)
 
             //--格子
             @Pixel var x = gridLeft
