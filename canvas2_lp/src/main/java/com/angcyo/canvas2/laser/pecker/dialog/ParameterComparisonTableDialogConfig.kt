@@ -591,17 +591,18 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig(),
                             name = "grid[${powerValue},${depthValue}]"
 
                             //2023-11-8 支持设置图片
-                            if (selectImage != null) {
+                            val bitmap = selectImage
+                            if (bitmap != null) {
                                 mtype = LPDataConstant.DATA_TYPE_BITMAP
-                                imageOriginal = selectImage!!.toBase64Data()
+                                imageOriginal = bitmap.toBase64Data()
                                 if (gridLayerId == LaserPeckerHelper.LAYER_FILL) {
                                     //图片图层
                                     imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
                                 } else {
                                     imageFilter = LPDataConstant.DATA_MODE_DITHERING
                                 }
-                                scaleX = w / selectImage!!.width.toPixel()
-                                scaleY = h / selectImage!!.height.toPixel()
+                                scaleX = w / bitmap.width.toPixel()
+                                scaleY = h / bitmap.height.toPixel()
                             }
 
                             //参数
