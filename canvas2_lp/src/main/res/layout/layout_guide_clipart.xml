@@ -35,7 +35,7 @@
             android:layout_marginLeft="@dimen/lib_xhdpi"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/guide_logo" />
+            app:srcCompat="@drawable/guide_logo" />
 
         <FrameLayout
             android:id="@+id/text_wrap_layout"
