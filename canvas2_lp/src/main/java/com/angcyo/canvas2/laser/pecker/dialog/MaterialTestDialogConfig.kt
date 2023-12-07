@@ -200,9 +200,12 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             refreshDslAdapter()
                         }
                         itemTabEquWidthCountRange = ""
+                        initItem()
                     }
                     if (ParameterComparisonTableDialogConfig.gridLayerId == LaserPeckerHelper.LAYER_PICTURE) {
-                        PCTImageItem()()
+                        PCTImageItem()() {
+                            initItem()
+                        }
                     } else {
                         ParameterComparisonTableDialogConfig.selectImage = null
                     }
@@ -223,6 +226,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
 
                                 updateTablePreview()
                             }
+                            initItem()
                         }
                     }
                 }
@@ -241,6 +245,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.gridPrintPrecision =
                                 getSelectedWheelIntData(def = ParameterComparisonTableDialogConfig.gridPrintPrecision).ensurePrintPrecision()
                         }
+                        initItem()
                     }
                 }
 
@@ -269,6 +274,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
 
                             updateTablePreview()
                         }
+                        initItem()
                     }
                 }
 
