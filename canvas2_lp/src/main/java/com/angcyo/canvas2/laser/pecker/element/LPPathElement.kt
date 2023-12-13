@@ -391,11 +391,15 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         val height = elementBean.height?.toPixel()
         if (!pathList.isNullOrEmpty() && width != null && height != null) {
             val bounds = RenderHelper.computePathBounds(pathList)
-            val scaleX = (width / bounds.width()).ensure(1f)
+            var scaleX = (width / bounds.width()).ensure(1f)
             var scaleY = (height / bounds.height()).ensure(1f)
 
             if (elementBean.isLineShape) {
-                scaleY = scaleX
+                if (bounds.width() == 0f) {
+                    scaleX = scaleY
+                } else {
+                    scaleY = scaleX
+                }
             }
             if (scaleX != 1f || scaleY != 1f) {
                 val matrix = Matrix()
