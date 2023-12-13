@@ -141,7 +141,8 @@ class TransferModel : ViewModel() {
                     name,
                     lines,
                     bytes,
-                    dpi
+                    dpi,
+                    transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(

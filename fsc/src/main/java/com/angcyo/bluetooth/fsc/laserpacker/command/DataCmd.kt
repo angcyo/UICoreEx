@@ -1,7 +1,9 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
+import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.high16Bit
@@ -62,9 +64,11 @@ data class DataCmd(
 
         /**GCode数据类型*/
         const val ENGRAVE_TYPE_GCODE = 0x20
+        const val ENGRAVE_TYPE_GCODE_CUT = 0x21
 
         /**路径数据*/
         const val ENGRAVE_TYPE_PATH = 0x30
+        const val ENGRAVE_TYPE_PATH_CUT = 0x31
 
         /**图片转路径数据格式*/
         const val ENGRAVE_TYPE_BITMAP_PATH = 0x40
@@ -77,7 +81,7 @@ data class DataCmd(
         const val ENGRAVE_TYPE_BITMAP_DITHERING = 0x60
 
         /**GCode数据类型, 切割*/
-        const val ENGRAVE_TYPE_GCODE_CUT = 0x70
+        const val ENGRAVE_TYPE_GCODE_CUT_LX = 0x70
 
         //---
 
@@ -199,7 +203,11 @@ data class DataCmd(
             val head = byteWriter {
                 if (isCut) {
                     //0x70时为GCODE切割数据
-                    write(ENGRAVE_TYPE_GCODE_CUT)
+                    if (vmApp<LaserPeckerModel>().isL5()) {
+                        write(ENGRAVE_TYPE_GCODE_CUT)
+                    } else {
+                        write(ENGRAVE_TYPE_GCODE_CUT_LX)
+                    }
                 } else {
                     //0x20时为GCODE数据
                     write(ENGRAVE_TYPE_GCODE)
@@ -452,13 +460,18 @@ data class DataCmd(
             name: String?,
             lines: Int,
             bytes: ByteArray?,
-            dpi: Float
+            dpi: Float,
+            isCut: Boolean
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
                 //0x30时为图片路径数据
-                write(ENGRAVE_TYPE_PATH)
+                if (isCut) {
+                    write(ENGRAVE_TYPE_PATH_CUT)
+                } else {
+                    write(ENGRAVE_TYPE_PATH)
+                }
 
                 //宽,2字节
                 write(width, 2)
