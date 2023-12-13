@@ -40,6 +40,7 @@ import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.ceil
+import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.createOverrideBitmapCanvas
 import com.angcyo.library.ex.createPaint
 import com.angcyo.library.ex.deleteSafe
@@ -730,6 +731,8 @@ object EngraveTransitionHelper {
             val logBuilder =
                 if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) StringBuilder() else null
             val bytes = byteWriter {
+                val precision = 10 * 10 //精度
+                val sizePrecision = precision / 10 //因为[transferDataEntity]里面已经是10倍的精度了
                 targetList.forEach { line ->
                     write(0x7f)
                     write(0xfe)
@@ -738,9 +741,11 @@ object EngraveTransitionHelper {
                     logBuilder?.append("${len}:")
                     line.pointList.forEach { section ->
                         val x =
-                            (section.x * 10 * 10 - if (isAbsolutePoint) transferDataEntity.x * 10 else 0).roundToInt()
+                            (section.x * precision - if (isAbsolutePoint) transferDataEntity.x * sizePrecision else 0)
+                                .roundToInt().clamp(0, transferDataEntity.width * sizePrecision)
                         val y =
-                            (section.y * 10 * 10 - if (isAbsolutePoint) transferDataEntity.y * 10 else 0).roundToInt()
+                            (section.y * precision - if (isAbsolutePoint) transferDataEntity.y * sizePrecision else 0)
+                                .roundToInt().clamp(0, transferDataEntity.height * sizePrecision)
 
                         write(x, 2)
                         write(y, 2)
