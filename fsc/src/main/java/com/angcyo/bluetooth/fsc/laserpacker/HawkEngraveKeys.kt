@@ -469,7 +469,7 @@ object HawkEngraveKeys {
     var autoPickUp: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**切片浮雕是否使用循环指令*/
-    var loopDataCmd: Boolean by HawkPropertyValue<Any, Boolean>(false)
+    var loopGcodeDataCmd: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**是否激活图片流转处理, 也就是每次图片的输出结果, 当做下一次输入的入参. 否则则使用默认的原图*/
     var enableBitmapFlowHandle: Boolean by HawkPropertyValue<Any, Boolean>(false)

@@ -536,7 +536,7 @@ object EngraveTransitionHelper {
 
                 val lastIndex = thresholdList.size - 1
 
-                if (HawkEngraveKeys.loopDataCmd || isDebug()) {
+                if (HawkEngraveKeys.loopGcodeDataCmd || isDebug()) {
                     //使用循环数据指令
                     thresholdList.toSet().forEach { threshold ->
                         val loopCount =
