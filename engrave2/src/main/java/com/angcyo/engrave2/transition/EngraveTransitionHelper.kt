@@ -511,7 +511,9 @@ object EngraveTransitionHelper {
                 val thresholdList = getSliceThresholdList(colors, params.sliceCount)
 
                 DeviceHelper.tempEngraveLogPathList.clear()
-                val sliceHeight = (params.sliceHeight * 10).roundToInt() / 10f //切片高度
+                //切片高度(需要下降的高度)
+                val sliceHeight = (params.sliceHeight * 10).roundToInt() / 10f //乘以10再除以10,保留1位小数.
+                var allSliceHeight = 0f //总共下降的高度, 在最后面需要回升
                 val controlHeight = buildString {
                     appendLine()
                     if (params.isAutoCnc) {
@@ -539,6 +541,7 @@ object EngraveTransitionHelper {
                             //使用缓存, 并下降高度
                             sliceGcodeFile.appendText(controlHeight)
                             sliceGcodeFile.appendText(lastGCode!!)
+                            allSliceHeight += sliceHeight
                         } else {
                             BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
                                 val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
@@ -547,7 +550,7 @@ object EngraveTransitionHelper {
                                 DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
 
                                 params.bitmapToGCodeType = 1
-                                params.bitmapToGCodeIsLast = levelIndex == lastIndex
+                                params.bitmapToGCodeIsLast = false //levelIndex == lastIndex
                                 val bounds = provider.getEngraveDataBounds(RectF())
                                 val gCodeFile = if (params.useOpenCvHandleGCode) {
                                     transition.covertBitmap2GCode(bitmap, null, bounds, params)
@@ -559,6 +562,7 @@ object EngraveTransitionHelper {
                                     if (levelIndex != 0) {
                                         //不是第一层, 则需要下降支架高度
                                         sliceGcodeFile.appendText(controlHeight)
+                                        allSliceHeight += sliceHeight
                                     }
                                     sliceGcodeFile.appendText(it)
                                 }
@@ -573,6 +577,12 @@ object EngraveTransitionHelper {
                     }
                     lastThreshold = threshold
                 }
+
+                if (HawkEngraveKeys.autoPickUp && allSliceHeight > 0) {
+                    //回升支架高度
+                    sliceGcodeFile.appendText("M3020S${allSliceHeight}\n")
+                }
+                sliceGcodeFile.appendText("M2\n") //GCode结束
 
                 val fileSize = sliceGcodeFile.length()
                 saveGCodeEngraveData(transferDataEntity, sliceGcodeFile)

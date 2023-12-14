@@ -185,7 +185,8 @@ class SimpleTransition : ITransition {
             bounds.top + params.gcodeOffsetTop,
             gapValue = params.pixelGCodeGapValue,
             autoCnc = params.isAutoCnc,
-            isSingleLine = params.isSingleLine
+            isSingleLine = params.isSingleLine,
+            isFinish = params.bitmapToGCodeIsLast
         )
     }
 

@@ -465,6 +465,9 @@ object HawkEngraveKeys {
     /**是否使用调试的配置信息*/
     var useDebugConfig: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**切片浮雕之后, 支架自动回升*/
+    var autoPickUp: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
     /**是否激活图片流转处理, 也就是每次图片的输出结果, 当做下一次输入的入参. 否则则使用默认的原图*/
     var enableBitmapFlowHandle: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
