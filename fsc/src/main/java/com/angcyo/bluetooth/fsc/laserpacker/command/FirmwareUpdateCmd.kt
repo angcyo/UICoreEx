@@ -6,6 +6,7 @@ import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toByteArray
 import com.angcyo.library.ex.toHexString
+import okhttp3.internal.toHexString
 
 /**
  * 固件更新执行, 发送此指令, 进入下载模式
@@ -24,12 +25,14 @@ data class FirmwareUpdateCmd(
     /**固件版本号, 2字节*/
     val version: Int,
     val custom: Byte = 0x00,
+    /**CRC16校验和*/
+    val crc16: Int = 0x0,
 ) : BaseCommand() {
 
     companion object {
         /**固件更新指令*/
-        fun update(number: Int, version: Int): FirmwareUpdateCmd {
-            return FirmwareUpdateCmd(0x00, number, version)
+        fun update(number: Int, version: Int, crc16: Int = 0x0): FirmwareUpdateCmd {
+            return FirmwareUpdateCmd(0x00, number, version, crc16 = crc16)
         }
     }
 
@@ -43,16 +46,18 @@ data class FirmwareUpdateCmd(
     }
 
     override fun toHexCommandString(): String {
-        val dataLength = 0x0B //数据长度
+        val dataLength = 0x0B + 2 //数据长度
         val data = buildString {
             append(commandFunc().toHexString())
             append(func.toHexString())
             append(number.toByteArray(4).toHexString(false))
             append(version.toByteArray(2).toHexString(false))
+            append(crc16.toByteArray(2).toHexString(false)) //2023-12-14
             append(custom.toHexString())
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
-        val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
+        val cmd =
+            "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check crc16:${crc16.toHexString()}"
         return cmd
     }
 
@@ -64,6 +69,7 @@ data class FirmwareUpdateCmd(
                 append(" 数据大小:${number} bytes")
                 append(" 版本:${version}")
             }
+
             0x01.toByte() -> append(" 完成数据传输!")
         }
     }

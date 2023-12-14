@@ -2,17 +2,23 @@ package com.angcyo.laserpacker.device.firmware
 
 import androidx.annotation.AnyThread
 import androidx.lifecycle.ViewModel
-import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.CommandQueueHelper
+import com.angcyo.bluetooth.fsc.ReceiveCancelException
+import com.angcyo.bluetooth.fsc.WaitReceivePacket
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
+import com.angcyo.bluetooth.fsc.listenerReceivePacket
+import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.vmApp
 import com.angcyo.http.download.download
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex._string
+import com.angcyo.library.utils.CRC16.crc16
 import com.angcyo.viewmodel.vmDataOnce
 
 /**
@@ -86,19 +92,22 @@ class FirmwareModel : ViewModel() {
 
         firmwareUpdateOnceData.postValue(FirmwareUpdateState(FirmwareUpdateState.STATE_UPDATE, 0))
         ExitCmd().enqueue()//先进入空闲模式
-        FirmwareUpdateCmd.update(firmwareInfo.data.size, firmwareInfo.version)
-            .enqueue { bean, error ->
-                val parser = bean?.parse<FirmwareUpdateParser>()
-                if (parser == null) {
-                    firmwareUpdateOnceData.postValue(
-                        FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR, -1, error)
-                    )
-                } else {
-                    //进入模式成功, 开始发送数据
-                    DataCmd.data(firmwareInfo.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
-                    listenerFinish()
-                }
+        FirmwareUpdateCmd.update(
+            firmwareInfo.data.size,
+            firmwareInfo.version,
+            crc16 = firmwareInfo.data.crc16()
+        ).enqueue { bean, error ->
+            val parser = bean?.parse<FirmwareUpdateParser>()
+            if (parser == null) {
+                firmwareUpdateOnceData.postValue(
+                    FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR, -1, error)
+                )
+            } else {
+                //进入模式成功, 开始发送数据
+                DataCmd.data(firmwareInfo.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
+                listenerFinish()
             }
+        }
     }
 
     var _waitReceivePacket: WaitReceivePacket? = null

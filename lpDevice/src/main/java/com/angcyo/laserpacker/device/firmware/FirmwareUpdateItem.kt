@@ -35,6 +35,7 @@ import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toElapsedTime
 import com.angcyo.library.ex.toTime
 import com.angcyo.library.toast
+import com.angcyo.library.utils.CRC16.crc16
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.angcyo.widget.span.span
@@ -233,16 +234,17 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             itemIsUpdating = true
             _startTime = nowTime()
             ExitCmd().enqueue()//先进入空闲模式
-            FirmwareUpdateCmd.update(info.data.size, info.version).enqueue { bean, error ->
-                bean?.parse<FirmwareUpdateParser>()?.let {
-                    //进入模式成功, 开始发送数据
-                    DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
-                    listenerFinish()
-                }.elseNull {
-                    itemIsUpdating = false
-                    toast(_string(R.string.data_exception))
+            FirmwareUpdateCmd.update(info.data.size, info.version, crc16 = info.data.crc16())
+                .enqueue { bean, error ->
+                    bean?.parse<FirmwareUpdateParser>()?.let {
+                        //进入模式成功, 开始发送数据
+                        DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
+                        listenerFinish()
+                    }.elseNull {
+                        itemIsUpdating = false
+                        toast(_string(R.string.data_exception))
+                    }
                 }
-            }
         } else {
             context.messageDialog {
                 dialogTitle = _string(R.string.engrave_warn)
