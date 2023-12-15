@@ -76,9 +76,7 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
 
     override fun isElementSupportControlPoint(type: Int): Boolean {
         if (elementBean.isLineShape) {
-            if (type == BaseControlPoint.CONTROL_TYPE_HEIGHT ||
-                type == BaseControlPoint.CONTROL_TYPE_LOCK
-            ) {
+            if (type == BaseControlPoint.CONTROL_TYPE_LOCK) {
                 return false
             }
         }
