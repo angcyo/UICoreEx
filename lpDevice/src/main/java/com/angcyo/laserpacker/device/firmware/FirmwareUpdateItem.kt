@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.device.firmware
 
 import android.content.Context
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
@@ -31,7 +32,9 @@ import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.fullTime
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.randomColor
 import com.angcyo.library.ex.toElapsedTime
 import com.angcyo.library.ex.toTime
 import com.angcyo.library.toast
@@ -158,28 +161,19 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
         //开始升级
         itemHolder.click(R.id.start_button) {
-            if (stateModel.isDeviceConnect()) {
-                //开始升级
-                itemFirmwareInfo?.let { info ->
-                    if (peckerModel.deviceVersionData.value?.softwareVersion == info.version) {
-                        itemHolder.context.normalDialog {
-                            dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage = "相同版本的固件, 是否继续升级?"
-                            positiveButtonListener = { dialog, dialogViewHolder ->
-                                dialog.dismiss()
-                                startUpdate(itemHolder.context, info)
-                            }
-                        }
-                    } else {
-                        startUpdate(itemHolder.context, info)
-                    }
-                }.elseNull {
-                    itemIsUpdating = false
-                    toast(_string(R.string.data_exception))
-                }
-            } else {
-                itemHolder.clickCallView(R.id.device_button)
+            _ignoreCheck = false
+            startUpdate(itemHolder)
+        }
+        if (isDebugType()) {
+            itemHolder.longClick(R.id.start_button) {
+                _ignoreCheck = true
+                startUpdate(itemHolder)
             }
+        }
+
+        //animation
+        itemHolder.click(R.id.lib_image_view) {
+            (it as? ImageView)?.setColorFilter(randomColor())
         }
     }
 
@@ -193,6 +187,35 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
     override fun onItemViewRecycled(itemHolder: DslViewHolder, itemPosition: Int) {
         super.onItemViewRecycled(itemHolder, itemPosition)
         _waitReceivePacket?.end()
+    }
+
+    /**忽略合法检查*/
+    private var _ignoreCheck = false
+
+    /**开始升级固件*/
+    private fun startUpdate(itemHolder: DslViewHolder) {
+        if (stateModel.isDeviceConnect()) {
+            //开始升级
+            itemFirmwareInfo?.let { info ->
+                if (peckerModel.deviceVersionData.value?.softwareVersion == info.version) {
+                    itemHolder.context.normalDialog {
+                        dialogTitle = _string(R.string.engrave_warn)
+                        dialogMessage = "相同版本的固件, 是否继续升级?"
+                        positiveButtonListener = { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            startUpdate(itemHolder.context, info)
+                        }
+                    }
+                } else {
+                    startUpdate(itemHolder.context, info)
+                }
+            }.elseNull {
+                itemIsUpdating = false
+                toast(_string(R.string.data_exception))
+            }
+        } else {
+            itemHolder.clickCallView(R.id.device_button)
+        }
     }
 
     var _waitReceivePacket: WaitReceivePacket? = null
@@ -229,7 +252,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
     /**开始更新*/
     fun startUpdate(context: Context, info: FirmwareInfo) {
-        if (checkVersionMatch(info)) {
+        if (_ignoreCheck || checkVersionMatch(info)) {
             itemIsFinish = false
             itemIsUpdating = true
             _startTime = nowTime()

@@ -6,7 +6,6 @@ import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toByteArray
 import com.angcyo.library.ex.toHexString
-import okhttp3.internal.toHexString
 
 /**
  * 固件更新执行, 发送此指令, 进入下载模式
@@ -46,7 +45,7 @@ data class FirmwareUpdateCmd(
     }
 
     override fun toHexCommandString(): String {
-        val dataLength = 0x0B + 2 //数据长度
+        val dataLength: Byte = 0x0B + 2 //数据长度
         val data = buildString {
             append(commandFunc().toHexString())
             append(func.toHexString())
@@ -57,7 +56,7 @@ data class FirmwareUpdateCmd(
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd =
-            "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check crc16:${crc16.toHexString()}"
+            "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
     }
 
