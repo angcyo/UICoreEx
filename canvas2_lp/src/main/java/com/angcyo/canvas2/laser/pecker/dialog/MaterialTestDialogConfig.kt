@@ -2,7 +2,6 @@ package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.widget.LinearLayout
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -13,6 +12,7 @@ import com.angcyo.canvas.render.element.limitElementMaxSizeMatrix
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.MaterialTestGroupHeaderItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PCTImageItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
@@ -26,8 +26,8 @@ import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
 import com.angcyo.dialog2.dslitem.itemSelectedIndex
 import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.renderSubItem
 import com.angcyo.item.DslIncrementNumberItem
-import com.angcyo.item.DslSegmentSolidTabItem
 import com.angcyo.item.style.itemAdjustChangedAfterAction
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemIncrementMaxValue
@@ -35,7 +35,6 @@ import com.angcyo.item.style.itemIncrementMinValue
 import com.angcyo.item.style.itemIncrementValue
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.item.style.itemTabEquWidthCountRange
-import com.angcyo.item.style.itemTabSelectIndexChangeAction
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
@@ -64,6 +63,8 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
 
     val settingTypeList =
         listOf(_string(R.string.basics_setting), _string(R.string.engrave_setting))
+
+    val settingTypeExtendList = booleanArrayOf(true, true)
 
     var settingType = 0
 
@@ -96,7 +97,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                 iParameterComparisonTableProvider = this@MaterialTestDialogConfig
             }
 
-            DslSegmentSolidTabItem()() {
+            /*DslSegmentSolidTabItem()() {
                 itemSegmentList = settingTypeList
                 itemCurrentIndex = settingType
                 itemTabLayoutWidth = LinearLayout.LayoutParams.MATCH_PARENT
@@ -105,186 +106,210 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                     settingType = selectIndexList.first()
                     refreshDslAdapter()
                 }
-            }
+            }*/
 
-            if (settingType == 0) {
-                DslIncrementNumberItem()() {
-                    itemLabelText = _string(R.string.max_power_label)
-                    itemIncrementValue = ParameterComparisonTableDialogConfig.maxPower
-                    itemIncrementMinValue = 1
-                    itemIncrementMaxValue = 100
-                    itemAdjustChangedAfterAction = {
-                        ParameterComparisonTableDialogConfig.maxPower =
-                            it?.toString()?.toIntOrNull()
-                                ?: ParameterComparisonTableDialogConfig.maxPower
-                        updateTablePreview()
-                    }
-                    initItem()
-                }
-                DslIncrementNumberItem()() {
-                    itemLabelText = _string(R.string.max_depth_label)
-                    itemIncrementValue = ParameterComparisonTableDialogConfig.maxDepth
-                    itemIncrementMinValue = 1
-                    itemIncrementMaxValue = 100
-                    itemAdjustChangedAfterAction = {
-                        ParameterComparisonTableDialogConfig.maxDepth =
-                            it?.toString()?.toIntOrNull()
-                                ?: ParameterComparisonTableDialogConfig.maxDepth
-                        updateTablePreview()
-                    }
-                    initItem()
-                }
-                DslIncrementNumberItem()() {
-                    itemLabelText = _string(R.string.min_power_label)
-                    itemIncrementValue = ParameterComparisonTableDialogConfig.minPower
-                    itemIncrementMinValue = 1
-                    itemIncrementMaxValue = 100
-                    itemAdjustChangedAfterAction = {
-                        ParameterComparisonTableDialogConfig.minPower =
-                            it?.toString()?.toIntOrNull()
-                                ?: ParameterComparisonTableDialogConfig.minPower
-                        updateTablePreview()
-                    }
-                    initItem()
-                }
-                DslIncrementNumberItem()() {
-                    itemLabelText = _string(R.string.min_depth_label)
-                    itemIncrementValue = ParameterComparisonTableDialogConfig.minDepth
-                    itemIncrementMinValue = 1
-                    itemIncrementMaxValue = 100
-                    itemAdjustChangedAfterAction = {
-                        ParameterComparisonTableDialogConfig.minDepth =
-                            it?.toString()?.toIntOrNull()
-                                ?: ParameterComparisonTableDialogConfig.minDepth
-                        updateTablePreview()
-                    }
-                    initItem()
-                }
-                DslIncrementNumberItem()() {
-                    itemLabelText = _string(R.string.add_parameter_comparison_table_columns)
-                    itemIncrementValue = ParameterComparisonTableDialogConfig.horizontalGridCount
-                    itemIncrementMinValue = 1
-                    itemIncrementMaxValue = 20
-                    itemAdjustChangedAfterAction = {
-                        ParameterComparisonTableDialogConfig.horizontalGridCount =
-                            it?.toString()?.toIntOrNull()
-                                ?: ParameterComparisonTableDialogConfig.horizontalGridCount
-                        updateTablePreview()
-                    }
-                    initItem()
-                }
-                DslIncrementNumberItem()() {
-                    itemLabelText = _string(R.string.add_parameter_comparison_table_rows)
-                    itemIncrementValue = ParameterComparisonTableDialogConfig.verticalGridCount
-                    itemIncrementMinValue = 1
-                    itemIncrementMaxValue = 20
-                    itemAdjustChangedAfterAction = {
-                        ParameterComparisonTableDialogConfig.verticalGridCount =
-                            it?.toString()?.toIntOrNull()
-                                ?: ParameterComparisonTableDialogConfig.verticalGridCount
-                        updateTablePreview()
-                    }
-                    initItem()
-                }
-            } else {
-                //图层选择
-                if (!deviceStateModel.isPenMode()) {
-                    LayerSegmentItem()() {
-                        itemIncludeCutLayer = true
-                        itemCurrentIndex = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)
-                            .indexOfFirst { it.layerId == ParameterComparisonTableDialogConfig.gridLayerId }
-                        observeItemChange {
-                            ParameterComparisonTableDialogConfig.gridLayerId =
-                                currentLayerInfo().layerId
-                            //updateTablePreview()
-                            refreshDslAdapter()
-                        }
-                        itemTabEquWidthCountRange = ""
-                        initItem()
-                    }
-                    if (ParameterComparisonTableDialogConfig.gridLayerId == LaserPeckerHelper.LAYER_PICTURE) {
-                        PCTImageItem()() {
-                            initItem()
-                        }
-                    } else {
-                        ParameterComparisonTableDialogConfig.selectImage = null
-                    }
-                } else {
-                    ParameterComparisonTableDialogConfig.selectImage = null
+            MaterialTestGroupHeaderItem()() {
+                itemLabel = settingTypeList[0]
+                itemGroupExtend = settingTypeExtendList[0]
+                observeItemGroupExtendChange {
+                    settingTypeExtendList[0] = itemGroupExtend
                 }
 
-                //激光类型选择 激光光源选择
-                if (laserPeckerModel.productInfoData.value?.isCSeries() != true) {
-                    val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-                    if (typeList.size() > 1) {
-                        //激光类型
-                        EngraveLaserSegmentItem()() {
-                            observeItemChange {
-                                val type = currentLaserTypeInfo().type
-                                gridPrintType = type
-                                HawkEngraveKeys.lastType = type.toInt()
-
-                                updateTablePreview()
-                            }
-                            initItem()
-                        }
-                    }
-                }
-
-                if (laserPeckerModel.isCSeries()) {
-                    //C1 加速级别选择 加速级别
-                    EngraveOptionWheelItem()() {
-                        itemTag = EngraveConfigEntity::precision.name
-                        itemLabelText = _string(R.string.engrave_precision)
-                        itemWheelList = EngraveHelper.percentList(5)
-                        itemSelectedIndex = EngraveHelper.findOptionIndex(
-                            itemWheelList,
-                            ParameterComparisonTableDialogConfig.gridPrintPrecision
-                        )
-                        observeItemChange {
-                            ParameterComparisonTableDialogConfig.gridPrintPrecision =
-                                getSelectedWheelIntData(def = ParameterComparisonTableDialogConfig.gridPrintPrecision).ensurePrintPrecision()
+                renderSubItem {
+                    DslIncrementNumberItem()() {
+                        itemLabelText = _string(R.string.max_power_label)
+                        itemIncrementValue = ParameterComparisonTableDialogConfig.maxPower
+                        itemIncrementMinValue = 1
+                        itemIncrementMaxValue = 100
+                        itemAdjustChangedAfterAction = {
+                            ParameterComparisonTableDialogConfig.maxPower =
+                                it?.toString()?.toIntOrNull()
+                                    ?: ParameterComparisonTableDialogConfig.maxPower
+                            updateTablePreview()
                         }
                         initItem()
                     }
-                }
-
-                //---雕刻参数---
-
-                //分辨率dpi
-                if (LayerHelper.showDpiConfig(ParameterComparisonTableDialogConfig.gridLayerId)) {
-                    TransferDataPxItem()() {
-                        itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(
-                            ParameterComparisonTableDialogConfig.gridLayerId
-                        )
-                        selectorCurrentDpi(
-                            LayerHelper.getProductLastLayerDpi(
-                                ParameterComparisonTableDialogConfig.gridLayerId
-                            )
-                        )
-                        itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
-                        observeItemChange {
-                            //保存最后一次选择的dpi
-                            val dpi =
-                                itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
-                            HawkEngraveKeys.updateLayerDpi(
-                                ParameterComparisonTableDialogConfig.gridLayerId,
-                                dpi
-                            )
-
+                    DslIncrementNumberItem()() {
+                        itemLabelText = _string(R.string.max_depth_label)
+                        itemIncrementValue = ParameterComparisonTableDialogConfig.maxDepth
+                        itemIncrementMinValue = 1
+                        itemIncrementMaxValue = 100
+                        itemAdjustChangedAfterAction = {
+                            ParameterComparisonTableDialogConfig.maxDepth =
+                                it?.toString()?.toIntOrNull()
+                                    ?: ParameterComparisonTableDialogConfig.maxDepth
+                            updateTablePreview()
+                        }
+                        initItem()
+                    }
+                    DslIncrementNumberItem()() {
+                        itemLabelText = _string(R.string.min_power_label)
+                        itemIncrementValue = ParameterComparisonTableDialogConfig.minPower
+                        itemIncrementMinValue = 1
+                        itemIncrementMaxValue = 100
+                        itemAdjustChangedAfterAction = {
+                            ParameterComparisonTableDialogConfig.minPower =
+                                it?.toString()?.toIntOrNull()
+                                    ?: ParameterComparisonTableDialogConfig.minPower
+                            updateTablePreview()
+                        }
+                        initItem()
+                    }
+                    DslIncrementNumberItem()() {
+                        itemLabelText = _string(R.string.min_depth_label)
+                        itemIncrementValue = ParameterComparisonTableDialogConfig.minDepth
+                        itemIncrementMinValue = 1
+                        itemIncrementMaxValue = 100
+                        itemAdjustChangedAfterAction = {
+                            ParameterComparisonTableDialogConfig.minDepth =
+                                it?.toString()?.toIntOrNull()
+                                    ?: ParameterComparisonTableDialogConfig.minDepth
+                            updateTablePreview()
+                        }
+                        initItem()
+                    }
+                    DslIncrementNumberItem()() {
+                        itemLabelText = _string(R.string.add_parameter_comparison_table_columns)
+                        itemIncrementValue =
+                            ParameterComparisonTableDialogConfig.horizontalGridCount
+                        itemIncrementMinValue = 1
+                        itemIncrementMaxValue = 20
+                        itemAdjustChangedAfterAction = {
+                            ParameterComparisonTableDialogConfig.horizontalGridCount =
+                                it?.toString()?.toIntOrNull()
+                                    ?: ParameterComparisonTableDialogConfig.horizontalGridCount
+                            updateTablePreview()
+                        }
+                        initItem()
+                    }
+                    DslIncrementNumberItem()() {
+                        itemLabelText = _string(R.string.add_parameter_comparison_table_rows)
+                        itemIncrementValue = ParameterComparisonTableDialogConfig.verticalGridCount
+                        itemIncrementMinValue = 1
+                        itemIncrementMaxValue = 20
+                        itemAdjustChangedAfterAction = {
+                            ParameterComparisonTableDialogConfig.verticalGridCount =
+                                it?.toString()?.toIntOrNull()
+                                    ?: ParameterComparisonTableDialogConfig.verticalGridCount
                             updateTablePreview()
                         }
                         initItem()
                     }
                 }
+            }
 
-                //其他数据的参数
-                //功率/深度/次数
-                /*EngravePropertyItem()() {
-                    itemShowTimes = false
-                    itemShowPopupTip = false
-                    itemLabelText = ""
-                }*/
+            MaterialTestGroupHeaderItem()() {
+                itemLabel = settingTypeList[1]
+                itemGroupExtend = settingTypeExtendList[1]
+                observeItemGroupExtendChange {
+                    settingTypeExtendList[1] = itemGroupExtend
+                }
+                renderSubItem {
+
+                    //图层选择
+                    if (!deviceStateModel.isPenMode()) {
+                        LayerSegmentItem()() {
+                            itemIncludeCutLayer = true
+                            itemCurrentIndex = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)
+                                .indexOfFirst { it.layerId == ParameterComparisonTableDialogConfig.gridLayerId }
+                            observeItemChange {
+                                ParameterComparisonTableDialogConfig.gridLayerId =
+                                    currentLayerInfo().layerId
+                                //updateTablePreview()
+                                refreshDslAdapter()
+                            }
+                            itemTabEquWidthCountRange = ""
+                            initItem(2)
+                        }
+                        if (ParameterComparisonTableDialogConfig.gridLayerId == LaserPeckerHelper.LAYER_PICTURE) {
+                            PCTImageItem()() {
+                                initItem(2)
+                            }
+                        } else {
+                            ParameterComparisonTableDialogConfig.selectImage = null
+                        }
+                    } else {
+                        ParameterComparisonTableDialogConfig.selectImage = null
+                    }
+
+                    //激光类型选择 激光光源选择
+                    if (laserPeckerModel.productInfoData.value?.isCSeries() != true) {
+                        val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+                        if (typeList.size() > 1) {
+                            //激光类型
+                            EngraveLaserSegmentItem()() {
+                                observeItemChange {
+                                    val type = currentLaserTypeInfo().type
+                                    gridPrintType = type
+                                    HawkEngraveKeys.lastType = type.toInt()
+
+                                    updateTablePreview()
+                                }
+                                initItem(2)
+                            }
+                        }
+                    }
+
+                    if (laserPeckerModel.isCSeries()) {
+                        //C1 加速级别选择 加速级别
+                        EngraveOptionWheelItem()() {
+                            itemTag = EngraveConfigEntity::precision.name
+                            itemLabelText = _string(R.string.engrave_precision)
+                            itemWheelList = EngraveHelper.percentList(5)
+                            itemSelectedIndex = EngraveHelper.findOptionIndex(
+                                itemWheelList,
+                                ParameterComparisonTableDialogConfig.gridPrintPrecision
+                            )
+                            observeItemChange {
+                                ParameterComparisonTableDialogConfig.gridPrintPrecision =
+                                    getSelectedWheelIntData(def = ParameterComparisonTableDialogConfig.gridPrintPrecision).ensurePrintPrecision()
+                            }
+                            initItem(2)
+                        }
+                    }
+
+                    //---雕刻参数---
+
+                    //分辨率dpi
+                    if (LayerHelper.showDpiConfig(ParameterComparisonTableDialogConfig.gridLayerId)) {
+                        TransferDataPxItem()() {
+                            itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(
+                                ParameterComparisonTableDialogConfig.gridLayerId
+                            )
+                            selectorCurrentDpi(
+                                LayerHelper.getProductLastLayerDpi(
+                                    ParameterComparisonTableDialogConfig.gridLayerId
+                                )
+                            )
+                            itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
+                            observeItemChange {
+                                //保存最后一次选择的dpi
+                                val dpi =
+                                    itemPxList?.get(itemCurrentIndex)?.dpi
+                                        ?: LaserPeckerHelper.DPI_254
+                                HawkEngraveKeys.updateLayerDpi(
+                                    ParameterComparisonTableDialogConfig.gridLayerId,
+                                    dpi
+                                )
+
+                                updateTablePreview()
+                            }
+                            initItem(2)
+                        }
+                    }
+
+                    //其他数据的参数
+                    //功率/深度/次数
+                    /*EngravePropertyItem()() {
+                        itemShowTimes = false
+                        itemShowPopupTip = false
+                        itemLabelText = ""
+                    }*/
+                }
+            }
+
+            if (settingType == 0) {
+            } else {
             }
 
             //格子数量选择
@@ -323,8 +348,8 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
         }
     }
 
-    private fun DslAdapterItem.initItem() {
-        itemPaddingLeft = _dimen(R.dimen.lib_xxhdpi)
+    private fun DslAdapterItem.initItem(tag: Int = 1) {
+        itemPaddingLeft = _dimen(R.dimen.lib_xhdpi) * tag
         itemPaddingRight = itemPaddingLeft
         itemPaddingTop = itemPaddingLeft / 2
         itemPaddingBottom = itemPaddingLeft / 2
