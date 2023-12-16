@@ -87,7 +87,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                 .add(ParameterComparisonTableDialogConfig.HIDE_LABEL)
 
         onRenderAdapterAction = {
-
+            val rootAdapter = this
             if (deviceStateModel.isPenMode() || laserPeckerModel.isZOpen()) {
                 //画布模式下, 只能用GCode
                 ParameterComparisonTableDialogConfig.gridLayerId = LaserPeckerHelper.LAYER_LINE
@@ -125,7 +125,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.maxPower =
                                 it?.toString()?.toIntOrNull()
                                     ?: ParameterComparisonTableDialogConfig.maxPower
-                            updateTablePreview()
+                            rootAdapter.updateTablePreview()
                         }
                         initItem()
                     }
@@ -138,7 +138,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.maxDepth =
                                 it?.toString()?.toIntOrNull()
                                     ?: ParameterComparisonTableDialogConfig.maxDepth
-                            updateTablePreview()
+                            rootAdapter.updateTablePreview()
                         }
                         initItem()
                     }
@@ -151,7 +151,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.minPower =
                                 it?.toString()?.toIntOrNull()
                                     ?: ParameterComparisonTableDialogConfig.minPower
-                            updateTablePreview()
+                            rootAdapter.updateTablePreview()
                         }
                         initItem()
                     }
@@ -164,7 +164,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.minDepth =
                                 it?.toString()?.toIntOrNull()
                                     ?: ParameterComparisonTableDialogConfig.minDepth
-                            updateTablePreview()
+                            rootAdapter.updateTablePreview()
                         }
                         initItem()
                     }
@@ -178,7 +178,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.horizontalGridCount =
                                 it?.toString()?.toIntOrNull()
                                     ?: ParameterComparisonTableDialogConfig.horizontalGridCount
-                            updateTablePreview()
+                            rootAdapter.updateTablePreview()
                         }
                         initItem()
                     }
@@ -191,7 +191,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             ParameterComparisonTableDialogConfig.verticalGridCount =
                                 it?.toString()?.toIntOrNull()
                                     ?: ParameterComparisonTableDialogConfig.verticalGridCount
-                            updateTablePreview()
+                            rootAdapter.updateTablePreview()
                         }
                         initItem()
                     }
@@ -215,7 +215,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                             observeItemChange {
                                 ParameterComparisonTableDialogConfig.gridLayerId =
                                     currentLayerInfo().layerId
-                                //updateTablePreview()
+                                //rootAdapter.updateTablePreview()
                                 refreshDslAdapter()
                             }
                             itemTabEquWidthCountRange = ""
@@ -243,7 +243,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                     gridPrintType = type
                                     HawkEngraveKeys.lastType = type.toInt()
 
-                                    updateTablePreview()
+                                    rootAdapter.updateTablePreview()
                                 }
                                 initItem(2)
                             }
@@ -292,7 +292,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
                                     dpi
                                 )
 
-                                updateTablePreview()
+                                rootAdapter.updateTablePreview()
                             }
                             initItem(2)
                         }
