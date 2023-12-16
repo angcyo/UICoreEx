@@ -5,15 +5,15 @@
     <string name="device_exception">기기 이상</string>
     <string name="ex_tips_one">모드 설정을 입력하고 [자유 모드]를 켜십시오.</string>
     <string name="ex_tips_one2">현재 비정상 상태로 감지되어 설정을 통해 프리 모드로 작동하시기 바랍니다.</string>
-    <string name="ex_tips_two">긴급 정지합니다! 범위 밖으로 되어 있습니다. 자동 조정으로 레이저 포커스 위치를 리셋하고 다시 시도하십시오.</string>
-    <string name="ex_tips_three">긴급 정지합니다! 작동 온도가 너무 높습니다.</string>
-    <string name="ex_tips_four">긴급 정지합니다! 기기가 부딪히거나 흔들렸습니다. </string>
-    <string name="ex_tips_five">긴급 정지합니다! 초음파 센서가 각인 범위에 다른 물체가 들어가는걸 감지했습니다.</string>
-    <string name="ex_tips_six">긴급 정지합니다! 데이터 오류가 발생했습니다. </string>
-    <string name="ex_tips_seven">긴급 정지합니다! 파일번호 조회 오류</string>
-    <string name="ex_tips_eight">긴급 정지합니다! 자이로스코프 검사 오류</string>
-    <string name="ex_tips_nine">긴급 정지합니다! 플래시 검사 오류</string>
-    <string name="ex_tips_ten">긴급 정지합니다! 사이즈 오류 </string>
+    <string name="ex_tips_two">시스템 부팅\n범위 밖으로 되어 있습니다. 자동 조정으로 레이저 포커스 위치를 리셋하고 다시 시도하십시오.</string>
+    <string name="ex_tips_three">시스템 부팅\n레이저 작동 온도가 너무 높습니다.</string>
+    <string name="ex_tips_four">시스템 부팅\n기기가 부딪히거나 흔들렸습니다. </string>
+    <string name="ex_tips_five">시스템 부팅\n초음파 센서가 각인 범위에 다른 물체가 들어가는걸 감지했습니다.</string>
+    <string name="ex_tips_six">시스템 부팅\n데이터 읽기 오류입니다.</string>
+    <string name="ex_tips_seven">시스템 부팅\n파일 번호 오류입니다.</string>
+    <string name="ex_tips_eight">시스템 부팅\n자이로스코프 자체 테스트 오류입니다.</string>
+    <string name="ex_tips_nine">시스템 부팅\n플래시 자체 테스트 오류입니다.</string>
+    <string name="ex_tips_ten">시스템 부팅\n사이즈 오류 </string>
 
     <string name="laser_type_white">백색광</string>
     <string name="laser_type_blue">블루라이트</string>

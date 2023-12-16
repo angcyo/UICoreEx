@@ -5,15 +5,15 @@
     <string name="device_exception">Dispositivo anormal</string>
     <string name="ex_tips_one">Introduzca la configuración del modo y active [Modo libre]</string>
     <string name="ex_tips_one2">Detectado un estado no seguro, por favor vaya a Ajustes y active el Modo Libre.</string>
-    <string name="ex_tips_two">¡Parada de emergencia! El rango está fuera de límites. Utilice Ajuste automático en Ajuste láser para restablecer la posición del enfoque láser e inténtelo de nuevo.</string>
-    <string name="ex_tips_three">¡Parada de emergencia! La temperatura de funcionamiento del láser es demasiado alta</string>
-    <string name="ex_tips_four">¡Parada de emergencia! La máquina puede ser golpeada o sacudida</string>
-    <string name="ex_tips_five">¡Parada de emergencia! El sensor ultrasónico detecta que un objeto ha entrado en el rango de grabado</string>
-    <string name="ex_tips_six">¡Parada de emergencia! Errores de datos</string>
-    <string name="ex_tips_seven">¡Parada de emergencia! Error de consulta de número de archivo</string>
-    <string name="ex_tips_eight">¡Parada de emergencia! Error de autocomprobación del giroscopio</string>
-    <string name="ex_tips_nine">¡Parada de emergencia! Error de autocomprobación de Flash</string>
-    <string name="ex_tips_ten">¡Parada de emergencia! Anomalías de tamaño</string>
+    <string name="ex_tips_two">¡El aparato se para\nEl rango está fuera de límites. Utilice Ajuste automático en Ajuste láser para restablecer la posición del enfoque láser e inténtelo de nuevo.</string>
+    <string name="ex_tips_three">¡El aparato se para\nLa temperatura de funcionamiento del láser es demasiado alta.</string>
+    <string name="ex_tips_four">¡El aparato se para\nLa máquina puede ser golpeada o sacudida</string>
+    <string name="ex_tips_five">¡El aparato se para\nEl sensor ultrasónico detecta que un objeto ha entrado en el rango de grabado</string>
+    <string name="ex_tips_six">¡El aparato se para\nError de lectura de datos.</string>
+    <string name="ex_tips_seven">¡El aparato se para\nNúmero de archivo anormal.</string>
+    <string name="ex_tips_eight">¡El aparato se para\nError de autocomprobación del giroscopio.</string>
+    <string name="ex_tips_nine">¡El aparato se para\nError de autocomprobación de flash.</string>
+    <string name="ex_tips_ten">¡El aparato se para\nAnomalías de tamaño</string>
 
     <string name="laser_type_white">Luz blanca</string>
     <string name="laser_type_blue">Luz azul</string>

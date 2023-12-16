@@ -5,15 +5,15 @@
     <string name="device_exception">Gerät abnormal</string>
     <string name="ex_tips_one">Bitte geben Sie die Moduseinstellungen ein und schalten Sie [Freier Modus] ein.</string>
     <string name="ex_tips_one2">Unsicherer Zustand entdeckt. Öffnen Sie bitte Einstellungen, aktivieren den freien Modus und fahren mit der Bedienung fort.</string>
-    <string name="ex_tips_two">Not-Aus! Die Reichweite ist außerhalb der Grenzen. Bitte verwenden Sie die automatische Anpassung in der Laserjustage, um die Position des Laserfokus zurückzusetzen, und versuchen Sie es erneut.</string>
-    <string name="ex_tips_three">Not-Aus! Die Betriebstemperatur des Lasers ist zu hoch</string>
-    <string name="ex_tips_four">Not-Aus! Die Maschine kann getroffen oder geschüttelt werden</string>
-    <string name="ex_tips_five">Not-Aus! Der Ultraschallsensor erkennt, dass ein Objekt in den Gravurbereich gelangt ist</string>
-    <string name="ex_tips_six">Not-Aus! Datenfehler</string>
-    <string name="ex_tips_seven">Not-Aus! Fehler bei der Dateinummernabfrage</string>
-    <string name="ex_tips_eight">Not-Aus! Gyroskop-Selbsttestfehler</string>
-    <string name="ex_tips_nine">Not-Aus! Flash-Selbsttest-Fehler</string>
-    <string name="ex_tips_ten">Not-Aus! Größenanomalien</string>
+    <string name="ex_tips_two">Gerät stoppt\nDie Reichweite ist außerhalb der Grenzen. Bitte verwenden Sie die automatische Anpassung in der Laserjustage, um die Position des Laserfokus zurückzusetzen, und versuchen Sie es erneut.</string>
+    <string name="ex_tips_three">Gerät stoppt\nBetriebstemperatur des Lasers zu hoch</string>
+    <string name="ex_tips_four">Gerät stoppt\nDie Maschine kann getroffen oder geschüttelt werden</string>
+    <string name="ex_tips_five">Gerät stoppt\nDer Ultraschallsensor erkennt, dass ein Objekt in den Gravurbereich gelangt ist</string>
+    <string name="ex_tips_six">Gerät stoppt\nFehler beim Lesen der Daten</string>
+    <string name="ex_tips_seven">Gerät stoppt\nNummer des Dokuments fehlerhaft</string>
+    <string name="ex_tips_eight">Gerät stoppt\nFehler beim Selbsttest des Gyroskops</string>
+    <string name="ex_tips_nine">Gerät stoppt\nFehler beim Selbsttest des Flashes</string>
+    <string name="ex_tips_ten">Gerät stoppt\nGrößenanomalien</string>
 
     <string name="laser_type_white">Weißes Licht</string>
     <string name="laser_type_blue">Blaues Licht</string>

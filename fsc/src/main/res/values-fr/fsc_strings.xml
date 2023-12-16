@@ -5,15 +5,15 @@
     <string name="device_exception">Anomalie de l\'appareil</string>
     <string name="ex_tips_one">Veuillez entrer les paramètres du mode et activer [Mode libre]</string>
     <string name="ex_tips_one2">État non sécurisé détecté. Veuillez accéder aux paramètres et activer le mode libre pour les opérations</string>
-    <string name="ex_tips_two">Arrêt d’urgence! La plage est hors limites. Veuillez utiliser le réglage automatique dans le réglage laser pour réinitialiser la position de la mise au point laser et réessayer.</string>
-    <string name="ex_tips_three">Arrêt d’urgence! La température de fonctionnement du laser est trop élevée</string>
-    <string name="ex_tips_four">Arrêt d’urgence! La machine peut être heurtée ou secouée</string>
-    <string name="ex_tips_five">Arrêt d’urgence! Le capteur à ultrasons détecte qu’un objet est entré dans la plage de gravure</string>
-    <string name="ex_tips_six">Arrêt d’urgence! Erreurs de données</string>
-    <string name="ex_tips_seven">Arrêt d’urgence! Erreur de requête de numéro de fichier</string>
-    <string name="ex_tips_eight">Arrêt d’urgence! Erreur d’auto-test du gyroscope</string>
-    <string name="ex_tips_nine">Arrêt d’urgence! Erreur d’auto-test Flash</string>
-    <string name="ex_tips_ten">Arrêt d’urgence! Anomalies de taille</string>
+    <string name="ex_tips_two">Arrêt l\'appareil\nLa plage est hors limites. Veuillez utiliser le réglage automatique dans le réglage laser pour réinitialiser la position de la mise au point laser et réessayer.</string>
+    <string name="ex_tips_three">Arrêt l\'appareil\nLa température de fonctionnement du laser est trop élevée.</string>
+    <string name="ex_tips_four">Arrêt l\'appareil\nLa machine peut être heurtée ou secouée</string>
+    <string name="ex_tips_five">Arrêt l\'appareil\nLe capteur à ultrasons détecte qu’un objet est entré dans la plage de gravure</string>
+    <string name="ex_tips_six">Arrêt l\'appareil\nAnomalie de lecture des données</string>
+    <string name="ex_tips_seven">Arrêt l\'appareil\nLe numéro de fichier est anormal</string>
+    <string name="ex_tips_eight">Arrêt l\'appareil\nErreur d’autotest du gyroscope</string>
+    <string name="ex_tips_nine">Arrêt l\'appareil\nErreur d\'autotest du flash.</string>
+    <string name="ex_tips_ten">Arrêt l\'appareil\nAnomalies de taille</string>
 
     <string name="laser_type_white">Lumière blanche</string>
     <string name="laser_type_blue">Lumière bleue</string>

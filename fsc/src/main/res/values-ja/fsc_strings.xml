@@ -5,15 +5,15 @@
     <string name="device_exception">デバイスエラー</string>
     <string name="ex_tips_one">モード設定で「フリーモード」をオンにしてください</string>
     <string name="ex_tips_one2">安全な状態ではないことが検出されたため、[設定]に移動して、フリーモードをオンにしてから操作してください。</string>
-    <string name="ex_tips_two">緊急停止します。範囲外になっています。自動調整で、レーザーのフォーカス位置をリセットして、再度お試しください</string>
-    <string name="ex_tips_three">緊急停止します。レーザーの動作温度が高すぎます</string>
-    <string name="ex_tips_four">緊急停止します。デバイスがぶつかったり、揺れたりする可能性があります</string>
-    <string name="ex_tips_five">緊急停止します。超音波センサーが彫刻エリアに侵入する物体を検知しました</string>
-    <string name="ex_tips_six">緊急停止します。データエラー</string>
-    <string name="ex_tips_seven">緊急停止します。ファイル番号検索エラー</string>
-    <string name="ex_tips_eight">緊急停止します。ジャイロスコープ検査エラー</string>
-    <string name="ex_tips_nine">緊急停止します。フラッシュ検査エラー</string>
-    <string name="ex_tips_ten">緊急停止します。寸法エラー</string>
+    <string name="ex_tips_two">デバイス停止\n範囲外になっています。自動調整で、レーザーのフォーカス位置をリセットして、再度お試しください</string>
+    <string name="ex_tips_three">デバイス停止\nレザー作動温度が高すぎる。</string>
+    <string name="ex_tips_four">デバイス停止\nデバイスがぶつかったり、揺れたりする可能性があります</string>
+    <string name="ex_tips_five">デバイス停止\n超音波センサーが彫刻エリアに侵入する物体を検知しました</string>
+    <string name="ex_tips_six">デバイス停止\nデーター読取り異常</string>
+    <string name="ex_tips_seven">デバイス停止\nファイル番号異常</string>
+    <string name="ex_tips_eight">デバイス停止\nジャイロスコープのセルフテストエラー</string>
+    <string name="ex_tips_nine">デバイス停止\nフラッシュのセルフテストエラー</string>
+    <string name="ex_tips_ten">デバイス停止\n寸法エラー</string>
 
     <string name="laser_type_white">ホワイトライト</string>
     <string name="laser_type_blue">ブルーライト</string>

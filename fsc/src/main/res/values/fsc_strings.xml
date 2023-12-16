@@ -5,15 +5,15 @@
     <string name="device_exception">Exception</string>
     <string name="ex_tips_one">Please turn on [free mode]</string>
     <string name="ex_tips_one2">Non-secure state detected. Please go to Settings and enable Free Mode for operations.</string>
-    <string name="ex_tips_two">Emergency stop!Out of bounds.Please reset the position of the laser focus using the automatic adjustment in the laser adjustment and try again.</string>
-    <string name="ex_tips_three">Emergency stop！Laser operating temperature is too high</string>
-    <string name="ex_tips_four">Emergency stop！The machine may be bumped or shaken</string>
-    <string name="ex_tips_five">Emergency stop! Some objects enter the engraving range</string>
-    <string name="ex_tips_six">Emergency stop！data error</string>
-    <string name="ex_tips_seven">Emergency stop! File number query error</string>
-    <string name="ex_tips_eight">Emergency stop! Gyro self-test error</string>
-    <string name="ex_tips_nine">Emergency stop! flash self-test error</string>
-    <string name="ex_tips_ten">Emergency stop! Abnormal dimensions</string>
+    <string name="ex_tips_two">Device stops\nOut of bounds.Please reset the position of the laser focus using the automatic adjustment in the laser adjustment and try again.</string>
+    <string name="ex_tips_three">Device stops\nLaser operating temperature is too high.</string>
+    <string name="ex_tips_four">Device stops\nThe machine may be bumped or shaken</string>
+    <string name="ex_tips_five">Device stops\nSome objects enter the engraving range</string>
+    <string name="ex_tips_six">Device stops\nData reading error.</string>
+    <string name="ex_tips_seven">Device stops\nAbnormal file number.</string>
+    <string name="ex_tips_eight">Device stops\nGyroscope self-test error.</string>
+    <string name="ex_tips_nine">Device stops\nFlash self-test error.</string>
+    <string name="ex_tips_ten">Device stops\nAbnormal dimensions</string>
 
     <string name="laser_type_white">White</string>
     <string name="laser_type_blue">Blue</string>
