@@ -108,4 +108,7 @@
     <string name="save_project_title">프로젝트 이름</string>
     <string name="project_title_limit">최대 20자 입력</string>
     <string name="project_save_success_tip">프로젝트 저장 성공</string>
+
+    <string name="rotate_flag_tip_title">[%1$s]에 전기가 통하는지 확인하시고, 스위치를 켠 후에도 기계가 작동하지 않으면 부품 연결선을 다시 연결한 후 작동하십시오. </string>
+    <string name="see_tutorial">도움</string>
 </resources>

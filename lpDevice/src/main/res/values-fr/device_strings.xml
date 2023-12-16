@@ -108,4 +108,7 @@
     <string name="save_project_title">Titre du projet</string>
     <string name="project_title_limit">Saisir jusqu\'à 20 caractères</string>
     <string name="project_save_success_tip">Sauvegarde réussie</string>
+
+    <string name="rotate_flag_tip_title">Veuillez vous assurer que votre [%1$s]est activé. Si l’appareil ne réagit pas après avoir allumé le commutateur, veuillez reconnecter le câble de connexion des accessoires avant de l’ouvrir.</string>
+    <string name="see_tutorial">aider</string>
 </resources>

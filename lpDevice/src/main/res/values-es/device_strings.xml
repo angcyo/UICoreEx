@@ -108,4 +108,7 @@
     <string name="save_project_title">Nombre del proyecto </string>
     <string name="project_title_limit">Introduzca hasta 20 caracteres</string>
     <string name="project_save_success_tip"> Se guarda el proyecto correctamente</string>
+
+    <string name="rotate_flag_tip_title">Por favor, asegúrese de que su Eje de %1$s está encendida. Si el dispositivo no responde al encenderlo, vuelva a conectar el cable y enciéndalo de nuevo.</string>
+    <string name="see_tutorial">ayuda</string>
 </resources>

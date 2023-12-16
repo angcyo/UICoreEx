@@ -108,4 +108,7 @@
     <string name="save_project_title">項目名</string>
     <string name="project_title_limit">20文字まで入力可能</string>
     <string name="project_save_success_tip">項目が保存されました</string>
+
+    <string name="rotate_flag_tip_title">[%1$s]の電源がオンになっていることを確認し、スイッチをオンにしてもデバイスが応答しない場合は、アクセサリケーブルを接続しなおしてからスイッチを入れてください。</string>
+    <string name="see_tutorial">助ける</string>
 </resources>

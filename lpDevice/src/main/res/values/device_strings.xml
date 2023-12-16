@@ -149,6 +149,6 @@
     <string name="sd_card_file_title">SD card</string>
     <string name="usb_file_title">Flash drive</string>
     <string name="external_sharing">External sharing</string>
-    <string name="rotate_flag_tip_title">Please confirm that your [%1$s] is powered on</string>
-    <string name="see_tutorial">View help</string>
+    <string name="rotate_flag_tip_title">Please make sure your %1$s is powered on. If the device fails to respond when switched on, please reconnect the cable and turn it on again.  </string>
+    <string name="see_tutorial">Help</string>
 </resources>

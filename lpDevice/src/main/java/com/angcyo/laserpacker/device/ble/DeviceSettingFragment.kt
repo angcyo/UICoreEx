@@ -510,6 +510,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemFlagPromptKey = slideFilesFlagPromptKey
 
                     itemLabel = _string(R.string.device_s_batch_engrave_label)
+                    itemTipLabel = _string(R.string.device_ex_s_label)
+
                     itemDes = _string(R.string.device_s_batch_engrave_des)
                     initItem()
 

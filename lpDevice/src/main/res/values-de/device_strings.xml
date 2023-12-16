@@ -108,4 +108,7 @@
     <string name="save_project_title">Projektname</string>
     <string name="project_title_limit">Eingabe von bis zu 20 Zeichen</string>
     <string name="project_save_success_tip">Projekt erfolgreich gespeichert</string>
+
+    <string name="rotate_flag_tip_title">Stellen Sie sicher, dass der Strom für die %1$s eingeschaltet ist. Sollte der Strom bereits eingeschaltet sein und die Maschine reagiert dennoch nicht, verbinden Sie das Komponentenkabel erneut und schalten den Strom wieder ein. </string>
+    <string name="see_tutorial">Hilfe</string>
 </resources>

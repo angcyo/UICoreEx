@@ -1,6 +1,5 @@
 package com.angcyo.laserpacker.device.ble.dslitem
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.core.CoreApplication
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -29,6 +28,9 @@ class HelpPropertySwitchItem : DslPropertySwitchItem() {
 
     /**不在提示的key*/
     var itemFlagPromptKey: String? = null
+
+    /**提示窗口使用的label, 默认是[itemLabel]*/
+    var itemTipLabel: CharSequence? = null
 
     /**是否要提示*/
     private val needFlagTip: Boolean
@@ -72,8 +74,10 @@ class HelpPropertySwitchItem : DslPropertySwitchItem() {
     ): Boolean {
         return if (checked && needFlagTip && !itemHelpUrl.isNullOrBlank()) {
             itemHolder.context.messageDialog {
-                dialogTitle = _string(R.string.rotate_flag_tip_title, itemLabel ?: "")
+                dialogTitle = _string(R.string.ui_reminder)
                 dialogMessage = span {
+                    append(_string(R.string.rotate_flag_tip_title, itemTipLabel ?: itemLabel ?: ""))
+                    append("\n\n")
                     append(_string(R.string.see_tutorial)) {
                         foregroundColor = _color(R.color.lib_link)
                     }
