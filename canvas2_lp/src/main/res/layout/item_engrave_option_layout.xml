@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/lib_padding_right"
-    android:paddingVertical="@dimen/lib_sdpi">
+    android:paddingVertical="@dimen/lib_sdpi"
+    android:paddingRight="@dimen/lib_padding_right">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_label_view"
