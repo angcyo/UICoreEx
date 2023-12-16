@@ -8,6 +8,8 @@ import com.angcyo.component.getFiles
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.component.ROpenFileHelper
 import com.angcyo.library.component.lastActivity
+import com.angcyo.library.ex._drawable
+import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.isImageType
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.widget.DslViewHolder
@@ -33,8 +35,13 @@ class PCTImageItem : DslAdapterItem() {
             R.id.lib_clear_view,
             ParameterComparisonTableDialogConfig.selectImage != null
         )
-        itemHolder.img(R.id.lib_image_view)
-            ?.setImageBitmap(ParameterComparisonTableDialogConfig.selectImage)
+        itemHolder.img(R.id.lib_image_view)?.apply {
+            ParameterComparisonTableDialogConfig.selectImage?.let {
+                setImageBitmap(ParameterComparisonTableDialogConfig.selectImage)
+            }.elseNull {
+                setImageDrawable(_drawable(R.drawable.pct_add_image))
+            }
+        }
         itemHolder.click(R.id.lib_image_view) {
             lastActivity?.let {
                 if (it is FragmentActivity) {

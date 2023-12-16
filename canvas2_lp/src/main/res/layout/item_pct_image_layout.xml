@@ -14,27 +14,35 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/lib_min_item_height"
         android:gravity="left|center_vertical"
+        android:minWidth="@dimen/lp_item_label_min_width"
         android:paddingRight="@dimen/lib_padding_right"
         android:text="@string/canvas_image"
         android:tooltipText="自定义雕刻的图片" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/lib_image_view"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@color/lib_image_placeholder_white_color"
-        android:scaleType="fitCenter"
-        tools:src="@drawable/lib_ic_info" />
+    <com.angcyo.widget.layout.RFrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:r_clip_radius="8dp"
+        app:r_clip_type="CLIP_TYPE_ROUND">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/lib_clear_view"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_gravity="center"
-        android:background="@drawable/lib_bg2_selector"
-        android:padding="@dimen/lib_hdpi"
-        android:scaleType="centerCrop"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/lib_edit_delete" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_image_view"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@color/lib_image_placeholder_white_color"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/pct_add_image" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_clear_view"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="right|top"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/pct_remove_image"
+            tools:visibility="visible" />
+
+    </com.angcyo.widget.layout.RFrameLayout>
 
 </LinearLayout>
