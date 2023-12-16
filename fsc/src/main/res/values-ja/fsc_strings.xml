@@ -4,7 +4,7 @@
     <string name="safety_tips">セキュリティのご注意</string>
     <string name="device_exception">デバイスエラー</string>
     <string name="ex_tips_one">モード設定で「フリーモード」をオンにしてください</string>
-    <string name="ex_tips_one2">非セーフ状態は、開いた後に操作できます[自由モード]</string>
+    <string name="ex_tips_one2">安全な状態ではないことが検出されたため、[設定]に移動して、フリーモードをオンにしてから操作してください。</string>
     <string name="ex_tips_two">緊急停止します。範囲外になっています。自動調整で、レーザーのフォーカス位置をリセットして、再度お試しください</string>
     <string name="ex_tips_three">緊急停止します。レーザーの動作温度が高すぎます</string>
     <string name="ex_tips_four">緊急停止します。デバイスがぶつかったり、揺れたりする可能性があります</string>

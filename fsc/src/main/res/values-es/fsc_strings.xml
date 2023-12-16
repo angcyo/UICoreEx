@@ -4,7 +4,7 @@
     <string name="safety_tips">Consejos de seguridad</string>
     <string name="device_exception">Dispositivo anormal</string>
     <string name="ex_tips_one">Introduzca la configuración del modo y active [Modo libre]</string>
-    <string name="ex_tips_one2">En el estado no seguro, se puede operar después de activar [Modo libre]</string>
+    <string name="ex_tips_one2">Detectado un estado no seguro, por favor vaya a Ajustes y active el Modo Libre.</string>
     <string name="ex_tips_two">¡Parada de emergencia! El rango está fuera de límites. Utilice Ajuste automático en Ajuste láser para restablecer la posición del enfoque láser e inténtelo de nuevo.</string>
     <string name="ex_tips_three">¡Parada de emergencia! La temperatura de funcionamiento del láser es demasiado alta</string>
     <string name="ex_tips_four">¡Parada de emergencia! La máquina puede ser golpeada o sacudida</string>

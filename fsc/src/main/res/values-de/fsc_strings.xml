@@ -4,7 +4,7 @@
     <string name="safety_tips">Sicherheitshinweis</string>
     <string name="device_exception">Gerät abnormal</string>
     <string name="ex_tips_one">Bitte geben Sie die Moduseinstellungen ein und schalten Sie [Freier Modus] ein.</string>
-    <string name="ex_tips_one2">Im nicht sicheren Zustand kann es nach dem Einschalten von [Freier Modus] betrieben werden</string>
+    <string name="ex_tips_one2">Unsicherer Zustand entdeckt. Öffnen Sie bitte Einstellungen, aktivieren den freien Modus und fahren mit der Bedienung fort.</string>
     <string name="ex_tips_two">Not-Aus! Die Reichweite ist außerhalb der Grenzen. Bitte verwenden Sie die automatische Anpassung in der Laserjustage, um die Position des Laserfokus zurückzusetzen, und versuchen Sie es erneut.</string>
     <string name="ex_tips_three">Not-Aus! Die Betriebstemperatur des Lasers ist zu hoch</string>
     <string name="ex_tips_four">Not-Aus! Die Maschine kann getroffen oder geschüttelt werden</string>

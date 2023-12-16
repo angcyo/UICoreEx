@@ -4,7 +4,7 @@
     <string name="safety_tips">Message de sécurité</string>
     <string name="device_exception">Anomalie de l\'appareil</string>
     <string name="ex_tips_one">Veuillez entrer les paramètres du mode et activer [Mode libre]</string>
-    <string name="ex_tips_one2">Dans l’état non sécurisé, il peut être utilisé après l’activation du [mode libre]</string>
+    <string name="ex_tips_one2">État non sécurisé détecté. Veuillez accéder aux paramètres et activer le mode libre pour les opérations</string>
     <string name="ex_tips_two">Arrêt d’urgence! La plage est hors limites. Veuillez utiliser le réglage automatique dans le réglage laser pour réinitialiser la position de la mise au point laser et réessayer.</string>
     <string name="ex_tips_three">Arrêt d’urgence! La température de fonctionnement du laser est trop élevée</string>
     <string name="ex_tips_four">Arrêt d’urgence! La machine peut être heurtée ou secouée</string>

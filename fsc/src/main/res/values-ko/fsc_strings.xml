@@ -4,7 +4,7 @@
     <string name="safety_tips">안전주의</string>
     <string name="device_exception">기기 이상</string>
     <string name="ex_tips_one">모드 설정을 입력하고 [자유 모드]를 켜십시오.</string>
-    <string name="ex_tips_one2">비보안 상태에서는 [자유 모드]를 켠 후 조작할 수 있습니다</string>
+    <string name="ex_tips_one2">현재 비정상 상태로 감지되어 설정을 통해 프리 모드로 작동하시기 바랍니다.</string>
     <string name="ex_tips_two">긴급 정지합니다! 범위 밖으로 되어 있습니다. 자동 조정으로 레이저 포커스 위치를 리셋하고 다시 시도하십시오.</string>
     <string name="ex_tips_three">긴급 정지합니다! 작동 온도가 너무 높습니다.</string>
     <string name="ex_tips_four">긴급 정지합니다! 기기가 부딪히거나 흔들렸습니다. </string>
