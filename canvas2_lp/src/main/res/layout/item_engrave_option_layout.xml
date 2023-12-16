@@ -11,7 +11,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_label_view"
-        style="@style/LibBodyTextStyle"
+        style="@style/LPItemLabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/lib_padding_right"
@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@drawable/engrave_solid_selector"
+        android:minHeight="@dimen/lib_item_min_height"
         android:paddingHorizontal="@dimen/lib_xhdpi"
         android:paddingVertical="@dimen/lib_hdpi">
 
@@ -30,6 +31,7 @@
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             tools:text="木质木质" />
 
         <androidx.appcompat.widget.AppCompatImageView

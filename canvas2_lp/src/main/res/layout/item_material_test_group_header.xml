@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/lib_bg_selector"
     android:gravity="center_vertical"
+    android:minHeight="56dp"
     android:orientation="horizontal"
     android:padding="@dimen/lib_hdpi">
 
@@ -15,6 +16,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textSize="@dimen/text_sub_size"
         android:textStyle="bold"
         tools:text="线条图层" />
 

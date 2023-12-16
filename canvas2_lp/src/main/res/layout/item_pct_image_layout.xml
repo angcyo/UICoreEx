@@ -6,15 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/lib_padding_right"
-    android:paddingVertical="@dimen/lib_hdpi">
+    android:paddingVertical="@dimen/lib_hdpi"
+    android:paddingRight="@dimen/lib_padding_right">
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/LibBodyTextStyle"
+        style="@style/LPItemLabelStyle"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/lib_min_item_height"
         android:gravity="left|center_vertical"
-        android:minWidth="@dimen/lp_item_label_min_width"
         android:paddingRight="@dimen/lib_padding_right"
         android:text="@string/canvas_image"
         android:tooltipText="自定义雕刻的图片" />
@@ -29,7 +27,7 @@
             android:id="@+id/lib_image_view"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:background="@color/lib_image_placeholder_white_color"
+            android:background="@color/lib_tab_segment_border_solid_color"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/pct_add_image" />
 

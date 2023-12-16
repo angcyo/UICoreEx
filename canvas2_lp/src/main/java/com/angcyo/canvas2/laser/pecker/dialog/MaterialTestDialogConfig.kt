@@ -26,6 +26,7 @@ import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
 import com.angcyo.dialog2.dslitem.itemSelectedIndex
 import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.dsladapter.renderSubItem
 import com.angcyo.item.DslIncrementNumberItem
 import com.angcyo.item.style.itemAdjustChangedAfterAction
@@ -45,6 +46,7 @@ import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.add
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
@@ -312,6 +314,8 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
             } else {
             }
 
+            renderEmptyItem(40 * dpi)
+
             //格子数量选择
             /*GridCountItem()() {
                 itemColumns = ParameterComparisonTableDialogConfig.horizontalGridCount
@@ -349,7 +353,7 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
     }
 
     private fun DslAdapterItem.initItem(tag: Int = 1) {
-        itemPaddingLeft = _dimen(R.dimen.lib_xhdpi) * tag
+        itemPaddingLeft = _dimen(R.dimen.lib_xhdpi)
         itemPaddingRight = itemPaddingLeft
         itemPaddingTop = itemPaddingLeft / 2
         itemPaddingBottom = itemPaddingLeft / 2
