@@ -32,6 +32,8 @@ data class FactoryCmd(
 
     /**data1=0时为计算数据，data1=1时使用校正数据*/
     var data1: Byte = 0x1,
+    var data2: Byte = 0x0,
+    var data3: Byte = 0x0,
 
     /**data4*/
     var data4: Byte = 0x0,
@@ -79,6 +81,16 @@ data class FactoryCmd(
         /**LX1 出厂雕刻设置指令*/
         fun factoryPCTCmd(enable: Boolean): FactoryCmd {
             return FactoryCmd(state = 0x21, data4 = if (enable) 0x1 else 0x0)
+        }
+
+        /**LX1 黑白/抖动图片补偿设置*/
+        fun factoryCompensateCmd(bwc: Byte, dc: Byte, enable: Boolean): FactoryCmd {
+            return FactoryCmd(
+                state = 0x22,
+                data1 = bwc,
+                data2 = dc,
+                data3 = if (enable) 0x1 else 0x0
+            )
         }
 
         /**保存对焦光标坐标值（L5有用）*/
@@ -133,6 +145,13 @@ data class FactoryCmd(
                     writeUByte(custom)
                     writeUByte(data4)
                 }
+
+                0x22.toByte() -> {
+                    writeUByte(data1)
+                    writeUByte(data2)
+                    writeUByte(data3)
+                    writeUByte(custom)
+                }
             }
         }
     }
@@ -164,6 +183,7 @@ data class FactoryCmd(
                 0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"}")
                 0x11.toByte() -> append("保存对焦光标坐标值")
                 0x21.toByte() -> append("LX1出厂雕刻设置:${(data4 == 0x1.toByte()).toDC()}")
+                0x22.toByte() -> append("LX1出厂雕刻补偿设置: 黑白:${data1} 抖动:${data2} ${(data3 == 0x1.toByte()).toDC()}")
             }
             append(" custom:${custom}")
         }
