@@ -24,6 +24,10 @@
     <string name="ui_disclaimer">Renuncia</string>
     <string name="ui_disclaimer_content2">Advertencia: Cuando el interruptor del "Modo Libre" está encendido, su dispositivo podrá funcionar sin la cubierta de protección, lo que puede suponer un riesgo para la seguridad. Por eso, por favor confirme si la operación actual es necesaria; Si confirma proceder con esta operación sin la protección de la cubierta de protección, por favor, asegúrese de que su operación sigue las Normas de Seguridad, y acepta que usted es el único responsable de cualquier riesgo de seguridad y legal resultante de esta operación y que el fabricante y distribuidor de LaserPecker no se hace responsable de cualquier responsabilidad de seguridad o legal.</string>
 
+    <string name="ui_reminder">Recordatorio</string>
+    <string name="ui_reminder_free_mode">Al activar este modo, se puede utilizar la máquina sin la Cubierta Protectora. Asegúrese de que las personas alrededores llevan gafas protectoras y de que todas las operaciones se realizan de acuerdo con las normas de seguridad. Asegúrese de que es consciente de que usted es el único responsable de los riesgos legales y de seguridad de esta operación y que los fabricantes y distribuidores de LaserPecker no se harán responsables de ninguna responsabilidad legal o de seguridad.</string>
+    <string name="ui_reminder_see_free_mode">Haga clic aquí para ver las diferencias entre la Cubierta Protectora y el Protector Cónico</string>
+
     <string name="device_ex_car_label">Plataforma móvil</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Giro frontal</string>

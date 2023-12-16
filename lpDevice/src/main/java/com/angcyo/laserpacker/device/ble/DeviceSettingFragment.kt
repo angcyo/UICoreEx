@@ -18,6 +18,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.core.CoreApplication
 import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
@@ -50,6 +51,7 @@ import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
+import com.angcyo.widget.span.span
 import kotlin.math.max
 
 
@@ -265,20 +267,59 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChangedAction = {
                         if (it) {
                             //开启自由模式, 需要弹窗确认
-                            fContext().normalDialog {
-                                cancelable = false
-                                dialogTitle = _string(R.string.ui_disclaimer)
-                                dialogMessage = _string(R.string.ui_disclaimer_content2)
-                                positiveButton { dialog, dialogViewHolder ->
-                                    dialog.dismiss()
-                                    settingParser?.free = if (it) 1 else 0
-                                    settingParser?.updateSetting()
-                                    syncQueryDeviceState()
+                            if (laserPeckerModel.isL2() || laserPeckerModel.isL3()) {
+                                fContext().normalDialog {
+                                    cancelable = false
+                                    dialogTitle = _string(R.string.ui_reminder)
+
+                                    val isZh = LanguageModel.isChinese()
+                                    val url = if (isZh) {
+                                        config?.freeModeProtectorHelpUrlZh
+                                            ?: config?.freeModeProtectorHelpUrl
+                                    } else {
+                                        config?.freeModeProtectorHelpUrl
+                                    }
+
+                                    dialogMessage = span {
+                                        append(_string(R.string.ui_reminder_free_mode))
+                                        url?.let {
+                                            append("\n\n")
+                                            click(
+                                                null,
+                                                _string(R.string.ui_reminder_see_free_mode)
+                                            ) { _, _ ->
+                                                CoreApplication.onOpenUrlAction?.invoke(it)
+                                            }
+                                        }
+                                    }
+                                    positiveButton { dialog, dialogViewHolder ->
+                                        dialog.dismiss()
+                                        settingParser?.free = if (it) 1 else 0
+                                        settingParser?.updateSetting()
+                                        syncQueryDeviceState()
+                                    }
+                                    negativeButton { dialog, dialogViewHolder ->
+                                        dialog.dismiss()
+                                        updateItemSwitchChecked(false)
+                                        syncQueryDeviceState()
+                                    }
                                 }
-                                negativeButton { dialog, dialogViewHolder ->
-                                    dialog.dismiss()
-                                    updateItemSwitchChecked(false)
-                                    syncQueryDeviceState()
+                            } else {
+                                fContext().normalDialog {
+                                    cancelable = false
+                                    dialogTitle = _string(R.string.ui_disclaimer)
+                                    dialogMessage = _string(R.string.ui_disclaimer_content2)
+                                    positiveButton { dialog, dialogViewHolder ->
+                                        dialog.dismiss()
+                                        settingParser?.free = if (it) 1 else 0
+                                        settingParser?.updateSetting()
+                                        syncQueryDeviceState()
+                                    }
+                                    negativeButton { dialog, dialogViewHolder ->
+                                        dialog.dismiss()
+                                        updateItemSwitchChecked(false)
+                                        syncQueryDeviceState()
+                                    }
                                 }
                             }
                         } else {

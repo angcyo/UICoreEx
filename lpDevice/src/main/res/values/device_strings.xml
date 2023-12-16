@@ -28,6 +28,10 @@
     <string name="ui_disclaimer">Disclaimer</string>
     <string name="ui_disclaimer_content2">Warning: When the "Free Mode" switch is turned on, your device will be allowed to operate without the protection cover, which may pose a safety risk. Please confirm whether the current operation is necessary; If you do confirm to proceed this operation without the protection of the protection cover, please make sure that your operation follows the Safety Regulations, and agree that you are solely responsible for any safety and legal risks resulting from this operation and that LaserPecker\'s manufacturer and distributor shall not be held liable for any safety or legal liabilities.</string>
 
+    <string name="ui_reminder">Reminder</string>
+    <string name="ui_reminder_free_mode">When activating this mode, you may use the machine without the Protection Cover. Please make sure that the surrounding persons have goggles on and that all operations are in accordance with safety regulations. Please be aware that you are solely responsible for the safety and legal risks of this operation and that LaserPecker\'s manufacturers and distributors will not be held liable for any safety or legal responsibilities.</string>
+    <string name="ui_reminder_see_free_mode">Click here to see the differences between the Protection Cover and the Cone Shaped Protector</string>
+
     <string name="device_ex_car_label">Mobile platform</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Forward</string>

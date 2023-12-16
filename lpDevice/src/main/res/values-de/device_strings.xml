@@ -24,6 +24,10 @@
     <string name="ui_disclaimer">Verzichtserklärung</string>
     <string name="ui_disclaimer_content2">Warnung: Wenn der Schalter „Freier Modus“ eingeschaltet ist, kann Ihr Gerät ohne die Schutzhülle verwendet werden, was zu Sicherheitsrisiken führen kann. Bitte bestätigen Sie daher unbedingt, ob die aktuelle Aktion erforderlich ist. Wenn Sie bestätigen, dass Sie bei der Handhabung auf die Schutzhülle verzichten möchten, stellen Sie bitte sicher, dass Sie die Sicherheitsvorschriften einhalten und erklären Sie sich damit einverstanden,, dass Sie die volle Verantwortung für die Sicherheits- und Rechtsrisiken tragen, die durch diese Handhabung verursacht werden, und dass die Hersteller und Händler von LaserPecker keine Haftung für Sicherheit und rechtliche Haftung übernehmen.</string>
 
+    <string name="ui_reminder">Hinweis</string>
+    <string name="ui_reminder_free_mode">Ist dieser Modus aktiviert, kann die Maschine ohne Schutzhaube in Betrieb genommen werden. Stellen Sie sicher, dass alle umstehenden Personen Schutzbrillen aufgesetzt haben und Sie die Maschine unter Berücksichtigung sämtlicher Sicherheitsmaßnahmen bedienen. Seien Sie sich bewusst, dass Sie allein für die  Sicherheit und gesetzlichen Risiken der Bedienung Verantwortung tragen. Die Hersteller und Vertreiber von LaserPecker übernehmen keinerlei sicherheitstechnische  oder rechtliche Verantwortung. </string>
+    <string name="ui_reminder_see_free_mode">Klicken Sie hier, um sich den Unterschied zwischen der Schutzhaube und der tragbaren, pyramidenförmigen Schutzabdeckung anzusehen</string>
+
     <string name="device_ex_car_label">Bewegliche Plattform</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Vorwärts drehen</string>

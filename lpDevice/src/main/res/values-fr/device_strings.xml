@@ -24,6 +24,10 @@
     <string name="ui_disclaimer">démenti</string>
     <string name="ui_disclaimer_content2">Avertissement : Lorsque le commutateur "Mode libre" est activé, votre appareil peut fonctionner sans le couvercle de protection, ce qui peut présenter un risque pour la sécurité. Veuillez vérifier si l\'opération en cours est nécessaire ; si vous confirmez l\'opération sans la protection du couvercle de protection, veuillez vous assurer que votre opération respecte les règles de sécurité, et acceptez que vous êtes seul responsable de tout risque juridique et de sécurité résultant de cette opération et que le fabricant et le distributeur de LaserPecker ne seront pas tenus responsables de toute responsabilité juridique ou de sécurité.</string>
 
+    <string name="ui_reminder">Rappel</string>
+    <string name="ui_reminder_free_mode">En activant ce mode, vous pouvez utiliser la machine sans couvercle de Protection. Veillez à ce que les personnes environnantes portent des lunettes et que toutes les opérations soient conformes aux règles de sécurité. Veuillez noter que vous êtes seul responsable des risques juridiques et de sécurité de cette opération et que les fabricants et distributeurs de LaserPecker ne seront pas tenus responsables des responsabilités légales ou de sécurité.</string>
+    <string name="ui_reminder_see_free_mode">cliquez ici pour Voir la différence entre une housse fermée et une housse portative</string>
+
     <string name="device_ex_car_label">Plate-forme mobile</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">En avant</string>

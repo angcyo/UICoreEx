@@ -24,6 +24,10 @@
     <string name="ui_disclaimer">免責事項</string>
     <string name="ui_disclaimer_content2">警告：「フリーモード」スイッチをオンにすると、お使いのデバイスは保護カバーを装着しない場合でも使用できるようになります。安全上のリスクが生じる可能性がありますので、現在の操作が必要であることを確認してください。保護カバーを使用しないことを確認した場合は、安全規則を遵守する上で操作し、操作に生じる安全上および法律上のリスクについては、お客様が単独で責任を負い、LaserPeckerの製造・販売元は一切の責任を負わないことに同意する必要があります。。</string>
 
+    <string name="ui_reminder">リマインド：</string>
+    <string name="ui_reminder_free_mode">このモードをオンにすると、保護カバーなしでマシンを使用できます。 周囲の人が安全ゴーグルを着用していること、またご自身の操作が安全規則に従っていることを確認してください。 この操作によって発生する安全および法的リスクについては、ご自身で責任を負うことになり、LaserPeckerの製造メーカーおよび代理店は安全及び法的責任を一切を負わないことが認識されていることを確認してください。</string>
+    <string name="ui_reminder_see_free_mode">保護カバーとポーターブル保護カバーの相違点については、ここをクリックしてご覧ください。</string>
+
     <string name="device_ex_car_label">移動プラットフォーム</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">正転</string>

@@ -24,6 +24,10 @@
     <string name="ui_disclaimer">면책성명</string>
     <string name="ui_disclaimer_content2">경고: "자유 모드" 스위치가 켜져 있으면 보호 덮개 없이 장치를 사용할 수 있으므로 보안 위험이 발생할 수 있으므로 현재 작업을 수행해야 하는지 확인하십시오. 안전 실드에 따라 사용을 포기하고 싶다는 것을 확인하는 경우 작업이 안전 규정을 준수하는지 확인해야 하며 이 작업으로 인해 발생하는 안전 및 법적 위험에 대한 책임은 전적으로 귀하에게 있으며 Laser Pecker의 제조업체 및 대리점은 안전 및 법적 책임에 대해 책임을 지지 않습니다.</string>
 
+    <string name="ui_reminder">안내 사항</string>
+    <string name="ui_reminder_free_mode">이 모드가 켜지면 기계는 폐쇄형 보호 커버 없이  정상적으로 사용할 수 있습니다.주변 이용자들이 안전 고글을 착용하고 있는지 반드시 확인하시고,  안전규범에 맞게 조작하시기 바랍니다. 사용으로 인한 안전 및 법적 위험은 전적으로 본인이 책임진다는 것을 확실히 아셔야 합니다.LaserPecker의 제조업체 및 유통업체는 어떠한 안전 및 법적 책임도 지지 않습니다.</string>
+    <string name="ui_reminder_see_free_mode">여기를 클릭하여 폐쇄형 보호 커버와 원추형 휴대용 보호 커버의 차이점을 확인하십시오.</string>
+
     <string name="device_ex_car_label">모바일 플랫폼</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">정방향 회전</string>

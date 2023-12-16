@@ -112,6 +112,10 @@ data class DeviceSettingBean(
     @Deprecated("当前属性只支持LP4")
     var rotateFlagHelpUrlZh: String? = null,
 
+    /**L2/L3自由模式保护罩区别文档*/
+    var freeModeProtectorHelpUrl: String? = null,
+    var freeModeProtectorHelpUrlZh: String? = null,
+
     /**
      * 实例  https://faq.hingin.com/docs/aor_lp4_zh
      *       https://faq.hingin.com/docs/aor_lx1_en
