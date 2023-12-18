@@ -408,6 +408,21 @@ class MaterialTestDialogConfig : BaseRecyclerDialogConfig(), IParameterCompariso
         }
         return true
     }
+
+    override fun onDialogDestroy(dialog: Dialog, dialogViewHolder: DslViewHolder) {
+        super.onDialogDestroy(dialog, dialogViewHolder)
+        //恢复至默认值
+        ParameterComparisonTableDialogConfig.maxDepth = 100
+        ParameterComparisonTableDialogConfig.maxPower = 100
+        ParameterComparisonTableDialogConfig.minDepth = 10
+        ParameterComparisonTableDialogConfig.minPower = 10
+        ParameterComparisonTableDialogConfig.horizontalGridCount = 5
+        ParameterComparisonTableDialogConfig.verticalGridCount = 5
+        ParameterComparisonTableDialogConfig.gridLayerId = LaserPeckerHelper.LAYER_FILL
+        ParameterComparisonTableDialogConfig.selectImage = null
+        HawkEngraveKeys.lastType = LaserPeckerHelper.LASER_TYPE_BLUE.toInt()
+        ParameterComparisonTableDialogConfig.gridPrintPrecision = 1
+    }
 }
 
 @DSL
