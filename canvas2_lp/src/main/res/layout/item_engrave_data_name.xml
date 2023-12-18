@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/lib_padding_right"
-    android:paddingVertical="@dimen/lib_sdpi">
+    android:paddingVertical="@dimen/lib_sdpi"
+    android:paddingRight="@dimen/lib_padding_right">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_label_view"
-        style="@style/LibBodyTextStyle"
+        style="@style/LPItemLabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/lib_padding_right"
