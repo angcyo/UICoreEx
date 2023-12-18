@@ -263,6 +263,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
                             itemTransferConfigEntity = transferConfigEntity
                             itemLayerInfo = layerInfo
+                            //2023-12-18
+                            selectorCurrentDpi(transferConfigEntity.getLayerConfigDpi(layerInfo.layerId))
 
                             observeItemChange {
                                 clearFlowId("[${layerInfo.layerId}]传输Dpi改变")
