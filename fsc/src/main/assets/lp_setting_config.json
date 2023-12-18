@@ -17,6 +17,8 @@
   "showRefVelocityRange": "7010~7099",
   "autoCncRange": "377-399 700~749 7000~7099 800~899 8000~8499",
   "gcodeUsePathDataRange": "655~699 800~899 8000~8499",
+  "disableGcodeM2Range": "5514~5514",
+  "gcodeMoveToOriginRange": null,
   "showAutoConnectRange": "",
   "showExperimentalRange": "",
   "showUploadLogRange": "",

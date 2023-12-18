@@ -226,6 +226,9 @@ class SimpleTransition : ITransition {
             @Pixel
             val pathStep = params.pathStep?.toPixel() ?: LibHawkKeys._pathAcceptableError
             gCodeHandler.updatePathStepByPixel(pathStep)
+            //2023-12-18
+            gCodeHandler.needCloseGcodeFile = !params.disableGcodeM2Range
+            gCodeHandler.needMoveToOrigin = params.gcodeMoveToOriginRange
             gCodeHandler.pathStrokeToVector(targetPathList, true, true, 0f, 0f, pathStep)
         }
         val result = PathDataFile(outputFile)

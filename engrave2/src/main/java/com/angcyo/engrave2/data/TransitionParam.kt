@@ -5,7 +5,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeHeight
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeWidth
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutLoopCount
+import com.angcyo.bluetooth.fsc.laserpacker.bean._disableGcodeM2Range
 import com.angcyo.bluetooth.fsc.laserpacker.bean._gcodeLineSpace
+import com.angcyo.bluetooth.fsc.laserpacker.bean._gcodeMoveToOriginRange
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isGCodeUsePathData
 import com.angcyo.bluetooth.fsc.laserpacker.bean._sliceGranularity
@@ -97,6 +99,12 @@ data class TransitionParam(
     /**是否激活压缩输出GCode
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
     val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,
+
+    /**[com.angcyo.gcode.GCodeWriteHandler.needMoveToOrigin]*/
+    var gcodeMoveToOriginRange: Boolean = _gcodeMoveToOriginRange,
+
+    /**[com.angcyo.gcode.GCodeWriteHandler.needCloseGcodeFile]*/
+    var disableGcodeM2Range: Boolean = _disableGcodeM2Range,
 
     //---切割相关---
 

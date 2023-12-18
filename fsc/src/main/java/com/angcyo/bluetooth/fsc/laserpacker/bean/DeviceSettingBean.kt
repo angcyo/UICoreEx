@@ -59,6 +59,10 @@ data class DeviceSettingBean(
     var gcodeUsePathDataRange: String? = null,
     /**显示白光频率配置的固件版本范围*/
     var showLaserFrequencyRange: String? = null,
+    /**[com.angcyo.gcode.GCodeWriteHandler.needMoveToOrigin]*/
+    var gcodeMoveToOriginRange: String? = null,
+    /**[com.angcyo.gcode.GCodeWriteHandler.needCloseGcodeFile]*/
+    var disableGcodeM2Range: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/
@@ -261,3 +265,9 @@ val _showCommunity: Boolean
 /**是否要显示速度设置框*/
 val _showSpeedRange: Boolean
     get() = _deviceSettingBean?.showSpeedRange?.matchesProductVersion() == true
+
+val _disableGcodeM2Range: Boolean
+    get() = _deviceSettingBean?.disableGcodeM2Range?.matchesProductVersion() == true
+
+val _gcodeMoveToOriginRange: Boolean
+    get() = _deviceSettingBean?.gcodeMoveToOriginRange?.matchesProductVersion() == true
