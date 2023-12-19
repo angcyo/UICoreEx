@@ -252,6 +252,7 @@ class LPProjectManager {
             return openProjectFileV2(delegate, file, clearOld)
         }
         val projectBean = file?.readText()?.toProjectBean()
+        projectBean?._filePath = file?.absolutePath ?: projectBean?._filePath
         openProjectBean(delegate, projectBean, clearOld)
         return projectBean
     }
@@ -266,6 +267,7 @@ class LPProjectManager {
         var projectBean: LPProjectBean? = null
         zipFileRead(zipFile.absolutePath) {
             projectBean = readEntryString(LPDataConstant.PROJECT_V2_DEFAULT_NAME)?.toProjectBean()
+            projectBean?._filePath = zipFile.absolutePath ?: projectBean?._filePath
             openProjectBeanV2(delegate, this, projectBean, clearOld)
         }
         return projectBean

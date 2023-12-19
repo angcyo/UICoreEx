@@ -95,7 +95,8 @@ data class LPProjectBean(
      * [preview_img]*/
     @Transient var _previewImgBitmap: Bitmap? = null,
 
-    /**本地对应的文件路径, 如果有*/
+    /**本地对应的文件路径, 如果有
+     * 打开在线lp2文件, 就需要赋值此对象*/
     var _filePath: String? = null,
 
     /**是否处于调试模式下, 用于debug下方便断点*/
