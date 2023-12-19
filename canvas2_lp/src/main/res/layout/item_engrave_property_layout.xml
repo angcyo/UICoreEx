@@ -42,18 +42,37 @@
             android:tooltipText="@string/custom_power"
             tools:text="功率\n99%" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/speed_view"
-            style="@style/LibBodyTextStyle"
+        <FrameLayout
+            android:id="@+id/speed_wrap_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/lib_solid_tag_selector"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/lib_spacing_extra"
-            android:paddingVertical="@dimen/lib_hdpi"
-            android:tooltipText="@string/custom_speed"
-            tools:text="深度\n99%"
-            tools:visibility="gone" />
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/speed_view"
+                style="@style/LibBodyTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/lib_solid_tag_selector"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/lib_spacing_extra"
+                android:paddingVertical="@dimen/lib_hdpi"
+                android:tooltipText="@string/custom_speed"
+                tools:text="深度\n99%"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/speed_convert_view"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="right"
+                android:background="@drawable/lib_bg2_selector"
+                android:padding="@dimen/lib_ldpi"
+                android:visibility="gone"
+                app:srcCompat="@drawable/speed_convert_ico"
+                app:tint="@color/text_general_color"
+                tools:visibility="visible" />
+
+        </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/times_view"

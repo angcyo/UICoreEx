@@ -274,4 +274,8 @@
     <string name="min_power_label">最低功率%</string>
     <string name="max_depth_label">最大深度%</string>
     <string name="min_depth_label">最小深度%</string>
+
+    <string name="speed_convert_calculate">速度转换计算</string>
+    <string name="old_firmware_version_label">旧的固件版本</string>
+    <string name="new_firmware_version_label">新的固件版本</string>
 </resources>

@@ -5,9 +5,13 @@ import android.view.View
 import androidx.core.view.postDelayed
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
+import com.angcyo.bluetooth.fsc.laserpacker.bean._showSpeedConvertRange
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.SpeedConvertDialogConfig
+import com.angcyo.canvas2.laser.pecker.dialog.speedConvertDialogConfig
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.mmToRenderUnitValue
 import com.angcyo.core.component.model.NightModel
@@ -103,6 +107,14 @@ class EngravePropertyItem : DslAdapterItem() {
     var itemShowPopupTip: Boolean = true
 
     private val nightModel = vmApp<NightModel>()
+    private val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+    val _dpi: Float
+        get() = itemEngraveConfigEntity?.dpi ?: itemEngraveItemBean?.dpi ?: 254f
+
+    val _layerId: String
+        get() = itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId
+        ?: LaserPeckerHelper.LAYER_LINE
 
     init {
         itemLayoutId = R.layout.item_engrave_property_layout
@@ -147,7 +159,7 @@ class EngravePropertyItem : DslAdapterItem() {
         }
 
         //深度-速度
-        itemHolder.visible(R.id.speed_view, itemShowSpeed)
+        itemHolder.visible(R.id.speed_wrap_layout, itemShowSpeed)
         val speedLabel = _string(R.string.custom_speed)
         val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
             ?: HawkEngraveKeys.lastDepth)
@@ -168,6 +180,19 @@ class EngravePropertyItem : DslAdapterItem() {
             }
             if (itemShowSpeed) {
                 checkAndShowTip(this, speedLabel, HawkEngraveKeys::showSpeedTipVersion.name)
+            }
+        }
+        //速度转换计算
+        itemHolder.visible(R.id.speed_convert_view, _showSpeedConvertRange)
+        itemHolder.click(R.id.speed_convert_view) {
+            it.context.speedConvertDialogConfig {
+                appointConvertType = SpeedConvertDialogConfig.TYPE_TO_NEW
+                _selectLayerId = _layerId
+                _selectDpi = _dpi
+
+                onDepthResultAction = { depth ->
+                    updateDepth(depth)
+                }
             }
         }
 
@@ -194,7 +219,7 @@ class EngravePropertyItem : DslAdapterItem() {
             }
         }
 
-        //事件
+        //事件-功率
         itemHolder.click(R.id.power_view) {
             context.wheelDialog {
                 dialogTitle = powerLabel
@@ -237,20 +262,7 @@ class EngravePropertyItem : DslAdapterItem() {
                 }
 
                 wheelItemSelectorAction = { dialog, index, item ->
-                    getSelectedInt(index, depth).let {
-                        HawkEngraveKeys.lastDepth = it
-                        itemEngraveConfigEntity?.depth = it
-                        itemEngraveItemBean?.printDepth = it
-
-                        //气泵参数推荐
-                        LaserPeckerHelper.getRecommendPump(itemEngraveConfigEntity?.layerId, it)
-                            ?.let {
-                                itemEngraveConfigEntity?.pump = it
-                                itemDslAdapter?.get<EngravePumpItem>()
-                                    ?.updateAdapterItem(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
-                            }
-                    }
-                    itemChanging = true
+                    updateDepth(getSelectedInt(index, depth))
                     false
                 }
             }
@@ -272,6 +284,21 @@ class EngravePropertyItem : DslAdapterItem() {
                 }
             }
         }
+    }
+
+    private fun updateDepth(depth: Int) {
+        HawkEngraveKeys.lastDepth = depth
+        itemEngraveConfigEntity?.depth = depth
+        itemEngraveItemBean?.printDepth = depth
+
+        //气泵参数推荐
+        LaserPeckerHelper.getRecommendPump(itemEngraveConfigEntity?.layerId, depth)
+            ?.let {
+                itemEngraveConfigEntity?.pump = it
+                itemDslAdapter?.get<EngravePumpItem>()
+                    ?.updateAdapterItem(EngravePumpItem.PAYLOAD_UPDATE_PUMP)
+            }
+        itemChanging = true
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

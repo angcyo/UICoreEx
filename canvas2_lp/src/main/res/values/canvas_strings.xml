@@ -275,4 +275,7 @@
     <string name="max_depth_label">Maximum Depth%</string>
     <string name="min_depth_label">Minimum Depth%</string>
 
+    <string name="speed_convert_calculate">Speed Conversion</string>
+    <string name="old_firmware_version_label">Old Firmware Version</string>
+    <string name="new_firmware_version_label">New Firmware Version</string>
 </resources>

@@ -5,6 +5,7 @@ import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean._showSpeedConvertRange
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
@@ -12,15 +13,18 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
+import com.angcyo.dsladapter.drawTop
 import com.angcyo.dsladapter.fullWidthItem
 import com.angcyo.dsladapter.item.itemDefaultNewFlag
 import com.angcyo.dsladapter.item.itemHaveNewFlag
 import com.angcyo.dsladapter.item.itemNewFlagHawkKeyStr
 import com.angcyo.item.DslGridItem
 import com.angcyo.item.DslSwitchInfoItem
+import com.angcyo.item.DslTextItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
+import com.angcyo.item.style.itemText
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode
@@ -28,6 +32,7 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchRenderUnit
@@ -231,6 +236,16 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     }
                 }
                 fullWidthItem()
+            }
+            if (isDebug() && _showSpeedConvertRange) {
+                DslTextItem()() {
+                    itemText = "LP4" + _string(R.string.speed_convert_calculate)
+                    itemClick = {
+                        it.context.speedConvertDialogConfig()
+                    }
+                    drawTop(_dimen(R.dimen.lib_line_px), 0, 0)
+                    fullWidthItem()
+                }
             }
         }
     }
