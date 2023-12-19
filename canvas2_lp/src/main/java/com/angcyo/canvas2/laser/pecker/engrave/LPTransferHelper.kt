@@ -14,6 +14,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
+import com.angcyo.core.vmApp
 import com.angcyo.coroutine.sleep
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
@@ -88,7 +89,10 @@ object LPTransferHelper {
                     }
                     EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
                     transferModel.startTransferData(transferState.taskId)
+
+                    transferModel.updateTransferMessage(null)
                 } catch (e: Exception) {
+                    transferModel.updateTransferMessage(e.toStr())
                     e.printStackTrace()
                     e.toStr().writeErrorLog()
                     transferModel.errorTransfer(transferState, TransferException())
@@ -173,6 +177,8 @@ object LPTransferHelper {
             } else {
                 transferConfigEntity
             }
+
+            vmApp<TransferModel>().updateTransferMessage("开始转换数据->${transferConfig.name} ${elementBean?.index}")
 
             "开始转换数据->${transferConfig.name} ${elementBean?.index} 元素名:${elementBean?.name} $elementLayerId".writePerfLog()
             val transferDataEntity = transitionRenderer(renderer, transferConfig)

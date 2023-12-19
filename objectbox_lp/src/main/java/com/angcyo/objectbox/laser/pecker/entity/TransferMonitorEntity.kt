@@ -37,6 +37,9 @@ data class TransferMonitorEntity(
     var dataMakeStartTime: Long = -1,
     var dataMakeFinishTime: Long = -1,
 
+    /**传输过程中的额外附加消息*/
+    var transferMessage: String? = null,
+
     //--send
 
     /**数据传输的开始时间, 13位毫秒时间*/

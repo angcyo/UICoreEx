@@ -477,6 +477,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                                         append(" 传输中... ")
                                     }
                                 }
+                                monitorEntity.transferMessage?.let {
+                                    appendln()
+                                    append(it)
+                                }
                             }
                         }
                     }

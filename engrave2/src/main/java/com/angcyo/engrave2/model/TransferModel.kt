@@ -751,4 +751,12 @@ class TransferModel : ViewModel() {
             }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
         }
     }
+
+    /**更新传输消息通知*/
+    fun updateTransferMessage(message: String?) {
+        _transferState?.let {
+            EngraveFlowDataHelper.updateTransferMessage(it.taskId, message)
+            transferStateOnceData.postValue(it)
+        }
+    }
 }

@@ -189,6 +189,15 @@ object EngraveFlowDataHelper {
         }
     }
 
+    /**更新数据传输时消息通知*/
+    fun updateTransferMessage(taskId: String?, message: String?) {
+        TransferMonitorEntity::class.lpUpdateOrCreateEntity({
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }) {
+            transferMessage = message
+        }
+    }
+
     /**完成传输数据*/
     fun finishTransferData(taskId: String?) {
         TransferMonitorEntity::class.lpUpdateOrCreateEntity({

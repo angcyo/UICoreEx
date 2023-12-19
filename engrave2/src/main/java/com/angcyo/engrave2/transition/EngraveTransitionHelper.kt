@@ -20,6 +20,7 @@ import com.angcyo.engrave2.BuildConfig
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.R
 import com.angcyo.engrave2.data.TransitionParam
+import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.gcode.CollectPoint
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
@@ -52,6 +53,7 @@ import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.save
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.sleep
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toDrawable
@@ -538,16 +540,20 @@ object EngraveTransitionHelper {
 
                 if (HawkEngraveKeys.loopGcodeDataCmd || isDebug()) {
                     //使用循环数据指令
-                    thresholdList.toSet().forEach { threshold ->
+                    thresholdList.toSet().forEachIndexed { index, threshold ->
                         val loopCount =
                             (thresholdList.count { it == threshold } - 1).withMinValue(0)
+
+                        vmApp<TransferModel>().updateTransferMessage("获取切片[${index}/${thresholdList.size}]:$threshold")
 
                         BitmapHandle.toSliceHandle(bitmap, threshold, false)
                             ?.let { sliceBitmap ->
                                 val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
                                 sliceBitmap.save(cacheBitmapFile)
-                                L.i("切片[${thresholdList.size}]:$threshold ${loopCount}次->$controlHeight:${cacheBitmapFile.absolutePath}".writePerfLog())
+                                L.i("切片[${index}/${thresholdList.size}]:$threshold ${loopCount}次->$controlHeight:${cacheBitmapFile.absolutePath}".writePerfLog())
                                 DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
+
+                                vmApp<TransferModel>().updateTransferMessage("切片[${index}/${thresholdList.size}]:$threshold ${loopCount}次")
 
                                 params.bitmapToGCodeType = 1
                                 params.bitmapToGCodeIsLast = false //levelIndex == lastIndex
@@ -582,6 +588,9 @@ object EngraveTransitionHelper {
                                     DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
                                 }
                                 sliceBitmap.recycle()
+                                if (params.sliceCount > HawkEngraveKeys.sliceCountDelay) {
+                                    sleep(HawkEngraveKeys.sliceDelay)
+                                }
                             }
                     }
                 } else {
@@ -594,12 +603,16 @@ object EngraveTransitionHelper {
                                 sliceGcodeFile.appendText(lastGCode!!)
                                 allSliceHeight += sliceHeight
                             } else {
+                                vmApp<TransferModel>().updateTransferMessage("获取切片[${levelIndex}/${thresholdList.size}]:$threshold")
+
                                 BitmapHandle.toSliceHandle(bitmap, threshold, false)
                                     ?.let { sliceBitmap ->
                                         val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
                                         sliceBitmap.save(cacheBitmapFile)
                                         L.i("切片[$levelIndex/${thresholdList.size}]:$threshold->$controlHeight:${cacheBitmapFile.absolutePath}".writePerfLog())
                                         DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
+
+                                        vmApp<TransferModel>().updateTransferMessage("切片[$levelIndex/${thresholdList.size}]:$threshold")
 
                                         params.bitmapToGCodeType = 1
                                         params.bitmapToGCodeIsLast = false //levelIndex == lastIndex
@@ -634,6 +647,9 @@ object EngraveTransitionHelper {
                                             DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
                                         }
                                         sliceBitmap.recycle()
+                                        if (params.sliceCount > HawkEngraveKeys.sliceCountDelay) {
+                                            sleep(HawkEngraveKeys.sliceDelay)
+                                        }
                                     }
                             }
                         }

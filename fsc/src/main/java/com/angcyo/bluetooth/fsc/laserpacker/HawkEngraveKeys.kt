@@ -373,6 +373,12 @@ object HawkEngraveKeys {
     /**2次间隔同步延迟时长*/
     var syncDelay: Long by HawkPropertyValue<Any, Long>(10 * 60 * 1000)
 
+    /**当切片的数量大于此值时, 需要延迟*/
+    var sliceCountDelay: Int by HawkPropertyValue<Any, Int>(50)
+
+    /**延迟时长*/
+    var sliceDelay: Long by HawkPropertyValue<Any, Long>(160)
+
     /**是否强制开启切割图层, 不管什么设备*/
     var enableForceCut: Boolean by HawkPropertyValue<Any, Boolean>(false)
 

@@ -746,7 +746,7 @@
     },
     {
       "id": "11:7833260621013857816",
-      "lastPropertyId": "14:5868390523875044681",
+      "lastPropertyId": "15:6824230910214640488",
       "name": "TransferMonitorEntity",
       "properties": [
         {
@@ -813,6 +813,11 @@
         {
           "id": "14:5868390523875044681",
           "name": "dataName",
+          "type": 9
+        },
+        {
+          "id": "15:6824230910214640488",
+          "name": "transferMessage",
           "type": 9
         }
       ],
