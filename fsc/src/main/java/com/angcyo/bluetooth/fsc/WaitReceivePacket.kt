@@ -319,15 +319,15 @@ class WaitReceivePacket(
 
                     //数据接收完成
                     val sumByteArray =
-                        ByteArray(dataLength - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的数据
+                        ByteArray(dataLength - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的有效数据
                     bytes.copyTo(sumByteArray, dataStartIndex)
                     val checkByteArray = ByteArray(LaserPeckerHelper.CHECK_SIZE) //校验位
                     val checkStartIndex =
                         dataStartIndex + dataLength - LaserPeckerHelper.CHECK_SIZE
                     bytes.copyTo(checkByteArray, checkStartIndex)
 
-                    val sumString = sumByteArray.checksum(hasSpace = false)
-                    val checkString = checkByteArray.toHexString(false)
+                    val sumString = sumByteArray.checksum(hasSpace = false) //收到数据计算出来的校验位
+                    val checkString = checkByteArray.toHexString(false) //指令返回的校验位
 
                     receivePacket?.apply {
                         receiveDataLength = dataLength
