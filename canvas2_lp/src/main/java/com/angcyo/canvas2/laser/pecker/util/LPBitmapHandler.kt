@@ -1233,11 +1233,7 @@ object LPBitmapHandler {
                     owner.engraveLoadingAsync({
                         element.updateOriginBitmap(result, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
-                        if (elementBean.imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
-                            elementBean.imageFilter == LPDataConstant.DATA_MODE_GREY
-                        ) {
-                            element.renderBitmap = result //2023-6-15 透明图片, 障眼法
-                        }
+                        element.renderBitmap = result //2023-6-15 透明图片, 障眼法
                         result
                     }) {
                         renderer.requestUpdatePropertyFlag(Reason.user.apply {
