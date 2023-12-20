@@ -243,7 +243,7 @@
     <string name="variable_not_support_barcode_type">Barcode rules do not match</string>
     <string name="variable_element_delete_tip">At least one data must be retained</string>
 
-    <string name="canvas_2d_relief">2D relief</string>
+    <string name="canvas_2d_relief">Embossing Effect</string>
     <string name="canvas_relief_strength">Strength</string>
 
     <string name="canvas_tracer">Bitmap tracer</string>
