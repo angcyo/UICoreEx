@@ -157,11 +157,20 @@ class WifiDeviceScan {
     }
 
     /**扫描任务*/
-    inner class ScanTask(val ip: String, val port: Int) : Runnable {
+    inner class ScanTask(
+        val ip: String,
+        val port: Int,
+        val timeout: Int = HawkEngraveKeys.scanTimeout
+    ) : Runnable {
         override fun run() {
             syncSingle {
-                L.d("开始扫描:$ip:$port")
-                tcpSend(ip, port, QueryCmd.deviceName.toByteArray()) { receiveBytes, error ->
+                L.d("开始扫描[${timeout}ms]:$ip:$port")
+                tcpSend(
+                    ip,
+                    port,
+                    QueryCmd.deviceName.toByteArray(),
+                    timeout
+                ) { receiveBytes, error ->
                     val bytes = WaitReceivePacket.checkReceiveFinish(
                         receiveBytes,
                         LaserPeckerHelper.PACKET_HEAD

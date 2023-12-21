@@ -373,6 +373,9 @@ object HawkEngraveKeys {
     /**2次间隔同步延迟时长*/
     var syncDelay: Long by HawkPropertyValue<Any, Long>(10 * 60 * 1000)
 
+    /**wifi扫描超时*/
+    var scanTimeout: Int by HawkPropertyValue<Any, Int>(100)
+
     /**当切片的数量大于此值时, 需要延迟*/
     var sliceCountDelay: Int by HawkPropertyValue<Any, Int>(50)
 
