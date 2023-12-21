@@ -18,6 +18,7 @@ import com.angcyo.http.tcp.TcpState
 import com.angcyo.library.L
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
+import com.angcyo.library.ex.ensure
 import com.angcyo.library.ex.isDebuggerConnected
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
@@ -434,7 +435,7 @@ class WaitReceivePacket(
                 //剩余需要发送的字节大小
                 val remainingSize = sendPacket.size - sendBytesSize
                 sendSpeed = speed * 1000
-                remainingTime = (remainingSize / speed).roundToLong()
+                remainingTime = (remainingSize / speed).ensure().roundToLong()
             } else {
                 sendSpeed = sendSize
                 remainingTime = 0
