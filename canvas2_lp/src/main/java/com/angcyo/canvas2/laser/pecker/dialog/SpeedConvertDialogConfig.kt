@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.Companion.speedToDepth
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
@@ -25,6 +26,8 @@ import com.angcyo.library.ex.decimal
 import com.angcyo.library.ex.floorInt
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
+import kotlin.math.absoluteValue
+
 
 /**
  * LP4 654/655速度转换对话框配置
@@ -164,10 +167,11 @@ class SpeedConvertDialogConfig : BaseRecyclerDialogConfig() {
 
                         append(" ")
                         append(_string(R.string.engrave_speed))
-                        append(":")
+                        append(": ")
                         append("${newSpeedInfo?.speed?.decimal(fadedUp = true) ?: "--"}mm/s") {
                             foregroundColor = _color(R.color.colorAccent)
                         }
+                        appendLine()
                     }
                 }
             }
@@ -269,6 +273,62 @@ data class SpeedInfo(
                 }
             }
             return lastInfo
+        }
+
+
+        /**获取速度曲线值
+         * [input] 输入的值[0~1] 输出对应修正后的插值 */
+        fun getVelocityCurve(input: Double): Double? {
+            val velocityCurve = _deviceConfigBean?.velocityCurve
+            if (velocityCurve.isNullOrEmpty()) {
+                return null
+            }
+            val split = velocityCurve.split(",")
+            val a = split.getOrNull(0)?.toDoubleOrNull() ?: 0.0
+            val b = split.getOrNull(1)?.toDoubleOrNull() ?: 0.0
+            val c = split.getOrNull(2)?.toDoubleOrNull() ?: 0.0
+            val d = split.getOrNull(3)?.toDoubleOrNull() ?: 0.0
+            val cubicErrorBound = split.getOrNull(5)?.toDoubleOrNull() ?: 0.001
+
+            fun evaluateCubic(a: Double, b: Double, m: Double): Double {
+                return 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m
+            }
+
+            var start = 0.0
+            var end = 1.0
+            while (true) {
+                val midpoint = (start + end) / 2
+                val estimate: Double = evaluateCubic(a, c, midpoint)
+                if ((input - estimate).absoluteValue < cubicErrorBound) {
+                    return evaluateCubic(b, d, midpoint)
+                }
+                if (estimate < input) {
+                    start = midpoint
+                } else {
+                    end = midpoint
+                }
+            }
+        }
+
+        /**缓存*/
+        val _lp5VelocityMap = mutableMapOf<Float, List<SpeedInfo>>()
+
+        /**获取lp5速度列表*/
+        fun getLp5VelocityList(dpi: Float): List<SpeedInfo>? {
+            val cache = _lp5VelocityMap[dpi]
+            if (!cache.isNullOrEmpty()) {
+                return cache
+            }
+            val result = mutableListOf<SpeedInfo>()
+            for (speedLevel in 1..100) {
+                //这是1k 254的速度
+                val velocityCurve = getVelocityCurve(speedLevel / 100.0) ?: return null
+                val speed1K = velocityCurve * (_deviceConfigBean?.supportMaxSpeed ?: 15000)
+                val speed = speed1K * 254 / dpi
+                result.add(SpeedInfo("", speed.toFloat(), speedToDepth(speedLevel), dpi))
+            }
+            _lp5VelocityMap[dpi] = result
+            return result
         }
     }
 

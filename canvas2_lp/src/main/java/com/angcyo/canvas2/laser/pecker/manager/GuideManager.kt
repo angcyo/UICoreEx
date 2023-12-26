@@ -13,7 +13,6 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.animationOf
 import com.angcyo.library.ex.infinite
 import com.angcyo.library.ex.inflate
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isNoSize
 import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.size
@@ -65,9 +64,9 @@ object GuideManager {
             //不是下一步
             return
         }
-        if (isDebugType()) {
+        /*if (isDebugType()) {
             resetGuide()
-        }
+        }*/
         if (guideVersion == getAppVersionCode()) {
             //已经完成了引导
             return

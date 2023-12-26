@@ -51,6 +51,15 @@ data class EngraveTaskEntity(
     /**是否是文件名雕刻任务*/
     var isFileNameEngrave: Boolean = false,
 
+    /**是否要忽略在历史界面显示*/
+    var ignoreShow: Boolean = false,
+
+    /**雕刻的索引数据是在SD还是USB
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.TYPE_SD]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.TYPE_USB]
+     * */
+    var mount: Int = -1,
+
     //---
 
     /**

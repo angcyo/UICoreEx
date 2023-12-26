@@ -827,7 +827,7 @@ data class EngravePreviewCmd(
                 else -> append("对笔控制")
             }
 
-            0x0B.toByte() -> append("文件名预览:[${d1.toSdOrUsb()}] $fileName")
+            0x0B.toByte() -> append("文件名预览:[${d1.toSdOrUsbStr()}] $fileName")
 
             else -> append("Unknown")
         }

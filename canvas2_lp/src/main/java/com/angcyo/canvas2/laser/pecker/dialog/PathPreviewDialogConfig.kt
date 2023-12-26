@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -120,7 +121,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
         dialogViewHolder.click(R.id.start_button) {
             val index = itemBean.index
             if (index != null) {
-                TransferModel.checkIndex(index) {
+                TransferModel.checkIndex(index, QueryCmd.TYPE_SD) {
                     if (it) {
                         //索引已存在, 直接预览
                         sendPreviewFlashBitmapCmd(dialogViewHolder, index)

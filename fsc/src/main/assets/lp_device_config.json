@@ -509,6 +509,7 @@
     "carMaxWidth": 2000,
     "maxTransferDataSize": 480000000,
     "supportMaxSpeed": 15000,
+    "velocityCurve": "1,0.004,0.89,0.14,0.001",
     "laserTypeList": [
       {
         "type": 1,

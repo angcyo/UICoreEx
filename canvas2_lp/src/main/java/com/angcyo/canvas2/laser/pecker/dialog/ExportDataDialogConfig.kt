@@ -186,8 +186,14 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
 
                 val bytes = byteWriter {
                     write("LPDT")
-                    write(6, 2)//目前固定是6
+                    write(10, 2)//目前固定是6 2023-12-22/10个
                     write(1) //数据版本
+
+                    //2023-12-22
+                    val x = ((transferConfigEntity.originX ?: 0f) * 10).ceil().toInt()
+                    val y = ((transferConfigEntity.originY ?: 0f) * 10).ceil().toInt()
+                    write(x, 2)
+                    write(y, 2)
 
                     val width = ((transferConfigEntity.originWidth ?: 0f) * 10).ceil().toInt()
                     val height = ((transferConfigEntity.originHeight ?: 0f) * 10).ceil().toInt()
@@ -214,7 +220,7 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
                                     //HawkEngraveKeys.lastDiameterPixel
                                     val diameter =
                                         (IValueUnit.MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
-                                    write(diameter)
+                                    write(diameter, 2)
                                     write(engraveConfigEntity.precision)
                                 }
                                 write(itemHeaderBytes.size, 2)
@@ -225,7 +231,7 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
                         }
                     }
                 }
-                bytes.update(11, itemCount)
+                bytes.update(15, itemCount)
 
                 val file = libCacheFile(transferConfigEntity.name + LPDataConstant.LPB_EXT)
                 outputFile = file

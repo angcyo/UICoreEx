@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._useCutCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
@@ -19,6 +20,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryIndexExistParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
@@ -177,12 +179,19 @@ class TransferModel : ViewModel() {
         }
 
         /**检查文件索引是否存在*/
-        fun checkIndex(index: Int, action: (Boolean) -> Unit) {
+        fun checkIndex(index: Int, mount: Int, action: (Boolean) -> Unit) {
             //检查数据索引是否存在
-            QueryCmd.fileList.enqueue { bean, error ->
-                val have =
-                    bean?.parse<QueryEngraveFileParser>()?.indexList?.contains(index) == true
-                action(have)
+            if (vmApp<LaserPeckerModel>().isL5()) {
+                QueryCmd.indexExist(index, mount).enqueue { bean, error ->
+                    val have = bean?.parse<QueryIndexExistParser>()?.isIndexExist() == true
+                    action(have)
+                }
+            } else {
+                QueryCmd.fileList.enqueue { bean, error ->
+                    val have =
+                        bean?.parse<QueryEngraveFileParser>()?.indexList?.contains(index) == true
+                    action(have)
+                }
             }
         }
 
@@ -413,7 +422,7 @@ class TransferModel : ViewModel() {
         } else {
             //需要传输数据, 从设备中读取索引
             if (HawkEngraveKeys.enableTransferIndexCheck) {
-                checkIndex(transferDataEntity.index) {
+                checkIndex(transferDataEntity.index, transferDataEntity.mount) {
                     if (it) {
                         //下位机已经有对应的索引文件, 则直接传输下一个
                         transferDataEntity.isTransfer = true

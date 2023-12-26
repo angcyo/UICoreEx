@@ -152,6 +152,9 @@ data class DeviceConfigBean(
     @MM
     var pathTolerance: Float? = null,
 
+    /**速度计算曲线a,b,c,d的值*/
+    var velocityCurve: String? = null,
+
     ) {
 
     /**是否有特殊图层配置*/

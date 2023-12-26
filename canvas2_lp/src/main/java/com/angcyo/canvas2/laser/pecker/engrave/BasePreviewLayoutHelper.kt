@@ -313,8 +313,8 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
     /**开始文件名预览*/
     fun startFileNamePreview(
-        fileName: String = singleFlowInfo?.fileName ?: "",
-        mount: Int = singleFlowInfo?.mount ?: QueryCmd.TYPE_SD,
+        fileName: String = singleFlowInfo?.fileBean?.name ?: "",
+        mount: Int = singleFlowInfo?.fileBean?.mount ?: QueryCmd.TYPE_SD,
         async: Boolean = true
     ) {
         val flag =

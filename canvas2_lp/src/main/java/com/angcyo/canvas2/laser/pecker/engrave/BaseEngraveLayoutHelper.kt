@@ -1046,8 +1046,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                                                 if (_isSingleFlow) engraveModel.startEngrave(
                                                     taskId,
                                                     selectLayerId,
-                                                    singleFlowInfo!!.fileName,
-                                                    singleFlowInfo!!.mount
+                                                    singleFlowInfo!!.fileBean,
                                                 ) else engraveModel.startEngrave(taskId)
                                             if (taskEntity.dataList.isNullOrEmpty()) {
                                                 toastQQOrMessage(_string(R.string.no_data_engrave))
@@ -1143,7 +1142,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     open fun renderEngraving() {
         val taskId = flowTaskId
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(taskId)
-        val fileName = singleFlowInfo?.fileName ?: transferConfigEntity?.name
+        val fileName = singleFlowInfo?.fileBean?.name ?: transferConfigEntity?.name
         updateIViewTitle(span {
             if (!fileName.isNullOrBlank()) {
                 append(fileName)
@@ -1241,7 +1240,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     open fun renderEngraveFinish() {
         val taskId = flowTaskId
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(taskId)
-        val fileName = singleFlowInfo?.fileName ?: transferConfigEntity?.name
+        val fileName = singleFlowInfo?.fileBean?.name ?: transferConfigEntity?.name
         updateIViewTitle(span {
             if (!fileName.isNullOrBlank()) {
                 append(fileName)

@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.FileIndexBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -25,6 +26,7 @@ import com.angcyo.engrave2.*
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
+import com.angcyo.http.tcp.TcpClosedException
 import com.angcyo.laserpacker.device.*
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.library.L
@@ -222,8 +224,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**开始雕刻*/
     @CallPoint
-    fun startEngrave(taskId: String?, isFileNameEngrave: Boolean = false): EngraveTaskEntity {
-        val task = EngraveFlowDataHelper.generateEngraveTask(taskId, isFileNameEngrave)
+    fun startEngrave(
+        taskId: String?,
+        fileIndexBean: FileIndexBean? = null
+    ): EngraveTaskEntity {
+        val task = EngraveFlowDataHelper.generateEngraveTask(taskId, fileIndexBean)
         if (task.dataList.isNullOrEmpty()) {
             //无数据需要雕刻
             "雕刻任务无数据[${taskId}]".writeEngraveLog()
@@ -240,8 +245,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun startEngrave(
         taskId: String,
         layerId: String,
-        fileName: String,
-        mount: Int
+        fileIndexBean: FileIndexBean
     ): EngraveTaskEntity {
         //清除之前的雕刻数据
         EngraveDataEntity::class.removeAll(LPBox.PACKAGE_NAME) {
@@ -253,14 +257,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
         TransferDataEntity().apply {
             this.taskId = taskId
-            this.fileName = fileName
+            this.index = fileIndexBean.index
+            this.fileName = fileIndexBean.name
+            this.mount = fileIndexBean.mount
             this.layerId = layerId
-            this.mount = mount
             this.isTransfer = true
             lpSaveEntity()
         }
         //创建雕刻任务
-        return startEngrave(taskId, true)
+        return startEngrave(taskId, fileIndexBean)
     }
 
     /**开始雕刻下一个索引*/
@@ -486,7 +491,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val taskId = task.taskId
 
         if (task.bigIndex == null) {
-            task.bigIndex = EngraveHelper.generateEngraveIndex()
+            var index = EngraveHelper.generateEngraveIndex()
+            task.bigIndex = index
+            val mount = if (task.mount == QueryCmd.TYPE_USB) 0 else 1
+            //修改低8位
+            index = index and 0x00ffffff
+            task.bigIndex = index or (mount shl 24)
             task.lpSaveEntity()
         }
 
@@ -849,7 +859,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
             countDownLatch?.countDown()
             syncQueryDeviceState()
-            if (error == null || error is NoDeviceException /*无设备连接*/) {
+            if (error == null
+                || error is NoDeviceException /*无设备连接*/
+                || error is TcpClosedException /*tcp断开*/
+            ) {
                 //退出成功
                 finishEngrave(reason)
             }
@@ -949,6 +962,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             if (engraveConfigEntity.useLaserFrequency) engraveConfigEntity.laserFrequency
                 ?: HawkEngraveKeys.defaultLaserFrequency else HawkEngraveKeys.defaultLaserFrequency
 
+        val mount =
+            if (transferDataEntity?.mount == QueryCmd.TYPE_USB) QueryCmd.TYPE_USB else QueryCmd.TYPE_SD
         val engraveCmd = if (fileName == null) EngraveCmd(
             index,
             engraveConfigEntity.power.toByte(),
@@ -968,9 +983,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             laserFrequencyLine = laserFrequency,
             laserFrequencyFill = laserFrequency,
             laserFrequencyPicture = laserFrequency,
-            laserFrequencyCut = laserFrequency
+            laserFrequencyCut = laserFrequency,
+            mount = mount.toByte()
         ) else EngraveCmd.filenameEngrave(
-            fileName, (transferDataEntity?.mount ?: QueryCmd.TYPE_SD).toByte(),
+            fileName, mount.toByte(),
             engraveConfigEntity.power.toByte(),
             engraveConfigEntity.depth.toByte(),
             max(1, engraveConfigEntity.time).toByte(),

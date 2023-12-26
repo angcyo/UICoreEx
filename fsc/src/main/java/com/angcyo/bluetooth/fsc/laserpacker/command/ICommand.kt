@@ -95,7 +95,10 @@ fun commandByteWriter(action: ByteArrayWriter.() -> Unit): ByteArray {
         action()
     }
     //长度
-    val length = (dataBytes.size + LaserPeckerHelper.CHECK_SIZE).toByte()
+    val length = dataBytes.size + LaserPeckerHelper.CHECK_SIZE
+    /*if (length > 255) {
+        throw CommandException(_string(R.string.command_too_long_tip))
+    }*/
     val result = byteWriter {
         //头
         write(headBytes)

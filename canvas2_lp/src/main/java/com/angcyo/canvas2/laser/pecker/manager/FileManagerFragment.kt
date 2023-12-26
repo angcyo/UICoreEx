@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean.FileIndexBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.Companion.TYPE_SD
@@ -120,6 +121,11 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
                     if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
                         toast(_string(R.string.delete_history_succeed))
                         showRightDeleteIcoView(false)
+                        if (currentFileType == TYPE_SD) {
+                            sdList = null
+                        } else {
+                            usbList = null
+                        }
                         startRefresh()
                     }
                     error?.let { toast(it.message) }
@@ -129,23 +135,23 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     }
 
     /**删除设备所有记录*/
-    private fun deleteHistory(name: String, action: BooleanAction) {
+    private fun deleteHistory(fileBean: FileIndexBean, action: BooleanAction) {
         engraveLoadingAsyncTimeout({
             syncSingle { countDownLatch ->
-                FileModeCmd.deleteHistory(name, currentFileType.toByte())
+                FileModeCmd.deleteHistory(fileBean.name!!, currentFileType.toByte())
                     .enqueue { bean, error ->
                         countDownLatch.countDown()
                         if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
                             toast(_string(R.string.delete_history_succeed))
                             if (currentFileType == TYPE_SD) {
-                                sdNameList?.remove(name)
-                                if (sdNameList.isNullOrEmpty()) {
+                                sdList?.remove(fileBean)
+                                if (sdList.isNullOrEmpty()) {
                                     showRightDeleteIcoView(false)
                                     _adapter.toEmpty()
                                 }
                             } else {
-                                usbNameList?.remove(name)
-                                if (usbNameList.isNullOrEmpty()) {
+                                usbList?.remove(fileBean)
+                                if (usbList.isNullOrEmpty()) {
                                     showRightDeleteIcoView(false)
                                     _adapter.toEmpty()
                                 }
@@ -186,25 +192,31 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     private var sdReceive: WaitReceivePacket? = null
     private var usbReceive: WaitReceivePacket? = null
 
-    private var sdNameList: MutableList<String>? = null
-    private var usbNameList: MutableList<String>? = null
+    private var sdList: MutableList<FileIndexBean>? = null
+    private var usbList: MutableList<FileIndexBean>? = null
 
     private fun loadSdFileList() {
-        if (!sdNameList.isNullOrEmpty()) {
+        if (!sdList.isNullOrEmpty()) {
             finishRefresh()
-            renderFileListLayout(TYPE_SD, sdNameList)
+            renderFileListLayout(TYPE_SD, sdList)
             return
         }
         sdReceive?.cancel()
         usbReceive?.cancel()
         sdReceive = listenerFileList(this) { parser, error ->
-            sdNameList = parser?.nameList?.toMutableList()
+            parser?.apply {
+                val list = mutableListOf<FileIndexBean>()
+                nameList?.forEachIndexed { index, name ->
+                    list.add(FileIndexBean(indexList?.getOrNull(index) ?: 0, name, TYPE_SD))
+                }
+                sdList = list
+            }
             if (currentFileType == TYPE_SD) {
                 finishRefresh()
                 if (error != null) {
                     _adapter.toError(error)
                 } else {
-                    renderFileListLayout(TYPE_SD, parser?.nameList)
+                    renderFileListLayout(TYPE_SD, sdList)
                 }
             }
         }
@@ -216,21 +228,28 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     }
 
     private fun loadUsbFileList() {
-        if (!usbNameList.isNullOrEmpty()) {
+        if (!usbList.isNullOrEmpty()) {
             finishRefresh()
-            renderFileListLayout(TYPE_USB, usbNameList)
+            renderFileListLayout(TYPE_USB, usbList)
             return
         }
         sdReceive?.cancel()
         usbReceive?.cancel()
         usbReceive = listenerFileList(this) { parser, error ->
-            usbNameList = parser?.nameList?.toMutableList()
+            parser?.apply {
+                val list = mutableListOf<FileIndexBean>()
+                nameList?.forEachIndexed { index, name ->
+                    list.add(FileIndexBean(indexList?.getOrNull(index) ?: 0, name, TYPE_USB))
+                }
+                usbList = list
+            }
+
             if (currentFileType == TYPE_USB) {
                 finishRefresh()
                 if (error != null) {
                     _adapter.toError(error)
                 } else {
-                    renderFileListLayout(TYPE_USB, parser?.nameList)
+                    renderFileListLayout(TYPE_USB, usbList)
                 }
             }
         }
@@ -244,27 +263,28 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     //---
 
     /**渲染sd卡文件列表*/
-    private fun renderFileListLayout(mount: Int, nameList: List<String>?) {
-        showRightDeleteIcoView(!nameList.isNullOrEmpty())
+    private fun renderFileListLayout(mount: Int, beanList: List<FileIndexBean>?) {
+        showRightDeleteIcoView(!beanList.isNullOrEmpty())
         val label =
             if (mount == TYPE_SD) _string(R.string.sd_card_file_title) else _string(R.string.usb_file_title)
-        if (nameList.isNullOrEmpty()) {
+        if (beanList.isNullOrEmpty()) {
             _adapter.toEmpty()
             _vh.tv(R.id.filter_text_view)?.text = label
         } else {
-            _vh.tv(R.id.filter_text_view)?.text = "${label}(${nameList.size()})"
+            _vh.tv(R.id.filter_text_view)?.text = "${label}(${beanList.size()})"
             renderDslAdapter(true) {
-                nameList.forEach { name ->
+                beanList.forEach { bean ->
                     LpbFileItem()() {
-                        itemFileName = name
+                        itemFileName = bean.name
+                        itemFileIndex = bean.index
                         itemPreviewAction = {
-                            startPreview(name, mount)
+                            startPreview(bean)
                         }
                         itemEngraveAction = {
-                            startEngrave(name, mount)
+                            startEngrave(bean)
                         }
                         itemClick = {
-                            startPreview(name, mount)
+                            startPreview(bean)
                         }
                         itemLongClick = {
                             it.context.itemsDialog {
@@ -277,7 +297,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
                                                 _string(R.string.canvas_delete_project_tip)
                                             positiveButton { dialog, dialogViewHolder ->
                                                 dialog.dismiss()
-                                                deleteHistory(name) {
+                                                deleteHistory(bean) {
                                                     if (it) {
                                                         render {
                                                             removeAdapterItem()
@@ -297,9 +317,9 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
         }
     }
 
-    private fun startPreview(fileName: String?, mount: Int) {
-        fileName ?: return
-        flowLayoutHelper.singleFlowInfo = SingleFlowInfo("flowId-$fileName", fileName, mount)
+    private fun startPreview(bean: FileIndexBean?) {
+        bean ?: return
+        flowLayoutHelper.singleFlowInfo = SingleFlowInfo("flowId-$bean", bean)
         if (BuildConfig.BUILD_TYPE.isDebugType()) {
             flowLayoutHelper._startPreview(this)
         } else {
@@ -307,9 +327,9 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
         }
     }
 
-    private fun startEngrave(fileName: String?, mount: Int) {
-        fileName ?: return
-        flowLayoutHelper.singleFlowInfo = SingleFlowInfo("flowId-$fileName", fileName, mount)
+    private fun startEngrave(bean: FileIndexBean?) {
+        bean ?: return
+        flowLayoutHelper.singleFlowInfo = SingleFlowInfo("flowId-${bean.name}", bean)
         flowLayoutHelper.engraveFlow = BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
         flowLayoutHelper.showIn(this, flowLayoutContainer)
     }
@@ -338,5 +358,4 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
         get() = flowLayoutContainer
 
     //</editor-fold desc="IEngraveCanvasFragment">
-
 }

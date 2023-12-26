@@ -207,7 +207,7 @@
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "15:3496087554388721860",
+      "lastPropertyId": "17:6731558471735176860",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -275,6 +275,16 @@
           "id": "15:3496087554388721860",
           "name": "gcodeUsePathData",
           "type": 1
+        },
+        {
+          "id": "16:839355576476657676",
+          "name": "originX",
+          "type": 7
+        },
+        {
+          "id": "17:6731558471735176860",
+          "name": "originY",
+          "type": 7
         }
       ],
       "relations": []
@@ -642,7 +652,7 @@
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "20:5506299935095810195",
+      "lastPropertyId": "22:5822092960158671658",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -740,6 +750,16 @@
           "id": "20:5506299935095810195",
           "name": "dataList",
           "type": 30
+        },
+        {
+          "id": "21:6538532981541729927",
+          "name": "ignoreShow",
+          "type": 1
+        },
+        {
+          "id": "22:5822092960158671658",
+          "name": "mount",
+          "type": 5
         }
       ],
       "relations": []

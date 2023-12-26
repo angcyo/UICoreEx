@@ -8,9 +8,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showSpeedConvertRange
+import com.angcyo.bluetooth.fsc.laserpacker.bean.matchesProductVersion
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.SpeedConvertDialogConfig
+import com.angcyo.canvas2.laser.pecker.dialog.SpeedInfo
 import com.angcyo.canvas2.laser.pecker.dialog.speedConvertDialogConfig
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.mmToRenderUnitValue
@@ -52,29 +54,46 @@ import kotlin.math.roundToInt
 class EngravePropertyItem : DslAdapterItem() {
 
     companion object {
+
         /**获取深度对应的参考速度*/
-        fun getReferenceVelocity(layoutId: String?, depth: Int): String {
+        fun getReferenceVelocity(layoutId: String?, depth: Int, dpi: Float): String? {
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
             val digit = if (LPConstant.renderUnit is InchRenderUnit) {
                 //英制单位下用3位小数
                 3
             } else {
                 2
             }
-            val unit = "${LPConstant.renderUnit.getUnit()}/s"
-            if (layoutId == LaserPeckerHelper.LAYER_LINE || layoutId == LaserPeckerHelper.LAYER_CUT) {
-                val value = (if (depth <= 40) {
-                    calcIncrementValue(depth, 1, 80f, -1.5f)
-                } else if (depth <= 60) {
-                    calcIncrementValue(depth, 41, 20f, -0.5f)
-                } else if (depth <= 100) {
-                    calcIncrementValue(depth, 61, 9.85f, -0.25f)
+            if (laserPeckerModel.isC1()) {
+                val unit = "${LPConstant.renderUnit.getUnit()}/s"
+                if (layoutId == LaserPeckerHelper.LAYER_LINE || layoutId == LaserPeckerHelper.LAYER_CUT) {
+                    val value = (if (depth <= 40) {
+                        calcIncrementValue(depth, 1, 80f, -1.5f)
+                    } else if (depth <= 60) {
+                        calcIncrementValue(depth, 41, 20f, -0.5f)
+                    } else if (depth <= 100) {
+                        calcIncrementValue(depth, 61, 9.85f, -0.25f)
+                    } else {
+                        0f
+                    })
+                    return value.mmToRenderUnitValue().decimal(digit, false, false) + unit
                 } else {
-                    0f
-                })
-                return value.mmToRenderUnitValue().decimal(digit, false, false) + unit
+                    val value = EngraveCmd.depthToSpeed(depth) * 2
+                    return value.toFloat().mmToRenderUnitValue().roundToInt().toString() + unit
+                }
             } else {
-                val value = EngraveCmd.depthToSpeed(depth) * 2
-                return value.toFloat().mmToRenderUnitValue().roundToInt().toString() + unit
+                var newSpeedList: List<SpeedInfo>? = null
+                if ("655~699".matchesProductVersion()) {
+                    //655新固件速度
+                    newSpeedList = SpeedInfo.getNewSpeedList(dpi)
+                } else if ("800~899 8000~8499".matchesProductVersion()) {
+                    //LP5固件速度
+                    newSpeedList = SpeedInfo.getLp5VelocityList(dpi)
+                }
+                return newSpeedList?.find { it.depth == depth }?.run {
+                    val unit = "${LPConstant.renderUnit.getUnit()}/s"
+                    return speed.mmToRenderUnitValue().decimal(digit, true, false) + unit
+                }
             }
         }
     }
@@ -251,13 +270,20 @@ class EngravePropertyItem : DslAdapterItem() {
                     wheelItemToStringAction = {
                         val layoutId =
                             itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId
+                        val dpi = itemEngraveConfigEntity?.dpi ?: itemEngraveItemBean?.dpi ?: 254f
+                        //速度
+                        val velocity = getReferenceVelocity(
+                            layoutId,
+                            it.toStr().toIntOrNull() ?: 0,
+                            dpi
+                        )
 
-                        it.toStr() + " (${
-                            getReferenceVelocity(
-                                layoutId,
-                                it.toStr().toIntOrNull() ?: 0
-                            )
-                        })"
+                        //显示速度参考值
+                        if (velocity.isNullOrEmpty()) {
+                            it.toStr()
+                        } else {
+                            it.toStr() + " ($velocity)"
+                        }
                     }
                 }
 

@@ -47,6 +47,12 @@ data class TransferConfigEntity(
      * */
     var layerJson: String? = null,
 
+    /**工程文件, 所有数据左上角的坐标*/
+    @MM
+    var originX: Float? = null,
+    @MM
+    var originY: Float? = null,
+
     /**工程总共占用的宽高
      * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.originWidth]
      * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.originHeight]

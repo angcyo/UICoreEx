@@ -7,7 +7,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.listenerReceivePacket
 import com.angcyo.bluetooth.fsc.parse
+import com.angcyo.library.L
 import com.angcyo.library.component.reader
+import com.angcyo.library.ex.toAsciiInt
 import com.angcyo.library.ex.toByteInt
 import com.angcyo.library.ex.toHexString
 
@@ -26,6 +28,10 @@ data class QueryFileListParser(
      * 当mount=1时查询SD卡文件列表。
      * */
     var mount: Byte = -1,
+    /**索引列表
+     * 和[nameList]是一一对应关系
+     * */
+    var indexList: List<Int>? = null,
     /**名称列表*/
     var nameList: List<String>? = null
 ) : IPacketParser<QueryFileListParser> {
@@ -53,8 +59,22 @@ data class QueryFileListParser(
                     throw IllegalStateException("非查询指令!")
                 }
 
+                val indexList = mutableListOf<Int>()
+                val nameList = mutableListOf<String>()
                 val list = readStringList(length - 2)
-                nameList = list
+                for (item in list) {
+                    if (item.length > 8) {
+                        val index = item.substring(IntRange(0, 7)).toAsciiInt()
+                        val name = item.substring(IntRange(8, item.length - 1))
+                        indexList.add(index)
+                        nameList.add(name)
+                    } else {
+                        L.w("无效的历史文件数据:${item}")
+                    }
+                }
+
+                this@QueryFileListParser.indexList = indexList
+                this@QueryFileListParser.nameList = nameList
             }
             this
         } catch (e: Exception) {

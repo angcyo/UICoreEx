@@ -18,7 +18,7 @@ class EngraveAppHistoryFragment : BaseHistoryFragment() {
     override fun loadHistoryList() {
         val list = EngraveTaskEntity::class.page(page, LPBox.PACKAGE_NAME) {
             orderDesc(EngraveTaskEntity_.startTime)
-            apply(EngraveTaskEntity_.isFileNameEngrave.equal(false))
+            apply(EngraveTaskEntity_.ignoreShow.notEqual(true))
         }
         loadDataEnd(list)
     }

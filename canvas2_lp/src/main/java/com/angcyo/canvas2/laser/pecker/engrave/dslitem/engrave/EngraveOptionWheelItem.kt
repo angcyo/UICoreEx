@@ -2,7 +2,6 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
@@ -48,12 +47,22 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
         itemWheelToTextAction = { item ->
             val str = item.toStr()
             if (itemShowRefVelocity) {
-                str + " (${
-                    EngravePropertyItem.getReferenceVelocity(
-                        LaserPeckerHelper.LAYER_LINE,
-                        str.toIntOrNull() ?: 0
-                    )
-                }) "
+                val layoutId =
+                    itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId
+                val dpi = itemEngraveConfigEntity?.dpi ?: itemEngraveItemBean?.dpi ?: 254f
+                val depth = str.toIntOrNull() ?: 0
+                //速度
+                val velocity = EngravePropertyItem.getReferenceVelocity(
+                    layoutId,
+                    depth,
+                    dpi
+                )
+                //显示速度参考值
+                if (velocity.isNullOrEmpty()) {
+                    str.toStr()
+                } else {
+                    str.toStr() + " ($velocity)"
+                }
             } else {
                 str
             }

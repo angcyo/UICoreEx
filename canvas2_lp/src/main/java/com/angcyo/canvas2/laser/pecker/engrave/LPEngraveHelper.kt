@@ -209,6 +209,9 @@ object LPEngraveHelper {
             //工程占用的宽高mm单位
             val originBounds =
                 CanvasGroupRenderer.getRendererListRenderProperty(list).getRenderBounds(RectF())
+
+            originX = originBounds.left.toMm()
+            originY = originBounds.top.toMm()
             originWidth = originBounds.width().toMm()
             originHeight = originBounds.height().toMm()
 
@@ -245,6 +248,8 @@ object LPEngraveHelper {
             dataDir = vmApp<LaserPeckerModel>().dataDir()
 
             val originBounds = renderer.getRendererBounds()
+            originX = originBounds?.left.toMm()
+            originY = originBounds?.top.toMm()
             originWidth = originBounds?.width().toMm()
             originHeight = originBounds?.height().toMm()
 

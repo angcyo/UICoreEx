@@ -18,6 +18,7 @@ data class QueryCmd(
     // 3:表示查询版本
     val state: Byte,
     val custom: Byte = 0, //自定义的数据
+    val index: Int = -1, //数据索引, 查询是否已存在
     /**
      * 当mount=0时查询U盘列表。
      * 当mount=1时查询SD卡文件列表
@@ -41,6 +42,7 @@ data class QueryCmd(
         const val QUERY_LOG: Byte = 0x06
         const val QUERY_FILE_NAME_LIST: Byte = 0x07
         const val QUERY_DEVICE_NAME: Byte = 0x08
+        const val QUERY_INDEX_EXIST: Byte = 0x0A
 
         /**
          * ```
@@ -89,6 +91,20 @@ data class QueryCmd(
         /**查询设备蓝牙名称查询：(L5支持) //2023年8月2日*/
         val deviceName: QueryCmd
             get() = QueryCmd("查询设备蓝牙名称查询", QUERY_DEVICE_NAME)
+
+        val indexExist: QueryCmd
+            get() = QueryCmd("查询设备蓝牙名称查询", QUERY_DEVICE_NAME)
+
+        /**查询索引是否存在的指令
+         * LP5支持
+         * 2023-12-26*/
+        fun indexExist(index: Int, mount: Int = TYPE_SD): QueryCmd =
+            QueryCmd(
+                "查询[${mount.toSdOrUsbStr()}]索引[${index}]",
+                state = QUERY_INDEX_EXIST,
+                index = index,
+                mount = if (mount == TYPE_USB) TYPE_USB.toByte() else TYPE_SD.toByte()
+            )
     }
 
     //功能码
@@ -99,9 +115,8 @@ data class QueryCmd(
             write(commandFunc())
             write(state)
             write(custom)
-            mount?.let {
-                write(it)
-            }
+            write(mount ?: TYPE_SD.toByte())
+            write(index, 4)
         }.toHexString()!!
 
         /*val dataLength = 8 //数据长度
@@ -121,9 +136,9 @@ data class QueryCmd(
     }
 }
 
-fun Byte.toSdOrUsb() = toInt().toSdOrUsb()
+fun Byte.toSdOrUsbStr() = toInt().toSdOrUsbStr()
 
-fun Int.toSdOrUsb(): String = when (this) {
+fun Int.toSdOrUsbStr(): String = when (this) {
     QueryCmd.TYPE_USB -> "U盘"
     QueryCmd.TYPE_SD -> "SD卡"
     else -> "未知"

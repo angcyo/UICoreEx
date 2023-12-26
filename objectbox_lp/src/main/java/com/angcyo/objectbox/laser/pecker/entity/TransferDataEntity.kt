@@ -147,7 +147,7 @@ data class TransferDataEntity(
     var fileName: String? = null,
 
     /**SD/USB*/
-    var mount: Int = 0,
+    var mount: Int = 1,
 
     //---
 

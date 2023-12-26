@@ -3,6 +3,7 @@ package com.angcyo.engrave2
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._productName
+import com.angcyo.bluetooth.fsc.laserpacker.bean.FileIndexBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
@@ -786,12 +787,17 @@ object EngraveFlowDataHelper {
     }
 
     /**构建或者获取一个雕刻任务实体*/
-    fun generateEngraveTask(taskId: String?, isFileNameEngrave: Boolean): EngraveTaskEntity {
+    fun generateEngraveTask(
+        taskId: String?,
+        fileIndexBean: FileIndexBean? = null
+    ): EngraveTaskEntity {
         return EngraveTaskEntity::class.ensureEntity(LPBox.PACKAGE_NAME, {
             apply(EngraveTaskEntity_.taskId.equal("$taskId"))
         }) {
             this.taskId = taskId
-            this.isFileNameEngrave = isFileNameEngrave
+            //this.isFileNameEngrave //2023-12-21废弃文件名雕刻
+            this.ignoreShow = fileIndexBean != null
+            this.mount = fileIndexBean?.mount ?: this.mount
 
             val dataList: MutableList<String>
             val transferDataList = getTransferDataList(taskId)

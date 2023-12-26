@@ -9,7 +9,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
-import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toByteArray
@@ -276,26 +275,24 @@ data class EngraveCmd(
             cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         } else {
             //正常雕刻指令
-            dataLength = 0x16 //18 //数据长度
-            data = buildString {
-                append(commandFunc().toHexString())
-                append(state.toHexString())
-                append(power.toHexString())
-                append(depthToSpeed(depth.toInt()).toHexString()) //打印速度
-                //append(name.toHexString(8))
-                append(index.toByteArray(4).toHexString(false))
-                append(kotlin.math.max(x, 0).toHexString(4))
-                append(kotlin.math.max(y, 0).toHexString(4))
-                append(custom.toHexString())
-                append(time.toHexString())
-                append(type.toHexString())
-                append(diameter.toByteArray(2).toHexString(false))
-                append(precision.toHexString())
-                append(pumpLine.toHexString())//所有图层的气泵参数都一样
-                append(laserFrequencyLine.toHexString())//白光激光出光频率
-            }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
-            check = data.checksum() //“功能码”和“数据内容”在内的校验和
-            cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
+            cmd = commandByteWriter {
+                write(commandFunc())
+                write(state)
+                write(power)
+                write(depthToSpeed(depth.toInt()))
+                write(index.toByteArray(4))
+                write(kotlin.math.max(x, 0), 2)
+                write(kotlin.math.max(y, 0), 2)
+                write(custom)
+                write(time)
+                write(type)
+                write(diameter, 2)
+                write(precision)
+                write(pumpLine)
+                write(laserFrequencyLine)
+                write(bigSpeedLine ?: bigSpeedCut ?: bigSpeedFill ?: bigSpeedPicture ?: 0, 2)
+                write(mount)
+            }.toHexString()!!
         }
         return cmd
     }
