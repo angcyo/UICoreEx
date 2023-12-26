@@ -417,6 +417,8 @@
     "sMaxHeight": 300,
     "carMaxHeight": 2000,
     "supportMaxSpeed": 4000,
+    "refVelocityLayer": "layerFill,layerLine,layerCut",
+    "speedConvertLayer": "layerFill,layerLine,layerCut",
     "laserTypeList": [
       {
         "type": 1,
@@ -510,6 +512,7 @@
     "maxTransferDataSize": 480000000,
     "supportMaxSpeed": 15000,
     "velocityCurve": "1,0.004,0.89,0.14,0.001",
+    "refVelocityLayer": "layerFill,layerLine,layerCut",
     "laserTypeList": [
       {
         "type": 1,
@@ -610,6 +613,7 @@
     "carMaxWidth": 350,
     "carMaxHeight": 2000,
     "penMaxHeight": 780,
+    "refVelocityLayer": "layerFill,layerLine,layerCut,layerPicture",
     "laserTypeList": [
       {
         "moduleState": 0,
@@ -807,6 +811,7 @@
     "carMaxWidth": 350,
     "carMaxHeight": 2000,
     "penMaxHeight": 400,
+    "refVelocityLayer": "layerFill,layerLine,layerCut,layerPicture",
     "laserTypeList": [
       {
         "moduleState": 0,

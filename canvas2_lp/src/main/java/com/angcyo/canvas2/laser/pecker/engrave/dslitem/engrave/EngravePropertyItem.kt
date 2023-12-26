@@ -6,6 +6,7 @@ import androidx.core.view.postDelayed
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showRefVelocity
 import com.angcyo.bluetooth.fsc.laserpacker.bean._showSpeedConvertRange
 import com.angcyo.bluetooth.fsc.laserpacker.bean.matchesProductVersion
@@ -202,7 +203,7 @@ class EngravePropertyItem : DslAdapterItem() {
             }
         }
         //速度转换计算
-        itemHolder.visible(R.id.speed_convert_view, _showSpeedConvertRange)
+        itemHolder.visible(R.id.speed_convert_view, needShowSpeedConvert(_layerId))
         itemHolder.click(R.id.speed_convert_view) {
             it.context.speedConvertDialogConfig {
                 appointConvertType = SpeedConvertDialogConfig.TYPE_TO_NEW
@@ -266,14 +267,13 @@ class EngravePropertyItem : DslAdapterItem() {
                 wheelSelectedIndex = EngraveHelper.findOptionIndex(wheelItems, depth)
                 wheelUnit = "%"
 
-                if (itemShowRefVelocity) {
+                if (needShowRefVelocity(_layerId)) {
                     wheelItemToStringAction = {
-                        val layoutId =
-                            itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId
+
                         val dpi = itemEngraveConfigEntity?.dpi ?: itemEngraveItemBean?.dpi ?: 254f
                         //速度
                         val velocity = getReferenceVelocity(
-                            layoutId,
+                            _layerId,
                             it.toStr().toIntOrNull() ?: 0,
                             dpi
                         )
@@ -346,5 +346,27 @@ class EngravePropertyItem : DslAdapterItem() {
                 hawkKey.hawkPut("$versionCode")
             }
         }
+    }
+
+    /**是否需要显示速率参考值*/
+    private fun needShowRefVelocity(layoutId: String?): Boolean {
+        if (!itemShowRefVelocity) {
+            return false
+        }
+        if (layoutId.isNullOrBlank()) {
+            return false
+        }
+        return _deviceConfigBean?.refVelocityLayer?.contains(layoutId) == true
+    }
+
+    /**是否需要速度转换按钮*/
+    private fun needShowSpeedConvert(layoutId: String?): Boolean {
+        if (!_showSpeedConvertRange) {
+            return false
+        }
+        if (layoutId.isNullOrBlank()) {
+            return false
+        }
+        return _deviceConfigBean?.speedConvertLayer?.contains(layoutId) == true
     }
 }

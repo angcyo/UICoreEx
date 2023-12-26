@@ -222,7 +222,7 @@ data class DeviceSettingBean(
     //region---功能开关---
 
     /**是否激活元素的快捷操作*/
-    var enableQuickOperation: Boolean = true
+    var enableQuickOperation: Boolean = true,
 
     //endregion---功能开关---
 )

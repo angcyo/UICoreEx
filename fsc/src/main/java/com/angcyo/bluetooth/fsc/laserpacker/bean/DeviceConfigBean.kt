@@ -155,6 +155,12 @@ data class DeviceConfigBean(
     /**速度计算曲线a,b,c,d的值*/
     var velocityCurve: String? = null,
 
+    /**需要显示速度转换图层的id*/
+    var speedConvertLayer: String? = null,
+
+    /**需要显示参考速度图层的id*/
+    var refVelocityLayer: String? = null,
+
     ) {
 
     /**是否有特殊图层配置*/
