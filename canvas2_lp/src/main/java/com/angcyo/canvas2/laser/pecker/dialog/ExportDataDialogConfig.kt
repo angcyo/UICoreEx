@@ -59,6 +59,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ceil
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.update
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.libCacheFile
@@ -211,8 +212,9 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
                                 transferDataEntity.layerId
                             )
                             engraveConfigEntity?.let {
+                                val bytes = dataCmd.toByteArray()
                                 val itemHeaderBytes = byteWriter {
-                                    //write(0, 2) //图片数据头部字节长度, 先占位,后面赋值
+                                    write(bytes.size(), 4) //数据长度
                                     write(engraveConfigEntity.power)
                                     write(EngraveCmd.depthToSpeed(engraveConfigEntity.depth))
                                     write(engraveConfigEntity.type)
@@ -225,7 +227,7 @@ class ExportDataDialogConfig(context: Context? = null) : BaseRecyclerDialogConfi
                                 }
                                 write(itemHeaderBytes.size, 2)
                                 write(itemHeaderBytes)
-                                write(dataCmd.toByteArray())
+                                write(bytes)
                                 itemCount++
                             }
                         }
