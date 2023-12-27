@@ -138,7 +138,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     private fun deleteHistory(fileBean: FileIndexBean, action: BooleanAction) {
         engraveLoadingAsyncTimeout({
             syncSingle { countDownLatch ->
-                FileModeCmd.deleteHistory(fileBean.name!!, currentFileType.toByte())
+                FileModeCmd.deleteHistory(fileBean.index, currentFileType.toByte())
                     .enqueue { bean, error ->
                         countDownLatch.countDown()
                         if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
