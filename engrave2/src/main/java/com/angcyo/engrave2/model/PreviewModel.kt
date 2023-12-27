@@ -111,6 +111,7 @@ class PreviewModel : LifecycleViewModel() {
             val originBounds = previewInfo.originBounds
             val zPause = previewInfo.zState
             if (zPause == null) {
+                val haveEx = laserPeckerModel.haveExDevice()
                 //非第三轴预览模式下
                 if (previewInfo.isCenterPreview) {
                     //需要中心点预览
@@ -128,12 +129,16 @@ class PreviewModel : LifecycleViewModel() {
                             }
                         } else {
                             //设备中心点
-                            _previewShowCenter(originBounds, it.boundsList, async)
+                            _previewShowCenter(
+                                originBounds,
+                                if (haveEx) null else it.boundsList,
+                                async
+                            )
                         }
                     }
                 } else {
                     //需要范围预览
-                    _previewRangeRect(originBounds, it.boundsList, async)
+                    _previewRangeRect(originBounds, if (haveEx) null else it.boundsList, async)
                 }
             } else {
                 //第三轴预览模式

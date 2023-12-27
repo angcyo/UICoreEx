@@ -392,7 +392,7 @@ data class EngravePreviewCmd(
             val widthBytes = width.toHexString(4).toHexByteArray()
             val heightBytes = height.toHexString(4).toHexByteArray()
 
-            if (boundsList.size() > 1) {
+            if (boundsList.size() > 0) {
                 //多矩形预览
                 return EngravePreviewCmd(0x0C).apply {
                     rectList = boundsList
@@ -544,7 +544,7 @@ data class EngravePreviewCmd(
             }
             val rect = overflowInfo.resultRect!!
 
-            if (boundsList.size() > 1) {
+            if (boundsList.size() > 0) {
                 //多矩形预览
                 return EngravePreviewCmd(0x0C).apply {
                     rectList = boundsList?.map {
