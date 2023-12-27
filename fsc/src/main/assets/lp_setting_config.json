@@ -19,6 +19,7 @@
   "gcodeUsePathDataRange": "655~699 800~899 8000~8499",
   "disableGcodeM2Range": "5510~5514",
   "showSpeedConvertRange": "655~699",
+  "multiElementRange": "800~899",
   "gcodeMoveToOriginRange": null,
   "showAutoConnectRange": "",
   "showExperimentalRange": "",

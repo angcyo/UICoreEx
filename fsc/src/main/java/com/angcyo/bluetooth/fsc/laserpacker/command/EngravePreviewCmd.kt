@@ -20,6 +20,7 @@ import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.RectPointF
 import com.angcyo.library.model.toPath
+import com.angcyo.library.unit.toMm
 
 /**
  * 雕刻/打印预览指令
@@ -75,6 +76,9 @@ data class EngravePreviewCmd(
     var d13: Int = 0, // 2字节
     //0x0B 文件名预览
     var fileName: String? = null,
+    //0x0C 多矩形范围预览
+    @Pixel
+    var rectList: List<RectF>? = null,
 ) : BaseCommand() {
 
     companion object {
@@ -311,6 +315,7 @@ data class EngravePreviewCmd(
         /**[adjustPreviewRangeCmd]*/
         fun adjustPreviewRangeCmd(
             rect: RectF,
+            @Pixel boundsList: List<RectF>?,
             pwrProgress: Float,
             @MM diameter: Int
         ): EngravePreviewCmd? {
@@ -319,6 +324,7 @@ data class EngravePreviewCmd(
                 rect.top,
                 rect.width(),
                 rect.height(),
+                boundsList,
                 pwrProgress,
                 diameter
             )
@@ -330,6 +336,7 @@ data class EngravePreviewCmd(
          * */
         fun adjustPreviewRangeCmd(
             @Px x: Float, @Px y: Float, @Px width: Float, @Px height: Float,
+            boundsList: List<RectF>?,
             pwrProgress: Float,
             @MM
             diameter: Int,
@@ -343,13 +350,21 @@ data class EngravePreviewCmd(
                 //超出物理范围, 不发送指令
                 return null
             }
-            return _previewRangeCmd(overflowInfo.resultRect!!, pwrProgress, diameter, dpi)
+            return _previewRangeCmd(
+                overflowInfo.resultRect!!,
+                boundsList,
+                pwrProgress,
+                diameter,
+                dpi
+            )
         }
 
         /**表示范围预览
          * [rect] 经过[px]处理过的像素*/
         fun _previewRangeCmd(
             @Pixel rect: Rect,
+            @Pixel boundsList: List<RectF>?,
+
             pwrProgress: Float,
             @MM diameter: Int,
             dpi: Float
@@ -359,6 +374,7 @@ data class EngravePreviewCmd(
                 rect.top,
                 rect.width(),
                 rect.height(),
+                boundsList,
                 pwrProgress,
                 diameter,
                 dpi
@@ -367,6 +383,7 @@ data class EngravePreviewCmd(
 
         fun _previewRangeCmd(
             @Px x: Int, @Px y: Int, @Px width: Int, @Px height: Int,
+            @Pixel boundsList: List<RectF>?,
             pwrProgress: Float,
             @MM
             diameter: Int,  //物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
@@ -374,6 +391,14 @@ data class EngravePreviewCmd(
         ): EngravePreviewCmd {
             val widthBytes = width.toHexString(4).toHexByteArray()
             val heightBytes = height.toHexString(4).toHexByteArray()
+
+            if (boundsList.size() > 1) {
+                //多矩形预览
+                return EngravePreviewCmd(0x0C).apply {
+                    rectList = boundsList
+                    updatePWR(pwrProgress)
+                }
+            }
 
             return EngravePreviewCmd(0x02).apply {
                 d1 = widthBytes[0]
@@ -499,7 +524,11 @@ data class EngravePreviewCmd(
          * [pwrProgress] [0~1f] 预览光功率
          * [bounds] C1使用的参数
          * */
-        fun previewShowCenterCmd(pwrProgress: Float, bounds: RectF): EngravePreviewCmd? {
+        fun previewShowCenterCmd(
+            pwrProgress: Float,
+            bounds: RectF,
+            boundsList: List<RectF>?
+        ): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(
                 bounds.left,
                 bounds.top,
@@ -514,6 +543,17 @@ data class EngravePreviewCmd(
                 return null
             }
             val rect = overflowInfo.resultRect!!
+
+            if (boundsList.size() > 1) {
+                //多矩形预览
+                return EngravePreviewCmd(0x0C).apply {
+                    rectList = boundsList?.map {
+                        RectF(it.centerX(), it.centerY(), it.centerX() + 1f, it.centerY() + 1f)
+                    }
+                    updatePWR(pwrProgress)
+                }
+            }
+
             return EngravePreviewCmd(0x07).apply {
 
                 val widthBytes = rect.width().toHexString(4).toHexByteArray()
@@ -657,6 +697,21 @@ data class EngravePreviewCmd(
                     write(0)//结束字符
                 }
             }
+        } else if (state == 0x0C.toByte()) {
+            return commandByteWriter {
+                write(commandFunc())
+                write(state)
+                write(pwr)
+                rectList?.let {
+                    write(it.size())
+                    it.forEach { rect ->
+                        write((rect.left.toMm() * 10).floorInt(), 2)
+                        write((rect.top.toMm() * 10).floorInt(), 2)
+                        write((rect.width().toMm() * 10).ceilInt(), 2)
+                        write((rect.height().toMm() * 10).ceilInt(), 2)
+                    }
+                }
+            }
         }
         return super.toByteArray()
     }
@@ -751,7 +806,7 @@ data class EngravePreviewCmd(
     }
 
     override fun toCommandLogString(): String = buildString {
-        if (state == 0x0B.toByte()) {
+        if (state == 0x0B.toByte() || state == 0x0C.toByte()) {
             append(toByteArray().toHexString())
         } else {
             append(toHexCommandString().removeAll())
@@ -828,6 +883,7 @@ data class EngravePreviewCmd(
             }
 
             0x0B.toByte() -> append("文件名预览:[${d1.toSdOrUsbStr()}] $fileName")
+            0x0C.toByte() -> append("多范围预览:${rectList}")
 
             else -> append("Unknown")
         }

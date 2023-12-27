@@ -116,7 +116,7 @@ class PreviewModel : LifecycleViewModel() {
                     //需要中心点预览
                     if (laserPeckerModel.isCSeries()) {
                         //C1设备显示中心点
-                        _previewShowCenter(originBounds, async)
+                        _previewShowCenter(originBounds, null, async)
                     } else {
                         if (HawkEngraveKeys.enableRectCenterPreview) {
                             //矩形中心点预览
@@ -124,16 +124,16 @@ class PreviewModel : LifecycleViewModel() {
                                 val centerX = it.centerX()
                                 val centerY = it.centerY()
                                 val bounds = RectF(centerX, centerY, centerX + 1f, centerY + 1f)
-                                _previewRangeRect(bounds, async)
+                                _previewRangeRect(bounds, null, async)
                             }
                         } else {
                             //设备中心点
-                            _previewShowCenter(originBounds, async)
+                            _previewShowCenter(originBounds, it.boundsList, async)
                         }
                     }
                 } else {
                     //需要范围预览
-                    _previewRangeRect(originBounds, async)
+                    _previewRangeRect(originBounds, it.boundsList, async)
                 }
             } else {
                 //第三轴预览模式
@@ -143,6 +143,7 @@ class PreviewModel : LifecycleViewModel() {
                         //第三轴需要处于暂停状态
                         _previewRangeRect(
                             originBounds,
+                            null,
                             async,
                             true
                         )
@@ -155,7 +156,7 @@ class PreviewModel : LifecycleViewModel() {
                     }
                 } else {
                     //没有开始预览则需要新进入预览状态
-                    _previewRangeRect(originBounds, async)
+                    _previewRangeRect(originBounds, null, async)
                     previewInfo.isStartPreview = true
                     previewInfo.zState = PreviewInfo.Z_STATE_PAUSE
                 }
@@ -166,8 +167,13 @@ class PreviewModel : LifecycleViewModel() {
 
     /**发送预览中心点指令*/
     @Private
-    fun _previewShowCenter(bounds: RectF?, async: Boolean) {
-        laserPeckerModel.previewShowCenter(bounds, HawkEngraveKeys.lastPwrProgress, async)
+    fun _previewShowCenter(bounds: RectF?, boundsList: List<RectF>?, async: Boolean) {
+        laserPeckerModel.previewShowCenter(
+            bounds,
+            boundsList,
+            HawkEngraveKeys.lastPwrProgress,
+            async
+        )
     }
 
     /**发送预览中心点指令
@@ -176,6 +182,7 @@ class PreviewModel : LifecycleViewModel() {
     @Private
     fun _previewRangeRect(
         bounds: RectF?,
+        boundsList: List<RectF>?,
         async: Boolean,
         zPause: Boolean = false,
     ) {
@@ -183,6 +190,7 @@ class PreviewModel : LifecycleViewModel() {
         laserPeckerModel.sendUpdatePreviewRange(
             bounds,
             bounds,
+            boundsList,
             null,
             HawkEngraveKeys.lastPwrProgress,
             async,

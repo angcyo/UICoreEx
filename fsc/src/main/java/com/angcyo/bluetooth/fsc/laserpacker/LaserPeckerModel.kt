@@ -213,6 +213,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun sendUpdatePreviewRange(
         @Pixel bounds: RectF,
         @Pixel rotateBounds: RectF,
+        boundsList: List<RectF>?,
         rotate: Float?,
         pwrProgress: Float,
         async: Boolean,
@@ -242,6 +243,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                     rotateBounds.top,
                     rotateBounds.width(),
                     rotateBounds.height(),
+                    boundsList,
                     pwrProgress,
                     diameter
                 )
@@ -256,13 +258,14 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**中心点预览指令*/
     fun previewShowCenter(
-        bounds: RectF?, pwrProgress: Float, async: Boolean,
+        bounds: RectF?, boundsList: List<RectF>?,
+        pwrProgress: Float, async: Boolean,
         address: String? = null,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
         bounds ?: return
-        val cmd = EngravePreviewCmd.previewShowCenterCmd(pwrProgress, bounds)
+        val cmd = EngravePreviewCmd.previewShowCenterCmd(pwrProgress, bounds, boundsList)
         //send
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL

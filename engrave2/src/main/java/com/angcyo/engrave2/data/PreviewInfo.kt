@@ -18,6 +18,10 @@ data class PreviewInfo(
     @Pixel
     var originBounds: RectF? = null,
 
+    /**多元素预览时*/
+    @Pixel
+    var boundsList: List<RectF>? = null,
+
     /**是否是更新pwr指令*/
     var updatePwr: Boolean = false,
 

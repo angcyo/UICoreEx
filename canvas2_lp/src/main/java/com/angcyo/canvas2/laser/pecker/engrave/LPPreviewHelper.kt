@@ -99,8 +99,12 @@ object LPPreviewHelper {
                 }
             } else {
                 //选中元素的情况下预览
-                originBounds = CanvasGroupRenderer.getRendererListRenderProperty(rendererList)
-                    .getRenderBounds(RectF())
+                val boundsList = mutableListOf<RectF>()
+                originBounds = CanvasGroupRenderer.getRendererListRenderProperty(
+                    rendererList,
+                    resultBoundsList = boundsList
+                ).getRenderBounds(RectF())
+                info.boundsList = boundsList
             }
 
             //约束最小宽高

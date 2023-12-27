@@ -65,6 +65,8 @@ data class DeviceSettingBean(
     var disableGcodeM2Range: String? = null,
     /**显示LP4速度转换计算对话框*/
     var showSpeedConvertRange: String? = null,
+    /**多元素/多矩形预览固件版本范围*/
+    var multiElementRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/
@@ -276,3 +278,6 @@ val _gcodeMoveToOriginRange: Boolean
 
 val _showSpeedConvertRange: Boolean
     get() = _deviceSettingBean?.showSpeedConvertRange?.matchesProductVersion() == true
+
+val _multiElementRange: Boolean
+    get() = _deviceSettingBean?.multiElementRange?.matchesProductVersion() == true
