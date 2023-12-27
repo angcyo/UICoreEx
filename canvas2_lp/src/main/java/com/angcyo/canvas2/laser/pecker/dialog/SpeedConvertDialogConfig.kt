@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.Companion.speedToDepth
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.SpeedConvertItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.SpeedConvertTestItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.dialog.BaseRecyclerDialogConfig
@@ -46,8 +47,8 @@ class SpeedConvertDialogConfig : BaseRecyclerDialogConfig() {
             }
         }
 
-    var _selectLayerId: String? = null
-    var _selectDpi = 254.0f
+    var selectLayerId: String? = null
+    var selectDpi = 254.0f
 
     private var convertType: Int = TYPE_TO_NEW
 
@@ -76,102 +77,111 @@ class SpeedConvertDialogConfig : BaseRecyclerDialogConfig() {
                 val layerList = LayerHelper.getEngraveLayerList().filter {
                     it.layerId == LaserPeckerHelper.LAYER_FILL || it.layerId == LaserPeckerHelper.LAYER_LINE
                 }
-                _selectLayerId =
-                    _selectLayerId ?: layerList.firstOrNull()?.layerId
+                selectLayerId =
+                    selectLayerId ?: layerList.firstOrNull()?.layerId
                             ?: LaserPeckerHelper.LAYER_LINE
                 LayerSegmentItem()() {
                     itemIncludeCutLayer = true
                     itemSegmentList = layerList
-                    itemCurrentIndex = layerList.indexOfFirst { it.layerId == _selectLayerId }
+                    itemCurrentIndex = layerList.indexOfFirst { it.layerId == selectLayerId }
                     observeItemChange {
-                        _selectLayerId = currentLayerInfo().layerId
+                        selectLayerId = currentLayerInfo().layerId
                         refreshDslAdapter()
                     }
                     itemTabEquWidthCountRange = ""
                 }
 
                 TransferDataPxItem()() {
-                    itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(_selectLayerId!!)
-                    selectorCurrentDpi(_selectDpi)
+                    itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(selectLayerId!!)
+                    selectorCurrentDpi(selectDpi)
                     itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
                     observeItemChange {
                         //保存最后一次选择的dpi
                         val dpi =
                             itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
-                        _selectDpi = dpi
+                        selectDpi = dpi
                         refreshDslAdapter()
                     }
                 }
-            }
 
-            val oldSpeedList = SpeedInfo.getOldSpeedList(_selectLayerId!!, _selectDpi)
-            val newSpeedList = SpeedInfo.getNewSpeedList(_selectDpi)
+                val oldSpeedList = SpeedInfo.getOldSpeedList(selectLayerId!!, selectDpi)
+                val newSpeedList = SpeedInfo.getNewSpeedList(selectDpi)
 
-            //旧值转成新的值
-            var speedInfo = oldSpeedList.find { it.depth == HawkEngraveKeys.lastDepth }
-            var newSpeedInfo = SpeedInfo.findNearestSpeed(newSpeedList, speedInfo?.speed)
-            _depth = newSpeedInfo?.depth ?: _depth
+                //旧值转成新的值
+                var speedInfo = oldSpeedList.find { it.depth == HawkEngraveKeys.lastDepth }
+                var newSpeedInfo = SpeedInfo.findNearestSpeed(newSpeedList, speedInfo?.speed)
+                _depth = newSpeedInfo?.depth ?: _depth
 
-            if (convertType == TYPE_TO_OLD) {
-                //新值转成旧的值
-                newSpeedInfo = newSpeedList.find { it.depth == HawkEngraveKeys.lastDepth }
-                speedInfo = SpeedInfo.findNearestSpeed(oldSpeedList, newSpeedInfo?.speed)
-                _depth = speedInfo?.depth ?: _depth
-            }
-
-            DslTextItem()() {
-                /*itemText = "${_string(R.string.firmware_version)} <655 ↓"
-                configTextStyle {
-                    boldStyle()
-                }*/
-                itemText = _string(R.string.old_firmware_version_label)
-                configTextStyle {
-                    textBold = true
+                if (convertType == TYPE_TO_OLD) {
+                    //新值转成旧的值
+                    newSpeedInfo = newSpeedList.find { it.depth == HawkEngraveKeys.lastDepth }
+                    speedInfo = SpeedInfo.findNearestSpeed(oldSpeedList, newSpeedInfo?.speed)
+                    _depth = speedInfo?.depth ?: _depth
                 }
-            }
 
-            SpeedConvertTestItem()() {
-                itemSpeedInfo = speedInfo
-                observeItemChange {
-                    convertType = TYPE_TO_NEW
-                    refreshDslAdapter()
+                DslTextItem()() {
+                    /*itemText = "${_string(R.string.firmware_version)} <655 ↓"
+                    configTextStyle {
+                        boldStyle()
+                    }*/
+                    itemText = _string(R.string.old_firmware_version_label)
+                    configTextStyle {
+                        textBold = true
+                    }
                 }
-            }
 
-            DslTextItem()() {
-                /*itemText = "${_string(R.string.firmware_version)} >=655 ↓"
-                */
-                itemText = _string(R.string.new_firmware_version_label)
-                configTextStyle {
-                    textBold = true
-                }
-            }
-
-            if (appointConvertType == null) {
                 SpeedConvertTestItem()() {
-                    itemSpeedInfo = newSpeedInfo
+                    itemSpeedInfo = speedInfo
                     observeItemChange {
-                        convertType = TYPE_TO_OLD
+                        convertType = TYPE_TO_NEW
                         refreshDslAdapter()
+                    }
+                }
+
+                DslTextItem()() {
+                    /*itemText = "${_string(R.string.firmware_version)} >=655 ↓"
+                    */
+                    itemText = _string(R.string.new_firmware_version_label)
+                    configTextStyle {
+                        textBold = true
+                    }
+                }
+
+                if (appointConvertType == null) {
+                    SpeedConvertTestItem()() {
+                        itemSpeedInfo = newSpeedInfo
+                        observeItemChange {
+                            convertType = TYPE_TO_OLD
+                            refreshDslAdapter()
+                        }
+                    }
+                } else {
+                    DslTextItem()() {
+                        itemText = span {
+                            append("≈ ")
+                            append(_string(R.string.custom_speed))
+                            append(":")
+                            append("${newSpeedInfo?.depth}") {
+                                foregroundColor = _color(R.color.colorAccent)
+                            }
+
+                            append(" ")
+                            append(_string(R.string.engrave_speed))
+                            append(": ")
+                            append("${newSpeedInfo?.speed?.decimal(fadedUp = true) ?: "--"}mm/s") {
+                                foregroundColor = _color(R.color.colorAccent)
+                            }
+                            appendLine()
+                        }
                     }
                 }
             } else {
-                DslTextItem()() {
-                    itemText = span {
-                        append("≈ ")
-                        append(_string(R.string.custom_speed))
-                        append(":")
-                        append("${newSpeedInfo?.depth}") {
-                            foregroundColor = _color(R.color.colorAccent)
-                        }
-
-                        append(" ")
-                        append(_string(R.string.engrave_speed))
-                        append(": ")
-                        append("${newSpeedInfo?.speed?.decimal(fadedUp = true) ?: "--"}mm/s") {
-                            foregroundColor = _color(R.color.colorAccent)
-                        }
-                        appendLine()
+                SpeedConvertItem()() {
+                    itemLayerId = selectLayerId
+                    itemDpi = selectDpi
+                    itemDepth = HawkEngraveKeys.lastDepth
+                    onItemDepthChanged = {
+                        _depth = it
                     }
                 }
             }

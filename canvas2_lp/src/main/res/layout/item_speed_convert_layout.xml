@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/lib_xhdpi"
+    tools:background="@color/lib_white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/old_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/speed_old_shape"
+        android:orientation="vertical"
+        android:padding="@dimen/lib_xhdpi"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tip">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/old_label"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/old_firmware_version_label"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/old_speed_label"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:paddingVertical="@dimen/lib_xhdpi"
+            android:text="@string/custom_speed"
+            app:layout_constraintTop_toBottomOf="@id/old_label" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/old_speed_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:background="@drawable/engrave_solid_selector"
+            android:gravity="center"
+            android:inputType="number"
+            android:padding="@dimen/lib_hdpi"
+            app:layout_constraintBottom_toBottomOf="@id/old_speed_label"
+            app:layout_constraintLeft_toRightOf="@id/old_speed_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/old_speed_label"
+            tools:text="99" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/old_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:text="@string/engrave_speed"
+            app:layout_constraintTop_toBottomOf="@id/old_speed_label" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tip"
+        style="@style/LibMainTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/lib_hdpi"
+        android:text="≈"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/old_layout"
+        app:layout_constraintRight_toLeftOf="@id/new_layout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/new_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/speed_new_shape"
+        android:orientation="vertical"
+        android:padding="@dimen/lib_xhdpi"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/tip"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/new_label"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_firmware_version_label"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/new_speed_label"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:paddingVertical="@dimen/lib_xhdpi"
+            android:text="@string/custom_speed"
+            app:layout_constraintTop_toBottomOf="@id/new_label" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/new_speed_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:gravity="center"
+            android:inputType="number"
+            android:padding="@dimen/lib_hdpi"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="@id/new_speed_label"
+            app:layout_constraintLeft_toRightOf="@id/new_speed_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/new_speed_label"
+            tools:text="99" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/new_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:text="@string/engrave_speed"
+            app:layout_constraintTop_toBottomOf="@id/new_speed_label" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

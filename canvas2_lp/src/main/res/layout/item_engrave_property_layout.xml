@@ -66,7 +66,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="right"
                 android:background="@drawable/lib_bg2_selector"
-                android:padding="@dimen/lib_ldpi"
+                android:padding="@dimen/lib_sdpi"
                 android:visibility="gone"
                 app:srcCompat="@drawable/speed_convert_ico"
                 app:tint="@color/text_general_color"

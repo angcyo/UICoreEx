@@ -207,8 +207,8 @@ class EngravePropertyItem : DslAdapterItem() {
         itemHolder.click(R.id.speed_convert_view) {
             it.context.speedConvertDialogConfig {
                 appointConvertType = SpeedConvertDialogConfig.TYPE_TO_NEW
-                _selectLayerId = _layerId
-                _selectDpi = _dpi
+                selectLayerId = _layerId
+                selectDpi = _dpi
 
                 onDepthResultAction = { depth ->
                     updateDepth(depth)
