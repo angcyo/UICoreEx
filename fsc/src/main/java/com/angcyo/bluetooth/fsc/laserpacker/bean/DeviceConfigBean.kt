@@ -99,7 +99,10 @@ data class DeviceConfigBean(
     var useCutCmd: Boolean = false,
 
     /**是否要使用GCode切割数据
-     * [com.angcyo.gcode.GCodeWriteHandler.enableGCodeCut]*/
+     * [com.angcyo.gcode.GCodeWriteHandler.enableGCodeCut]
+     *
+     * [DeviceSettingBean.gcodeUsePathDataRange] 0x20 GCode 数据转 0x30 路径数据
+     * */
     var useCutData: Boolean = false,
 
     /**切割数据循环次数*/
