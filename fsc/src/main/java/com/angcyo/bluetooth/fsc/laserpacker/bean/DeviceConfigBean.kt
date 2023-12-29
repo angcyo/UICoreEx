@@ -94,7 +94,9 @@ data class DeviceConfigBean(
      * */
     var enablePreviewDebounce: Boolean = false,
 
-    /**是否要使用GCode切割指令
+    /**是否要使用GCode切割数据指令
+     * [DataCmd.ENGRAVE_TYPE_PATH_CUT]
+     * [DataCmd.ENGRAVE_TYPE_GCODE_CUT]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.Companion.gcodeData]*/
     var useCutCmd: Boolean = false,
 

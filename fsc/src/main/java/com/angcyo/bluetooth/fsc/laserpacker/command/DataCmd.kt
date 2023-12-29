@@ -64,11 +64,11 @@ data class DataCmd(
 
         /**GCode数据类型*/
         const val ENGRAVE_TYPE_GCODE = 0x20
-        const val ENGRAVE_TYPE_GCODE_CUT = 0x21
+        const val ENGRAVE_TYPE_GCODE_CUT = 0x21 //gcode切割数据
 
         /**路径数据*/
         const val ENGRAVE_TYPE_PATH = 0x30
-        const val ENGRAVE_TYPE_PATH_CUT = 0x31
+        const val ENGRAVE_TYPE_PATH_CUT = 0x31 //路径切割数据
 
         /**图片转路径数据格式*/
         const val ENGRAVE_TYPE_BITMAP_PATH = 0x40
@@ -185,6 +185,7 @@ data class DataCmd(
          * [isCut] 是否是切割
          *
          * 0x20时为GCODE数据
+         * 0x21时为GCODE切割数据
          * */
         fun gcodeData(
             index: Int,
@@ -450,6 +451,7 @@ data class DataCmd(
          * [width] [height] 图片的宽高, 2字节
          *
          * 0x30时为路径数据
+         * 0x31时为路径切割数据
          * */
         fun pathData(
             index: Int,
@@ -468,7 +470,7 @@ data class DataCmd(
             val head = byteWriter {
                 //0x30时为图片路径数据
                 if (isCut) {
-                    write(ENGRAVE_TYPE_PATH_CUT)
+                    write(ENGRAVE_TYPE_PATH_CUT) //0x31切割数据
                 } else {
                     write(ENGRAVE_TYPE_PATH)
                 }

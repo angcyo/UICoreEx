@@ -120,7 +120,7 @@ class TransferModel : ViewModel() {
                     bytes,
                     transferDataEntity.dataDir
                 )
-                //0x20 GCode数据
+                //0x20 GCode数据 0x21 GCode切割数据
                 DataCmd.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
                     index,
                     x,
@@ -133,7 +133,7 @@ class TransferModel : ViewModel() {
                     dpi,
                     transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT && _useCutCmd /*C系列才有专属切割数据*/
                 )
-                //0x30 路径数据
+                //0x30 路径数据 0x31 路径切割数据
                 DataCmd.ENGRAVE_TYPE_PATH -> DataCmd.pathData(
                     index,
                     x,
@@ -144,7 +144,7 @@ class TransferModel : ViewModel() {
                     lines,
                     bytes,
                     dpi,
-                    transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT
+                    transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT && _useCutCmd
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(
