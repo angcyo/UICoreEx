@@ -275,6 +275,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
             renderDslAdapter(true) {
                 beanList.forEach { bean ->
                     LpbFileItem()() {
+                        val item = this
                         itemFileName = bean.name
                         itemFileIndex = bean.index
                         itemPreviewAction = {
@@ -300,7 +301,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
                                                 deleteHistory(bean) {
                                                     if (it) {
                                                         render {
-                                                            removeAdapterItem()
+                                                            item.removeAdapterItem()
                                                         }
                                                     }
                                                 }
