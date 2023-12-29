@@ -494,6 +494,7 @@
     "supportDitheringRange": "",
     "supportCut": true,
     "useCutData": true,
+    "useCutCmd": true,
     "ex": "z,s,r",
     "enablePreviewDebounce": true,
     "dataRotateEx": "s,r,sRep",
