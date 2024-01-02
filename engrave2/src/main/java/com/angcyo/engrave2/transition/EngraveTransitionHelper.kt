@@ -49,6 +49,7 @@ import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.save
@@ -538,7 +539,7 @@ object EngraveTransitionHelper {
 
                 val lastIndex = thresholdList.size - 1
 
-                if (HawkEngraveKeys.loopGcodeDataCmd || isDebug()) {
+                if (HawkEngraveKeys.loopGcodeDataCmd || isDebugType()) {
                     //使用循环数据指令
                     thresholdList.toSet().forEachIndexed { index, threshold ->
                         val loopCount =
