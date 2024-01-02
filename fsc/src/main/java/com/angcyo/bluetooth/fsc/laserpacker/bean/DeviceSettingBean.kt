@@ -67,6 +67,8 @@ data class DeviceSettingBean(
     var showSpeedConvertRange: String? = null,
     /**多元素/多矩形预览固件版本范围*/
     var multiElementRange: String? = null,
+    /**切片浮雕, 使用循环数据指令的版本范围*/
+    var loopGcodeDataCmdRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/
@@ -281,3 +283,6 @@ val _showSpeedConvertRange: Boolean
 
 val _multiElementRange: Boolean
     get() = _deviceSettingBean?.multiElementRange?.matchesProductVersion() == true
+
+val _loopGcodeDataCmdRange: Boolean
+    get() = _deviceSettingBean?.loopGcodeDataCmdRange?.matchesProductVersion() == true

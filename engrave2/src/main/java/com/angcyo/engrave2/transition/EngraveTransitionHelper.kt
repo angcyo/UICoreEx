@@ -9,6 +9,7 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean._loopGcodeDataCmdRange
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writeErrorLog
@@ -49,7 +50,6 @@ import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.save
@@ -539,7 +539,7 @@ object EngraveTransitionHelper {
 
                 val lastIndex = thresholdList.size - 1
 
-                if (HawkEngraveKeys.loopGcodeDataCmd || isDebugType()) {
+                if (HawkEngraveKeys.loopGcodeDataCmd || _loopGcodeDataCmdRange) {
                     //使用循环数据指令
                     thresholdList.toSet().forEachIndexed { index, threshold ->
                         val loopCount =
