@@ -4,6 +4,7 @@ import android.graphics.RectF
 import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean._multiElementRange
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
@@ -104,7 +105,9 @@ object LPPreviewHelper {
                     rendererList,
                     resultBoundsList = boundsList
                 ).getRenderBounds(RectF())
-                info.boundsList = boundsList
+                if (_multiElementRange) {
+                    info.boundsList = boundsList
+                }
             }
 
             //约束最小宽高

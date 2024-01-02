@@ -221,7 +221,8 @@ class SimpleTransition : ITransition {
             gCodeHandler.cutLoopCount = params.cutLoopCount ?: gCodeHandler.cutLoopCount
             gCodeHandler.cutGCodeWidth = params.cutGCodeWidth ?: gCodeHandler.cutGCodeWidth
             gCodeHandler.cutGCodeHeight = params.cutGCodeHeight ?: gCodeHandler.cutGCodeHeight
-            gCodeHandler.cutLimitRect = EngravePreviewCmd.getBoundsPath()?.computePathBounds()
+            //2023-12-29
+            gCodeHandler.cutLimitRect =  targetPathList.computePathBounds() //EngravePreviewCmd.getBoundsPath()?.computePathBounds()
             //2023-10-19
             @Pixel
             val pathStep = params.pathStep?.toPixel() ?: LibHawkKeys._pathAcceptableError
