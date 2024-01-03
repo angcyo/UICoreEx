@@ -284,9 +284,11 @@ class DeviceSettingFragment : BaseDslFragment() {
                                         append(_string(R.string.ui_reminder_free_mode))
                                         url?.let {
                                             append("\n\n")
+                                            append(_string(R.string.ui_reminder_see_free_mode))
+                                            append("\n")
                                             click(
                                                 null,
-                                                _string(R.string.ui_reminder_see_free_mode)
+                                                _string(R.string.see_tutorial)
                                             ) { _, _ ->
                                                 CoreApplication.onOpenUrlAction?.invoke(it)
                                             }
