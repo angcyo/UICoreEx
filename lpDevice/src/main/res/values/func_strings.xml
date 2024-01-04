@@ -12,9 +12,9 @@
     <string name="render_engrave_info_label">Information rendering when sculpting is activated</string>
     <string name="render_engrave_info_des">When activated, the engraving number, progress, and corresponding border of the corresponding element will be rendered during engraving.</string>
     <string name="item_engrave_params_label">Activate the Single Element Engraving parameter</string>
-    <string name="item_engrave_params_des">Once activated, engraving parameters can be set individually for each element.</string>
+    <string name="item_engrave_params_des">after activation, the engraving parameters of each element can be set separately in the layer. </string>
     <string name="single_item_transfer_label">Activate single-element transfer engraving</string>
-    <string name="single_item_transfer_des">After activation, element by element is transmitted and engraved.</string>
-    <string name="again_engrave_preview_label">Preview when activating and carving again</string>
+    <string name="single_item_transfer_des">after activation, the engraving method will be changed to engraving one element at a time once it is transferred.</string>
+    <string name="again_engrave_preview_label">Preview when activating and Engraving again</string>
     <string name="again_engrave_preview_des">After activation, click the Engraving Again button in the engraving completion interface to trigger the preview command.</string>
 </resources>

@@ -40,7 +40,7 @@
     <string name="device_direction_reversal">Reverse</string>
     <string name="device_s_batch_engrave_label">Slide Extension Multi-file Mode</string>
     <string name="device_s_batch_engrave_des">--</string>
-    <string name="device_ex_engrave_module">Carving module</string>
+    <string name="device_ex_engrave_module">Engraving module</string>
     <string name="device_ex_pen_engrave_label">Brush model</string>
     <string name="device_module_calibration_label">Module calibration</string>
     <string name="device_module_calibration_des">Please lock your module after calibration</string>

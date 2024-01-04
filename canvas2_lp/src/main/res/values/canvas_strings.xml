@@ -139,12 +139,12 @@
     <string name="canvas_corner">Corners</string>
 
     <string name="invert_title">The color that</string>
-    <string name="invert_des">1. first according to the normal process of testing the carving material \n 2. See the depth of the carving effect (and material color contrast) \n 3. Determine whether invert color is selected</string>
+    <string name="invert_des">1. first according to the normal process of testing the Engraving material \n 2. See the depth of the Engraving effect (and material color contrast) \n 3. Determine whether invert color is selected</string>
     <string name="invert_criterion">Reason of judgment</string>
     <string name="invert_not_recommend">Not recommended</string>
-    <string name="invert_not_recommend_criterion">The carving color is darker than the material</string>
+    <string name="invert_not_recommend_criterion">The Engraving color is darker than the material</string>
     <string name="invert_recommend">Recommend</string>
-    <string name="invert_recommend_criterion">The carving color is lighter than the material color</string>
+    <string name="invert_recommend_criterion">The Engraving color is lighter than the material color</string>
 
     <string name="canvas_clear">Clear all</string>
     <string name="canvas_select_all">Select all</string>
@@ -175,7 +175,7 @@
     <string name="data_not_allowed">In the current mode, engraving "%1$s" data is not allowed</string>
     <string name="data_not_allowed_reverse">In the current mode, engraving of non-"%1$s" data is not allowed</string>
     <string name="data_not_allowed_height">In the current mode, engraving of data with a height greater than %1$s mm is not allowed</string>
-    <string name="data_not_allowed_multi">In current mode, carving multiple elements is not allowed</string>
+    <string name="data_not_allowed_multi">In current mode, Engraving multiple elements is not allowed</string>
 
     <string name="canvas_side">Edges</string>
     <string name="project_exist_tip">Project already exists, overwrite?</string>

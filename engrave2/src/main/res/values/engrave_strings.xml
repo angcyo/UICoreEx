@@ -79,13 +79,13 @@
     <string name="filename_hint">A maximum of 28 bytes can be entered</string>
     <string name="stop_transfer">End transmission</string>
     <string name="engrave_tip">Do not carve on highly reflective materials</string>
-    <string name="engrave_layer_config">Carving layer</string>
+    <string name="engrave_layer_config">Engraving layer</string>
 
     <string name="back_creation">Creation</string>
     <string name="progress">Progress</string>
     <string name="share_community">Share</string>
     <string name="canvas_normal_layer">Normal layer</string>
-    <string name="canvas_engrave_layer">Carving layer</string>
+    <string name="canvas_engrave_layer">Engraving layer</string>
     <string name="retry">Retry</string>
 
     <string name="engrave_perimeter">P</string>
@@ -99,13 +99,13 @@
     <string name="focal_distance_tip">Please confirm the focal length</string>
     <string name="focal_distance">FFD</string>
     <string name="no_data_transfer">No data needs to be transmitted!</string>
-    <string name="no_data_engrave">No data need radium carving!</string>
+    <string name="no_data_engrave">No data need radium Engraving!</string>
 
     <string name="device_angle">Device angle</string>
     <string name="device_temp">Device temp</string>
 
     <string name="unsupported_firmware_tip">Unsupported firmware version%1$s, Please update the firmware before use.</string>
-    <string name="limit_engrave_count_tip">The number of carvings has reached the upper limit, maximum %1$s.</string>
+    <string name="limit_engrave_count_tip">The number of engraving has reached the upper limit, maximum %1$s.</string>
 
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
 
