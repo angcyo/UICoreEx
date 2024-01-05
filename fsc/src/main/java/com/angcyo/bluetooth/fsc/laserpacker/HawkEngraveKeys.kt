@@ -9,6 +9,7 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.hawkGetList
 import com.angcyo.library.ex.hawkPutList
 import com.angcyo.library.ex.isDebug
@@ -421,7 +422,10 @@ object HawkEngraveKeys {
 
     //2023-8-2
 
-    /**强制显示wifi列表*/
+    /**强制显示wifi扫描列表
+     * [LibLpHawkKeys.enableWifiConfig]
+     * [HawkEngraveKeys.forceUseWifi]
+     * */
     var forceUseWifi: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**最后一次是否是使用wifi连接的*/
