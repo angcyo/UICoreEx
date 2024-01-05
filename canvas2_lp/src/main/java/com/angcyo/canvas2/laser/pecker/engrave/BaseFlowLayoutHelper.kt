@@ -24,6 +24,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.config.IEngraveConfigProvider
 import com.angcyo.canvas2.laser.pecker.engrave.config.IEngraveConfigTaskProvider
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLayerConfigItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
+import com.angcyo.canvas2.laser.pecker.getAllElementBean
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
@@ -378,6 +379,16 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView(), IEngraveConfigTaskPro
             if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
                 if (!isInPadMode()) {
                     _dslAdapter?.updateAllItem()
+                }
+            }
+        }
+
+        //设备扩展信息改变后, 清空索引
+        deviceStateModel.deviceExInfoOnceData.observe(this) { reason ->
+            if (reason != null) {
+                //清除所有元素索引
+                engraveCanvasFragment?.renderDelegate?.getAllElementBean()?.forEach {
+                    it.clearIndex(reason)
                 }
             }
         }

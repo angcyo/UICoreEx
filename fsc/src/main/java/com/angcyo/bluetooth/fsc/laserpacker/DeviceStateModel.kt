@@ -33,6 +33,7 @@ import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.MutableHoldLiveData
 import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmData
+import com.angcyo.viewmodel.vmDataOnce
 import com.angcyo.viewmodel.vmHoldDataNull
 
 /**
@@ -60,6 +61,9 @@ class DeviceStateModel : ViewModel() {
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
      * */
     val deviceStateData: MutableHoldLiveData<QueryStateParser?> = vmHoldDataNull()
+
+    /**设备信息扩展改变通知, 需要清空索引*/
+    val deviceExInfoOnceData = vmDataOnce<String>()
 
     /**设备状态切换记录*/
     val deviceStateStackData = vmData(mutableListOf<QueryStateParser>())

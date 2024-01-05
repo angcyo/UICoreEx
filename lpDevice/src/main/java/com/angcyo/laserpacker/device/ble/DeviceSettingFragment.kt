@@ -51,6 +51,7 @@ import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
+import com.angcyo.viewmodel.updateValue
 import com.angcyo.widget.span.span
 import kotlin.math.max
 
@@ -411,6 +412,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                         settingParser?.clearFlag()
                         settingParser?.zFlag = if (it) 1 else 0
                         updateSettingTimeout(settingParser, isCSeries)
+                        deviceStateModel.deviceExInfoOnceData.updateValue("第三轴状态改变->${settingParser?.zFlag}")
                     }
                 }
                 if (!zModelList.isNullOrEmpty() && zModelList.size() > 1) {
@@ -469,6 +471,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                         settingParser?.clearFlag()
                         settingParser?.rFlag = if (it) 1 else 0
                         updateSettingTimeout(settingParser, isCSeries)
+                        deviceStateModel.deviceExInfoOnceData.updateValue("旋转轴状态改变->${settingParser?.rFlag}")
                     }
                 }
             }
@@ -496,6 +499,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
                         //L4 调整滑台开关需要等待设备返回
                         updateSettingTimeout(settingParser, isL4)
+                        deviceStateModel.deviceExInfoOnceData.updateValue("滑台状态改变->${settingParser?.sFlag}")
                     }
                 }
             }
@@ -541,6 +545,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                             settingParser?.updateSetting()
                             renderData()
                         }
+                        deviceStateModel.deviceExInfoOnceData.updateValue("滑台批量状态改变->${settingParser?.sRep}")
                     }
                 }
             }
