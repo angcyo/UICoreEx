@@ -126,7 +126,7 @@
     <string name="engrave_item_params_tip">In the single-element sculpting parameter mode, you need to configure the sculpting parameters of the element in the sculpting layer first!</string>
 
     <string name="device_shutdown_tip">Device is shutdown</string>
-    <string name="engrave_pump_label">Air Assist Level</string>
+    <string name="engrave_pump_label">fanlevel</string>
     <string name="canvas_export_data">ExportData</string>
 
     <string name="engrave_laser_frequency_label">Frequency</string>
