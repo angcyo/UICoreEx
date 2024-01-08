@@ -40,7 +40,8 @@
             android:layout_marginTop="@dimen/lib_xhdpi"
             android:paddingVertical="@dimen/lib_xhdpi"
             android:text="@string/custom_speed"
-            app:layout_constraintTop_toBottomOf="@id/old_label" />
+            app:layout_constraintTop_toBottomOf="@id/old_label"
+            app:layout_constraintWidth_max="70dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/old_speed_view"
@@ -65,7 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_xhdpi"
             android:text="@string/engrave_speed"
-            app:layout_constraintTop_toBottomOf="@id/old_speed_label" />
+            app:layout_constraintTop_toBottomOf="@id/old_speed_label"
+            app:layout_constraintWidth_max="70dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -113,7 +115,8 @@
             android:layout_marginTop="@dimen/lib_xhdpi"
             android:paddingVertical="@dimen/lib_xhdpi"
             android:text="@string/custom_speed"
-            app:layout_constraintTop_toBottomOf="@id/new_label" />
+            app:layout_constraintTop_toBottomOf="@id/new_label"
+            app:layout_constraintWidth_max="70dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/new_speed_view"
@@ -138,7 +141,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_xhdpi"
             android:text="@string/engrave_speed"
-            app:layout_constraintTop_toBottomOf="@id/new_speed_label" />
+            app:layout_constraintTop_toBottomOf="@id/new_speed_label"
+            app:layout_constraintWidth_max="70dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
