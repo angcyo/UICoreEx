@@ -63,7 +63,7 @@ class SpeedConvertDialogConfig : BaseRecyclerDialogConfig() {
     }
 
     init {
-        dialogTitle = "LP4" + _string(R.string.speed_convert_calculate)
+        dialogTitle = "LP4 " + _string(R.string.speed_convert_calculate)
         dialogTitleLayoutId = R.layout.lib_dialog_base_ico_title_layout
         dialogMaxHeight = "0.8sh"
 

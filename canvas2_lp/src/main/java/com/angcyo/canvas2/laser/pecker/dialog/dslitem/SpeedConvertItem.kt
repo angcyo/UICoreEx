@@ -6,9 +6,9 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.SpeedInfo
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.numberKeyboardDialog
-import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.decimal
+import com.angcyo.library.ex.toColorInt
 import com.angcyo.library.ex.toStr
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -24,6 +24,8 @@ class SpeedConvertItem : DslAdapterItem() {
     var itemDpi: Float = 254f
 
     var itemDepth = HawkEngraveKeys.lastDepth
+
+    val color = "#0C0C06".toColorInt()
 
     private var _resultDepth = itemDepth
 
@@ -57,16 +59,16 @@ class SpeedConvertItem : DslAdapterItem() {
         itemHolder.tv(R.id.old_text_view)?.text = span {
             append(_string(R.string.engrave_speed))
             append(" ")
-            append("${speedInfo?.speed?.decimal(fadedUp = true) ?: "--"}mm/s") {
-                foregroundColor = _color(R.color.colorAccent)
+            append("${speedInfo?.speed?.decimal(fadedUp = true) ?: "--"} mm/s") {
+                foregroundColor = color
             }
         }
 
         itemHolder.tv(R.id.new_text_view)?.text = span {
             append(_string(R.string.engrave_speed))
             append(" ")
-            append("${newSpeedInfo?.speed?.decimal(fadedUp = true) ?: "--"}mm/s") {
-                foregroundColor = _color(R.color.colorAccent)
+            append("${newSpeedInfo?.speed?.decimal(fadedUp = true) ?: "--"} mm/s") {
+                foregroundColor = color
             }
         }
 

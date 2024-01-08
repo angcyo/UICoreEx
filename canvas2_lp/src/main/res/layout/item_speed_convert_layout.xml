@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/lib_xhdpi"
+    android:paddingHorizontal="@dimen/lib_xhdpi"
+    android:paddingTop="@dimen/lib_xhdpi"
+    android:paddingBottom="@dimen/title_bar_height"
     tools:background="@color/lib_white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +25,8 @@
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:text="@string/old_firmware_version_label"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -94,6 +98,8 @@
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:text="@string/new_firmware_version_label"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -118,7 +124,7 @@
             android:gravity="center"
             android:inputType="number"
             android:padding="@dimen/lib_hdpi"
-            android:textColor="@color/colorAccent"
+            android:textColor="#2FCA54"
             app:layout_constraintBottom_toBottomOf="@id/new_speed_label"
             app:layout_constraintLeft_toRightOf="@id/new_speed_label"
             app:layout_constraintRight_toRightOf="parent"
