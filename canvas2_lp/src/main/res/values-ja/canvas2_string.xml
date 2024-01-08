@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="speed_convert_calculate">スピ一ドコンバ一タ</string>
+    <string name="speed_convert_calculate">%1$sスピ一ドコンバ一タ</string>
     <string name="old_firmware_version_label">古いファームウェアバ一ジョン</string>
     <string name="new_firmware_version_label">新しいファームウェアバ一ジョン</string>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="speed_convert_calculate">速度转换器</string>
+    <string name="speed_convert_calculate">%1$s速度转换器</string>
     <string name="old_firmware_version_label">旧固件版本</string>
     <string name="new_firmware_version_label">新固件版本</string>
 

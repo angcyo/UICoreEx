@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="speed_convert_calculate">속도 변환기</string>
+    <string name="speed_convert_calculate">%1$s 속도 변환기</string>
     <string name="old_firmware_version_label">구 펌웨어 버전</string>
     <string name="new_firmware_version_label">새 펌웨어 버전</string>
 

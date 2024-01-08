@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="speed_convert_calculate">Conversor de velocidad</string>
+    <string name="speed_convert_calculate">Conversor de velocidad %1$s</string>
     <string name="old_firmware_version_label">Versión anterior de firmware</string>
     <string name="new_firmware_version_label">Versión actualizada de firmware</string>
 
