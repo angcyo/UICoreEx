@@ -266,16 +266,4 @@
     <string name="canvas_guid_finish_title">Congratulations on a great piece of sculpting in Laserpecker!</string>
     <string name="canvas_guid_finish_des">If you want to experience the beginner guide again, you can go to the "My" screen</string>
     <string name="canvas_guid_know">Well</string>
-
-    <string name="canvas_material_test">Material Testing</string>
-    <string name="basics_setting">Basic Settings </string>
-    <string name="engrave_setting">Engraving Settings</string>
-    <string name="max_power_label">Max Power%</string>
-    <string name="min_power_label">Min Power%</string>
-    <string name="max_depth_label">Max Depth%</string>
-    <string name="min_depth_label">Min Depth%</string>
-
-    <string name="speed_convert_calculate">Speed Converter</string>
-    <string name="old_firmware_version_label">Old Firmware Version</string>
-    <string name="new_firmware_version_label">New Firmware Version</string>
 </resources>

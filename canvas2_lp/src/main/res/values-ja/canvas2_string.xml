@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="speed_convert_calculate">スピ一ドコンバ一タ</string>
+    <string name="old_firmware_version_label">古いファームウェアバ一ジョン</string>
+    <string name="new_firmware_version_label">新しいファームウェアバ一ジョン</string>
+
+    <string name="canvas_material_test">材料試験アレイ</string>
+    <string name="basics_setting">基础设置</string>
+    <string name="engrave_setting">雕刻设置</string>
+    <string name="max_power_label">最大出力</string>
+    <string name="min_power_label">最小出力</string>
+    <string name="max_depth_label">最大深さ</string>
+    <string name="min_depth_label">最小深さ</string>
+
+    <string name="ui_valid_range_tip">有效範囲</string>
+    <string name="again_engrave">再度彫刻</string>
+    <string name="app_history_title">ロカルデ一タ</string>
+    <string name="device_history_title">デバイステ一タ</string>
+    <string name="ui_known">知りました。</string>
+    <string name="ui_delete">削除</string>
+
+</resources>

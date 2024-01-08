@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="speed_convert_calculate">Geschwindigkeitsadapter</string>
+    <string name="old_firmware_version_label">Alte Firmware-Version</string>
+    <string name="new_firmware_version_label">Neue Firmware-Version</string>
+
+    <string name="canvas_material_test">Anordnung der Materialprüfung</string>
+    <string name="basics_setting">基础设置</string>
+    <string name="engrave_setting">雕刻设置</string>
+    <string name="max_power_label">Maximale Leistung</string>
+    <string name="min_power_label">Minimale Leistung</string>
+    <string name="max_depth_label">Maximale Tiefe</string>
+    <string name="min_depth_label">Minimale Tiefe</string>
+
+    <string name="ui_valid_range_tip">Gültiger Bereich</string>
+    <string name="again_engrave">nochmals gravieren</string>
+    <string name="app_history_title">Lokale Daten</string>
+    <string name="device_history_title">Gerätedaten</string>
+    <string name="ui_known">OK</string>
+    <string name="ui_delete">Löschen</string>
+
+</resources>

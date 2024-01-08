@@ -266,16 +266,4 @@
     <string name="canvas_guid_finish_title">恭喜您在Laserpecker雕刻了一份很棒的作品！</string>
     <string name="canvas_guid_finish_des">如需再次体验新手引导，您可以去“我的”界面中进入</string>
     <string name="canvas_guid_know">好的</string>
-
-    <string name="canvas_material_test">材料测试阵列</string>
-    <string name="basics_setting">基础设置</string>
-    <string name="engrave_setting">雕刻设置</string>
-    <string name="max_power_label">最高功率%</string>
-    <string name="min_power_label">最低功率%</string>
-    <string name="max_depth_label">最大深度%</string>
-    <string name="min_depth_label">最小深度%</string>
-
-    <string name="speed_convert_calculate">速度转换器</string>
-    <string name="old_firmware_version_label">旧的固件版本</string>
-    <string name="new_firmware_version_label">新的固件版本</string>
 </resources>

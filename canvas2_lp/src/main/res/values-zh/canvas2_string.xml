@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="speed_convert_calculate">速度转换器</string>
+    <string name="old_firmware_version_label">旧固件版本</string>
+    <string name="new_firmware_version_label">新固件版本</string>
+
+    <string name="canvas_material_test">材料测试阵列</string>
+    <string name="basics_setting">基础设置</string>
+    <string name="engrave_setting">雕刻设置</string>
+    <string name="max_power_label">最高功率</string>
+    <string name="min_power_label">最低功率</string>
+    <string name="max_depth_label">最大深度</string>
+    <string name="min_depth_label">最小深度</string>
+
+    <string name="ui_valid_range_tip">有效范围</string>
+    <string name="again_engrave">再次雕刻</string>
+    <string name="app_history_title">本地数据</string>
+    <string name="device_history_title">设备数据</string>
+    <string name="ui_delete">删除</string>
+
+</resources>
