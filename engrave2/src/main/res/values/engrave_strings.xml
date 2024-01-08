@@ -105,7 +105,7 @@
     <string name="device_temp">Device temp</string>
 
     <string name="unsupported_firmware_tip">Unsupported firmware version%1$s, Please update the firmware before use.</string>
-    <string name="limit_engrave_count_tip">The number of engraving has reached the upper limit, maximum %1$s.</string>
+    <string name="limit_engrave_count_tip">The number of engraving layers has reached the upper limit (%1$s layers maximum).</string>
 
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
 
