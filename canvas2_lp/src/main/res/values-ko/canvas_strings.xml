@@ -149,8 +149,8 @@
 
     <string name="add_parameter_comparison_table">매개 변수 검사표 추가</string>
     <string name="add_parameter_comparison_table_threshold">한계값</string>
-    <string name="add_parameter_comparison_table_columns">열 수</string>
-    <string name="add_parameter_comparison_table_rows">행 수</string>
+    <string name="add_parameter_comparison_table_columns">열</string>
+    <string name="add_parameter_comparison_table_rows">행</string>
     <string name="add_parameter_comparison_table_font_size">폰트 크기</string>
     <string name="add_parameter_comparison_table_grid_margin">그리드 여백</string>
 

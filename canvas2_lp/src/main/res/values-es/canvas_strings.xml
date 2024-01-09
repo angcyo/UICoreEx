@@ -149,8 +149,8 @@
 
     <string name="add_parameter_comparison_table">Agregar una tabla de comprobación de parámetros</string>
     <string name="add_parameter_comparison_table_threshold">Valor de umbral</string>
-    <string name="add_parameter_comparison_table_columns">El número de columnas</string>
-    <string name="add_parameter_comparison_table_rows">Número de filas</string>
+    <string name="add_parameter_comparison_table_columns">Columnas</string>
+    <string name="add_parameter_comparison_table_rows">Filas</string>
     <string name="add_parameter_comparison_table_font_size">Tamaño de fuente</string>
     <string name="add_parameter_comparison_table_grid_margin">Márgenes a cuadros</string>
 

@@ -147,7 +147,7 @@
 
     <string name="add_parameter_comparison_table">パラメーター制御テーブルを追加します</string>
     <string name="add_parameter_comparison_table_threshold">しきい値</string>
-    <string name="add_parameter_comparison_table_columns">列番号</string>
+    <string name="add_parameter_comparison_table_columns">列</string>
     <string name="add_parameter_comparison_table_rows">行</string>
     <string name="add_parameter_comparison_table_font_size">フォントサイズ</string>
     <string name="add_parameter_comparison_table_grid_margin">格子縞の境界線</string>

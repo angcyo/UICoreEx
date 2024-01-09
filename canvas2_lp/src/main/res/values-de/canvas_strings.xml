@@ -149,8 +149,8 @@
 
     <string name="add_parameter_comparison_table">Hinzufügen einer Parameterprüftabelle</string>
     <string name="add_parameter_comparison_table_threshold">Schwellenwert</string>
-    <string name="add_parameter_comparison_table_columns">Die Anzahl der Spalten</string>
-    <string name="add_parameter_comparison_table_rows">Anzahl der Zeilen</string>
+    <string name="add_parameter_comparison_table_columns">Spalten</string>
+    <string name="add_parameter_comparison_table_rows">Reihen</string>
     <string name="add_parameter_comparison_table_font_size">Schriftgrad</string>
     <string name="add_parameter_comparison_table_grid_margin">Karierte Ränder</string>
 

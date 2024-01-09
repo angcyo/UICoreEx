@@ -149,8 +149,8 @@
 
     <string name="add_parameter_comparison_table">Ajouter une table de contrôle de paramètre</string>
     <string name="add_parameter_comparison_table_threshold">Seuil</string>
-    <string name="add_parameter_comparison_table_columns">Le nombre de colonnes</string>
-    <string name="add_parameter_comparison_table_rows">Nombre de lignes</string>
+    <string name="add_parameter_comparison_table_columns">Colonnes</string>
+    <string name="add_parameter_comparison_table_rows">Rangs</string>
     <string name="add_parameter_comparison_table_font_size">Taille de police</string>
     <string name="add_parameter_comparison_table_grid_margin">Marges à carreaux</string>
 

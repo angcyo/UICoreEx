@@ -149,8 +149,8 @@
 
     <string name="add_parameter_comparison_table">添加參數對照表</string>
     <string name="add_parameter_comparison_table_threshold">閾值</string>
-    <string name="add_parameter_comparison_table_columns">列數</string>
-    <string name="add_parameter_comparison_table_rows">行數</string>
+    <string name="add_parameter_comparison_table_columns">列数</string>
+    <string name="add_parameter_comparison_table_rows">行数</string>
     <string name="add_parameter_comparison_table_font_size">字體大小</string>
     <string name="add_parameter_comparison_table_grid_margin">格子邊距</string>
 
