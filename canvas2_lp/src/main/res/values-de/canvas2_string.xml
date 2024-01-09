@@ -5,8 +5,8 @@
     <string name="new_firmware_version_label">Neue Firmware-Version</string>
 
     <string name="canvas_material_test">Anordnung der Materialprüfung</string>
-<!--    <string name="basics_setting">基础设置</string>-->
-<!--    <string name="engrave_setting">雕刻设置</string>-->
+    <string name="basics_setting">Grundeinstellungen</string>
+    <string name="engrave_setting">Gravur-Einstellungen</string>
     <string name="max_power_label">Maximale Leistung</string>
     <string name="min_power_label">Minimale Leistung</string>
     <string name="max_depth_label">Maximale Tiefe</string>
