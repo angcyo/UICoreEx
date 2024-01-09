@@ -5,8 +5,8 @@
     <string name="new_firmware_version_label">Versión actualizada de firmware</string>
 
     <string name="canvas_material_test">Pruebas de Materiales</string>
-    <string name="basics_setting">基础设置</string>
-    <string name="engrave_setting">雕刻设置</string>
+<!--    <string name="basics_setting">基础设置</string>-->
+<!--    <string name="engrave_setting">雕刻设置</string>-->
     <string name="max_power_label">Potencia Máxima</string>
     <string name="min_power_label">Potencia Mínima</string>
     <string name="max_depth_label">Profundidad Máxima</string>

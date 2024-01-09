@@ -5,8 +5,8 @@
     <string name="new_firmware_version_label">새 펌웨어 버전</string>
 
     <string name="canvas_material_test">재료 테스트 배열</string>
-    <string name="basics_setting">基础设置</string>
-    <string name="engrave_setting">雕刻设置</string>
+<!--    <string name="basics_setting">基础设置</string>-->
+<!--    <string name="engrave_setting">雕刻设置</string>-->
     <string name="max_power_label">최고 출력</string>
     <string name="min_power_label">최저 출력</string>
     <string name="max_depth_label">최대 깊이</string>

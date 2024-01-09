@@ -5,8 +5,8 @@
     <string name="new_firmware_version_label">新しいファームウェアバ一ジョン</string>
 
     <string name="canvas_material_test">材料試験アレイ</string>
-    <string name="basics_setting">基础设置</string>
-    <string name="engrave_setting">雕刻设置</string>
+<!--    <string name="basics_setting">基础设置</string>-->
+<!--    <string name="engrave_setting">雕刻设置</string>-->
     <string name="max_power_label">最大出力</string>
     <string name="min_power_label">最小出力</string>
     <string name="max_depth_label">最大深さ</string>
