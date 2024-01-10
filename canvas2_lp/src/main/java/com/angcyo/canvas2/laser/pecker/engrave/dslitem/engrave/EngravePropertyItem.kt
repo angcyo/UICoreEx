@@ -361,6 +361,9 @@ class EngravePropertyItem : DslAdapterItem() {
 
     /**是否需要速度转换按钮*/
     private fun needShowSpeedConvert(layoutId: String?): Boolean {
+        if (vmApp<LaserPeckerModel>().haveExDevice()) {
+            return false
+        }
         if (!_showSpeedConvertRange) {
             return false
         }
