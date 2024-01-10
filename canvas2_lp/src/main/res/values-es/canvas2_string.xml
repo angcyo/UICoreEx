@@ -7,10 +7,10 @@
     <string name="canvas_material_test">Pruebas de Materiales</string>
     <string name="basics_setting">Ajustes básicos</string>
     <string name="engrave_setting">Configuración del láser</string>
-    <string name="max_power_label">Potencia Máxima</string>
-    <string name="min_power_label">Potencia Mínima</string>
-    <string name="max_depth_label">Profundidad Máxima</string>
-    <string name="min_depth_label">Profundidad Mínima</string>
+    <string name="max_power_label">Potencia Máx.</string>
+    <string name="min_power_label">Potencia Mín.</string>
+    <string name="max_depth_label">Profundidad Máx.</string>
+    <string name="min_depth_label">Profundidad Mín.</string>
 
     <string name="ui_valid_range_tip">Rango válido</string>
     <string name="again_engrave">Vuelva a tallar</string>
