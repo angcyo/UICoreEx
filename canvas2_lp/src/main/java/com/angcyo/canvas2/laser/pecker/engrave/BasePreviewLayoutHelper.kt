@@ -259,7 +259,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         lastActivity?.window?.contentView(),
                         itemHolder.view(R.id.lib_button),
                         3,
-                        if (laserPeckerModel.haveExDevice()) 600 else 300
+                        GuideManager.SHOW_DELAY
                     )
                 }
             }

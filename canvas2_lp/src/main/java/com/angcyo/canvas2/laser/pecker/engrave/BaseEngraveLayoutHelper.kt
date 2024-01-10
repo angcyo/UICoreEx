@@ -315,7 +315,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         lastActivity?.window?.contentView(),
                         itemHolder.view(R.id.lib_button),
                         4,
-                        300
+                        GuideManager.SHOW_DELAY
                     )
                 }
             }
@@ -1068,7 +1068,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         lastActivity?.window?.contentView(),
                         itemHolder.view(R.id.lib_button),
                         5,
-                        300
+                        GuideManager.SHOW_DELAY
                     )
                 }
             }

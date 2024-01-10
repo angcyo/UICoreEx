@@ -31,6 +31,9 @@ import com.angcyo.widget.span.span
  */
 object GuideManager {
 
+    /**显示延迟*/
+    const val SHOW_DELAY = 600L
+
     /**当前完成了引导的版本*/
     var guideVersion: Long by HawkPropertyValue<Any, Long>(0)
 
@@ -49,8 +52,11 @@ object GuideManager {
     /**是否需要暂停当前的引导索引*/
     var pauseGuideIndex: Int = -1
 
+    /**下一步的引导索引*/
+    var nextGuideIndex: Int = 1
+
     /**当前指引到了哪一步, 从1开始*/
-    var guideIndex: Int = 0
+    var currentGuideIndex: Int = 0
 
     /**正在延迟等待的引导索引*/
     private var delayIndex: Int = -1
@@ -60,7 +66,11 @@ object GuideManager {
         if (container == null) {
             return
         }
-        if (index - guideIndex != 1) {
+        if (currentGuideIndex == index) {
+            //已经处于显示状态
+            return
+        }
+        if (index != nextGuideIndex) {
             //不是下一步
             return
         }
@@ -116,7 +126,7 @@ object GuideManager {
             }
             L.d("显示引导[$index]$screenRect")
         }
-        guideIndex = index
+        currentGuideIndex = index
         (anchor ?: container).postDelay(delay) {
             showGuideOf(container, anchor, index)
         }
@@ -180,6 +190,7 @@ object GuideManager {
     }
 
     fun removeLastGuide(): Boolean {
+        nextGuideIndex = currentGuideIndex + 1
         guideList.removeLastOrNull()?.let {
             it.removeIt()
             return true
