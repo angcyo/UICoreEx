@@ -249,6 +249,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 val elementLayerInfoList = LPEngraveHelper.getSelectElementLayerInfoList(delegate)
                 for (layerInfo in elementLayerInfoList) {
                     if (layerInfo.showDpiConfig) {
+                        //图层分辨率配置
                         TransferDataPxItem()() {
                             val layerSupportPxList =
                                 LaserPeckerHelper.findProductLayerSupportPxList(layerInfo.layerId)
