@@ -467,7 +467,7 @@ object HawkEngraveKeys {
         }
 
     /**扫描开始的ip地址*/
-    var scanStartIp: Int by HawkPropertyValue<Any, Int>(100)
+    var scanStartIp: Int by HawkPropertyValue<Any, Int>(0)
 
     /**扫描端口超时时间, 1s*/
     var scanPortTimeout: Int by HawkPropertyValue<Any, Int>(1000)
