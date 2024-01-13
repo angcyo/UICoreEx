@@ -130,7 +130,8 @@ class EngravePropertyItem : DslAdapterItem() {
     private val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     val _dpi: Float
-        get() = itemEngraveConfigEntity?.dpi ?: itemEngraveItemBean?.dpi ?: 254f
+        get() = itemEngraveConfigEntity?.dpi ?: itemEngraveItemBean?.dpi
+        ?: HawkEngraveKeys.getLastLayerDpi(_layerId)
 
     val _layerId: String
         get() = itemEngraveConfigEntity?.layerId ?: itemEngraveItemBean?._layerId

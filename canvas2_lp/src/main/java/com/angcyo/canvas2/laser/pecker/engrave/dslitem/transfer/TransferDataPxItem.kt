@@ -33,7 +33,12 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
-            selectorCurrentDpi(value?.getLayerConfigDpi(HawkEngraveKeys.lastLayerId))
+            selectorCurrentDpi(
+                value?.getLayerConfigDpi(
+                    HawkEngraveKeys.lastLayerId,
+                    HawkEngraveKeys.getLastLayerDpi(HawkEngraveKeys.lastLayerId)
+                )
+            )
         }
 
     /**分辨率列表*/

@@ -161,7 +161,10 @@ object EngraveTransitionHelper {
             DataCmd.ENGRAVE_TYPE_BITMAP,
             LaserPeckerHelper.LAYER_PICTURE
         )
-        val layerDpi = transferConfigEntity.getLayerConfigDpi(LaserPeckerHelper.LAYER_PICTURE)
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(
+            LaserPeckerHelper.LAYER_PICTURE,
+            HawkEngraveKeys.getLastLayerDpi(LaserPeckerHelper.LAYER_PICTURE)
+        )
         val dpiBitmap =
             LaserPeckerHelper.bitmapScale(bitmap, LaserPeckerHelper.LAYER_PICTURE, layerDpi)
 
@@ -244,7 +247,10 @@ object EngraveTransitionHelper {
         val index = transferDataEntity.index
         //testSaveBitmap(index, bitmap)
 
-        val layerDpi = transferConfigEntity.getLayerConfigDpi(LaserPeckerHelper.LAYER_FILL)
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(
+            LaserPeckerHelper.LAYER_FILL,
+            HawkEngraveKeys.getLastLayerDpi(LaserPeckerHelper.LAYER_FILL)
+        )
         val dpiBitmap =
             LaserPeckerHelper.bitmapScale(bitmap, LaserPeckerHelper.LAYER_FILL, layerDpi)
         val dataPath = EngraveHelper.getTransferDataPath("$index")
@@ -340,7 +346,10 @@ object EngraveTransitionHelper {
 
         //testSaveBitmap(index, bitmap)
 
-        val layerDpi = transferConfigEntity.getLayerConfigDpi(LaserPeckerHelper.LAYER_PICTURE)
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(
+            LaserPeckerHelper.LAYER_PICTURE,
+            HawkEngraveKeys.getLastLayerDpi(LaserPeckerHelper.LAYER_PICTURE)
+        )
         //抖动处理图片
         val dpiBitmap =
             LaserPeckerHelper.bitmapScale(bitmap, LaserPeckerHelper.LAYER_PICTURE, layerDpi)
@@ -486,7 +495,10 @@ object EngraveTransitionHelper {
         transferDataEntity.offsetTop = params.gcodeOffsetTop.toMm()
 
         val index = transferDataEntity.index
-        val layerDpi = transferConfigEntity.getLayerConfigDpi(LaserPeckerHelper.LAYER_LINE)
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(
+            LaserPeckerHelper.LAYER_LINE,
+            HawkEngraveKeys.getLastLayerDpi(LaserPeckerHelper.LAYER_LINE)
+        )
 
         val pathList = provider.getEngravePathData()
         val bitmap = provider.getEngraveBitmapData()
@@ -927,7 +939,8 @@ object EngraveTransitionHelper {
         configEntity: TransferConfigEntity,
         layerId: String
     ) {
-        val layerDpi = configEntity.getLayerConfigDpi(layerId)
+        val layerDpi =
+            configEntity.getLayerConfigDpi(layerId, HawkEngraveKeys.getLastLayerDpi(layerId))
         transferDataEntity.taskId = configEntity.taskId
         transferDataEntity.name = configEntity.name
         transferDataEntity.dataDir = configEntity.dataDir

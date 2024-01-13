@@ -98,7 +98,8 @@ data class TransferConfigEntity(
 ) {
 
     /**获取指定图层对应的dpi*/
-    fun getLayerConfigDpi(layerId: String?): Float = getLayerConfig(layerId)?.dpi ?: 254f
+    fun getLayerConfigDpi(layerId: String?, def: Float): Float =
+        getLayerConfig(layerId)?.dpi ?: def
 
     /**[layerId]图层*/
     fun getLayerConfig(layerId: String?): TransferLayerConfigBean? {

@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
@@ -76,7 +77,10 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
                     //分辨率: 1k
                     var dpi = engraveConfigEntity.dpi
-                        ?: transferConfigEntity?.getLayerConfigDpi(it.layerId)
+                        ?: transferConfigEntity?.getLayerConfigDpi(
+                            it.layerId,
+                            HawkEngraveKeys.getLastLayerDpi(it.layerId)
+                        )
                         ?: transferDataList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
                     it.layerId?.let {
                         dpi = it.filterLayerDpi(dpi)

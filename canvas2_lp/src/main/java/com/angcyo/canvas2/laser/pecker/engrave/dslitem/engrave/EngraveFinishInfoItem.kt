@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
@@ -36,7 +37,10 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                 //材质 分辨率
                 add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity.materialKey)))
                 var dpi = engraveConfigEntity.dpi
-                    ?: transferConfigEntity?.getLayerConfigDpi(itemLayerId)
+                    ?: transferConfigEntity?.getLayerConfigDpi(
+                        itemLayerId,
+                        HawkEngraveKeys.getLastLayerDpi(itemLayerId)
+                    )
                     ?: transferDataEntityList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
                 itemLayerId?.let {
                     dpi = it.filterLayerDpi(dpi)

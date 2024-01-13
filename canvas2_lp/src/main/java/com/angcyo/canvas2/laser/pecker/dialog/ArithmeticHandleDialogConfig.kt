@@ -126,7 +126,12 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         dialogViewHolder.group(R.id.dpi_wrap_layout)?.resetDslItem(TransferDataPxItem().apply {
             itemPxList =
                 LaserPeckerHelper.findProductLayerSupportPxList(HawkEngraveKeys.lastLayerId)
-            selectorCurrentDpi(transferConfigEntity.getLayerConfigDpi(HawkEngraveKeys.lastLayerId))
+            selectorCurrentDpi(
+                transferConfigEntity.getLayerConfigDpi(
+                    HawkEngraveKeys.lastLayerId,
+                    HawkEngraveKeys.getLastLayerDpi(HawkEngraveKeys.lastLayerId)
+                )
+            )
             itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
             observeItemChange {
                 //保存最后一次选择的dpi
