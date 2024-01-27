@@ -147,4 +147,9 @@
     <string name="external_sharing">外部分享</string>
     <string name="rotate_flag_tip_title">请确认你的【%1$s】已通电，如打开开关后设备无反应，请将配件连接线重连后开启。</string>
     <string name="see_tutorial">查看帮助</string>
+
+    <string name="permission_request_title">我们将向您申请以下权限:</string>
+    <string name="permission_ble_des">连接蓝牙设备BLUETOOTH\n权限功能说明:允许应用连接蓝牙设备\n使用场景与目的:适配蓝牙设备</string>
+    <string name="permission_gps_des">位置权限GPS\n权限功能说明:允许应用连接机器设备\n使用场景与目的:适配机器设备</string>
+
 </resources>

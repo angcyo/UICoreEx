@@ -151,4 +151,8 @@
     <string name="external_sharing">External sharing</string>
     <string name="rotate_flag_tip_title">Please make sure your %1$s is powered on. If the device fails to respond when switched on, please reconnect the cable and turn it on again.  </string>
     <string name="see_tutorial">Help</string>
+
+    <string name="permission_request_title">We\'d like to ask you for the following permissions:</string>
+    <string name="permission_ble_des">Bluetooth\nPermission description: connect the application to the Bluetooth device\nUsage scenario or purpose: pairing Bluetooth device</string>
+    <string name="permission_gps_des">Location\nPermission description: connect the application to the machine\nUsage scenario or purpose: pairing the machine</string>
 </resources>

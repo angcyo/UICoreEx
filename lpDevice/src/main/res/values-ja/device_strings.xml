@@ -111,4 +111,8 @@
 
     <string name="rotate_flag_tip_title">[%1$s]の電源がオンになっていることを確認し、スイッチをオンにしてもデバイスが応答しない場合は、アクセサリケーブルを接続しなおしてからスイッチを入れてください。</string>
     <string name="see_tutorial">助ける</string>
+
+    <string name="permission_request_title">以下の権限申し込みを同意しますか？</string>
+    <string name="permission_ble_des">Bluetooth デバイス接続の許可\n許可する権限の機能説明:アプリが Bluetooth デバイスに接続することを許可する。\n使用シナリオと目的:Bluetoothデバイスとマッチングする。</string>
+    <string name="permission_gps_des">位置情報のアクセス許可\n許可する権限の機能説明:アフリケ一ションがデバイスに接続することを許可する。\n使用シナリオと目的:デバイスとのマッチング</string>
 </resources>

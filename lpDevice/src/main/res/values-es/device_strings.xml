@@ -111,4 +111,8 @@
 
     <string name="rotate_flag_tip_title">Por favor, asegúrese de que su Eje de %1$s está encendida. Si el dispositivo no responde al encenderlo, vuelva a conectar el cable y enciéndalo de nuevo.</string>
     <string name="see_tutorial">ayuda</string>
+
+    <string name="permission_request_title">Le pediremos los siguientes permisos:</string>
+    <string name="permission_ble_des">Conectándose a Bluetooth\nDescripción de permiso: conectar la app a Bluetooth\nEscenario y propósito de uso: emparejar Bluetooth</string>
+    <string name="permission_gps_des">Localización\nDescripción de permiso: conectar la app a la máquina\nEscenario y propósito de uso: emparejar máquina</string>
 </resources>

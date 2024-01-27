@@ -111,4 +111,8 @@
 
     <string name="rotate_flag_tip_title">[%1$s]에 전기가 통하는지 확인하시고, 스위치를 켠 후에도 기계가 작동하지 않으면 부품 연결선을 다시 연결한 후 작동하십시오. </string>
     <string name="see_tutorial">도움</string>
+
+    <string name="permission_request_title">다음 권한의 허용을 요청합니다：</string>
+    <string name="permission_ble_des">블루투스 장치 연결\n권한 기능 설명: 앱이 블루투스 장치에 연결할 수 있도록 허용합니다.\n사용 장면과 목적: 블루투스 장치와 매치</string>
+    <string name="permission_gps_des">위치 권한\n권한 기능 설명: 앱이 기기에 연결할 수 있도록 허용합니다.\n사용 장면과 목적: 기기와 매치</string>
 </resources>

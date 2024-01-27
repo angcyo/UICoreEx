@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.device.ble
 
+import android.view.Gravity
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -18,6 +19,7 @@ import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
+import com.angcyo.dialog.messageDialog
 import com.angcyo.dialog.normalDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
@@ -42,6 +44,7 @@ import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.cancelAnimator
 import com.angcyo.library.ex.find
+import com.angcyo.library.ex.havePermission
 import com.angcyo.library.ex.infinite
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
@@ -53,6 +56,7 @@ import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.loading.RadarScanLoadingView
+import com.angcyo.widget.span.span
 import com.angcyo.widget.tab
 import com.feasycom.common.bean.FscDevice
 import com.hingin.umeng.UMEvent
@@ -132,11 +136,32 @@ class BluetoothSearchHelper {
                 }
             }
 
-            fragment?.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                permissionsResult(allGranted)
-            }
-            fragmentActivity?.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                permissionsResult(allGranted)
+            val bluetoothPermissionList = FscBleApiModel.bluetoothPermissionList()
+            if (lastContext.havePermission(bluetoothPermissionList)) {
+                //有权限
+                permissionsResult(true)
+            } else {
+                //无权限, 需要先弹窗, 再申请权限
+                context.messageDialog {
+                    dialogTitle = _string(R.string.permission_request_title)
+                    dialogMessage = span {
+                        append(_string(R.string.permission_ble_des))
+                        append("\n\n")
+                        append(_string(R.string.permission_gps_des))
+                    }
+                    dialogMessageGravity = Gravity.LEFT
+
+                    negativeButtonText = _string(R.string.dialog_negative)
+                    positiveButton(_string(R.string.ui_confirm)) { dialog, dialogViewHolder ->
+                        dialog.dismiss()
+                        fragment?.dslPermissions(bluetoothPermissionList) { allGranted, foreverDenied ->
+                            permissionsResult(allGranted)
+                        }
+                        fragmentActivity?.dslPermissions(bluetoothPermissionList) { allGranted, foreverDenied ->
+                            permissionsResult(allGranted)
+                        }
+                    }
+                }
             }
         }
 
