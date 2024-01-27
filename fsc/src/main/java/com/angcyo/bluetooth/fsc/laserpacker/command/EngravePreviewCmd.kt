@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.isOverflowBounds
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -207,8 +208,7 @@ data class EngravePreviewCmd(
                 vmApp<LaserPeckerModel>().productInfoData.value
         ): OverflowInfo {
             val tempRect = acquireTempRectF()
-            var overflowBounds = false
-            var overflowLimit = false
+            var overflowType = 0
             if (productInfo != null) {
                 tempRect.set(
                     x.toInt().toFloat(),
@@ -216,13 +216,24 @@ data class EngravePreviewCmd(
                     (x + width).toInt().toFloat(),
                     (y + height).toInt().toFloat()
                 )//2023-4-4 修复预览时, 会出现小数点的情况
+                val laserPeckerModel = vmApp<LaserPeckerModel>()
 
-                //
-                overflowBounds = getBoundsPath(productInfo)?.overflow(tempRect) == true
+                //超过限制
+                if (getBoundsPath(productInfo)?.overflow(tempRect) == true) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_BOUNDS)
+                }
 
-                //
+                /*if (laserPeckerModel.isOverflowHeight(tempRect.height().toMm().ceilInt())) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_HEIGHT)
+                }*/
+
                 //溢出
-                overflowLimit = getLimitPath(productInfo)?.overflow(tempRect) == true
+                if (getLimitPath(productInfo)?.overflow(tempRect) == true) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_LIMIT)
+                }
+                /*if (laserPeckerModel.isOverflowHeightLimit(tempRect.height().toMm().ceilInt())) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_HEIGHT_LIMIT)
+                }*/
             }
 
             var previewX = x
@@ -232,7 +243,7 @@ data class EngravePreviewCmd(
             var previewHeight = height
 
             val pxInfo = LaserPeckerHelper.findPxInfo(layerId, dpi)
-            if (overflowBounds) {
+            if (overflowType.isOverflowBounds()) {
                 //预览超出了设备物理范围, 缩成设备物理中心点
 
                 //超过范围, 缩成在中心的一个点
@@ -260,7 +271,7 @@ data class EngravePreviewCmd(
                 right = left + previewWidth.ceil().toInt()
                 bottom = top + previewHeight.ceil().toInt()
             }
-            return OverflowInfo(rect, null, overflowBounds, overflowLimit)
+            return OverflowInfo(rect, null, overflowType)
         }
 
         /**调整4点坐标, 并标识是否溢出*/
@@ -270,13 +281,19 @@ data class EngravePreviewCmd(
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): OverflowInfo {
-            var overflowLimit = false
-            var overflowBounds = false
+            var overflowType = 0
             if (productInfo != null) {
-
                 val rectPath = rectPoint.toPath()
-                overflowLimit = getLimitPath(productInfo)?.overflow(rectPath) == true
-                overflowBounds = getBoundsPath(productInfo)?.overflow(rectPath) == true
+
+                //超过限制
+                if (getLimitPath(productInfo)?.overflow(rectPath) == true) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_BOUNDS)
+                }
+
+                //溢出
+                if (getBoundsPath(productInfo)?.overflow(rectPath) == true) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_LIMIT)
+                }
 
                 /*val limitPath = getLimitPath(productInfo)
                 if (limitPath != null) {
@@ -309,13 +326,14 @@ data class EngravePreviewCmd(
             result.rightTop.y = pxInfo.transformY(rectPoint.rightTop.y)
             result.rightBottom.y = pxInfo.transformY(rectPoint.rightBottom.y)
 
-            return OverflowInfo(null, result, overflowBounds, overflowLimit)
+            return OverflowInfo(null, result, overflowType)
         }
 
         /**[adjustPreviewRangeCmd]*/
         fun adjustPreviewRangeCmd(
             rect: RectF,
             @Pixel boundsList: List<RectF>?,
+            @Pixel elementBoundsList: List<RectF>?,
             pwrProgress: Float,
             @MM diameter: Int
         ): EngravePreviewCmd? {
@@ -325,6 +343,7 @@ data class EngravePreviewCmd(
                 rect.width(),
                 rect.height(),
                 boundsList,
+                elementBoundsList,
                 pwrProgress,
                 diameter
             )
@@ -336,7 +355,8 @@ data class EngravePreviewCmd(
          * */
         fun adjustPreviewRangeCmd(
             @Px x: Float, @Px y: Float, @Px width: Float, @Px height: Float,
-            boundsList: List<RectF>?,
+            @Pixel boundsList: List<RectF>?,
+            @Pixel elementBoundsList: List<RectF>?,
             pwrProgress: Float,
             @MM
             diameter: Int,
@@ -345,8 +365,28 @@ data class EngravePreviewCmd(
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(x, y, width, height, layerId, dpi, productInfo)
-            vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
-            if (overflowInfo.isOverflowBounds || (HawkEngraveKeys.enableDataBoundsStrict && overflowInfo.isOverflowLimit)) {
+
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
+            elementBoundsList?.forEach {
+                //超过限制
+                if (laserPeckerModel.isOverflowHeight(it.height().toMm().ceilInt())) {
+                    overflowInfo.overflowType =
+                        overflowInfo.overflowType.add(OverflowInfo.OVERFLOW_TYPE_HEIGHT)
+                }
+
+                //溢出
+                if (laserPeckerModel.isOverflowHeightLimit(it.height().toMm().ceilInt())) {
+                    overflowInfo.overflowType =
+                        overflowInfo.overflowType.add(OverflowInfo.OVERFLOW_TYPE_HEIGHT_LIMIT)
+                }
+            }
+
+            laserPeckerModel.overflowInfoData.postValue(overflowInfo)
+            if (overflowInfo.overflowType.have(OverflowInfo.OVERFLOW_TYPE_BOUNDS) ||
+                (HawkEngraveKeys.enableDataBoundsStrict && overflowInfo.overflowType.have(
+                    OverflowInfo.OVERFLOW_TYPE_LIMIT
+                ))
+            ) {
                 //超出物理范围, 不发送指令
                 return null
             }
@@ -427,7 +467,7 @@ data class EngravePreviewCmd(
             val overflowInfo = adjustFourPoint(rectPoint, layerId, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
 
-            if (overflowInfo.isOverflowBounds) {
+            if (overflowInfo.overflowType.isOverflowBounds()) {
                 //溢出了, 预览一个点
                 /*return _previewRangeCmd(
                     overflowInfo.resultRectPoint!!.originRectF.centerX(),
@@ -539,7 +579,7 @@ data class EngravePreviewCmd(
                 vmApp<LaserPeckerModel>().productInfoData.value
             )
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
-            if (overflowInfo.isOverflowBounds) {
+            if (overflowInfo.overflowType.isOverflowBounds()) {
                 return null
             }
             val rect = overflowInfo.resultRect!!
@@ -591,7 +631,7 @@ data class EngravePreviewCmd(
         ): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(x, y, width, height, layerId, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
-            if (overflowInfo.isOverflowBounds) {
+            if (overflowInfo.overflowType.isOverflowBounds()) {
                 //超出物理范围, 不发送指令
                 return null
             }

@@ -25,6 +25,10 @@ data class PreviewInfo(
     /**是否是更新pwr指令*/
     var updatePwr: Boolean = false,
 
+    /**所有元素的bounds*/
+    @Pixel
+    var elementBoundsList: List<RectF>? = null,
+
     //---
 
     /**是否处于/需要中心点预览, 需要额外适配C1*/

@@ -70,28 +70,60 @@ object EngraveDataValidation {
             }
         }
 
-        val isL4 = laserPeckerModel.isL4()
-        if (isL4) {
-            if (laserPeckerModel.isSRepMode()) {
-                //滑台多文件雕刻模式下, 单个文件的高度不能超过120mm
-                val previewBounds = laserPeckerModel.productInfoData.value?.previewBounds
+        @MM
+        val sRepMaxHeight =
+            laserPeckerModel.productInfoData.value?.deviceConfigBean?.sRepHeightPhys ?: 0
+
+        if (laserPeckerModel.isSRepMode() && sRepMaxHeight > 0) {
+            //滑台多文件雕刻模式下, 单个文件的高度不能超过120mm
+            val previewBounds = laserPeckerModel.productInfoData.value?.previewBounds
+
+            @MM
+            val maxBoundsHeight =
+                laserPeckerModel.productInfoData.value!!.deviceConfigBean!!.heightPhys
+
+            @MM
+            val maxLimitHeight =
+                laserPeckerModel.productInfoData.value!!.deviceConfigBean!!.bestHeightPhys
+
+
+            val rendererList = LPEngraveHelper.getLayerRendererList(canvasDelegate)
+
+            /*val boundsPath = Path().apply {
+                addRect(laserPeckerModel.productInfoData.value!!.bounds, Path.Direction.CW)
+            }*/
+
+            for (render in rendererList) {
+                val rotateBounds = render.renderProperty?.getRenderBounds()
 
                 @MM
-                val maxHeight = previewBounds?.height()?.toMm() ?: 120f
-                val rendererList = LPEngraveHelper.getLayerRendererList(canvasDelegate)
-                for (render in rendererList) {
-                    val rotateBounds = render.renderProperty?.getRenderBounds()
+                val width = rotateBounds?.width()?.toMm() ?: 0f
 
-                    @MM
-                    val height = rotateBounds?.height()?.toMm() ?: 0f
-                    if (height > maxHeight) {
-                        context?.messageDialog {
-                            dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage =
-                                _string(R.string.data_not_allowed_height, maxHeight.unitDecimal(0))
-                        }
-                        return false
+                @MM
+                val height = rotateBounds?.height()?.toMm() ?: 0f
+
+                /*val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+                //超过限制
+                if (EngravePreviewCmd.getBoundsPath()?.overflow(tempRect) == true) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_BOUNDS)
+                }
+
+                //溢出
+                if (EngravePreviewCmd.getLimitPath()?.overflow(tempRect) == true) {
+                    overflowType = overflowType.add(OverflowInfo.OVERFLOW_TYPE_LIMIT)
+                }*/
+
+                if (height > sRepMaxHeight) {
+                    context?.messageDialog {
+                        dialogTitle = _string(R.string.engrave_warn)
+                        dialogMessage =
+                            _string(
+                                R.string.data_not_allowed_height,
+                                (sRepMaxHeight * 1f).unitDecimal(0)
+                            )
                     }
+                    return false
                 }
             }
         }

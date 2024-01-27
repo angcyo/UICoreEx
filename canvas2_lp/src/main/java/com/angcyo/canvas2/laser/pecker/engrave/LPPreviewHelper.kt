@@ -98,6 +98,7 @@ object LPPreviewHelper {
                 bounds?.let {
                     originBounds = RectF(it)
                 }
+                elementBoundsList = null
             } else {
                 //选中元素的情况下预览
                 val boundsList = mutableListOf<RectF>()
@@ -108,6 +109,7 @@ object LPPreviewHelper {
                 if (_multiElementRange) {
                     info.boundsList = boundsList
                 }
+                elementBoundsList = boundsList
             }
 
             //约束最小宽高

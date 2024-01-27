@@ -8,6 +8,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.isOverflowBounds
+import com.angcyo.bluetooth.fsc.laserpacker.data.isOverflowLimit
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
@@ -38,6 +41,7 @@ import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.have
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toPath
 import com.angcyo.viewmodel.observe
@@ -112,6 +116,10 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
             if (stateString.isNullOrEmpty()) {
                 stateLayoutManager.removeState(engraveStateInfo)
+            } else if (it.isModeEngravePreview() && (laserPeckerModel.overflowInfoData.value?.overflowType?.isOverflowBounds() == true ||
+                        laserPeckerModel.overflowInfoData.value?.overflowType?.isOverflowLimit() == true)
+            ) {
+                //预览模式下, 溢出了的情况
             } else {
                 //模式改变
                 engraveStateInfo.text = stateString
@@ -168,11 +176,27 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         //监听范围预览
         laserPeckerModel.overflowInfoData.observe(fragment, allowBackward = false) {
-            if (it != null && (it.isOverflowBounds || it.isOverflowLimit)) {
-                previewOverflowStateInfo.text = if (it.isOverflowBounds) {
-                    _string(R.string.out_of_bounds)
+            if (it != null && (it.overflowType.isOverflowBounds() || it.overflowType.isOverflowLimit())) {
+                previewOverflowStateInfo.text = if (it.overflowType.isOverflowBounds()) {
+                    if (it.overflowType.have(OverflowInfo.OVERFLOW_TYPE_HEIGHT)) {
+                        _string(
+                            R.string.out_of_height_bounds,
+                            laserPeckerModel.productInfoData.value?.deviceConfigBean?.sRepHeightPhys
+                                ?: 0
+                        )
+                    } else {
+                        _string(R.string.out_of_bounds)
+                    }
                 } else {
-                    _string(R.string.out_of_limit)
+                    if (it.overflowType.have(OverflowInfo.OVERFLOW_TYPE_HEIGHT_LIMIT)) {
+                        _string(
+                            R.string.out_of_height_limit,
+                            laserPeckerModel.productInfoData.value?.deviceConfigBean?.bestHeightPhys
+                                ?: 0
+                        )
+                    } else {
+                        _string(R.string.out_of_limit)
+                    }
                 }
                 updateState(previewOverflowStateInfo)
             } else {

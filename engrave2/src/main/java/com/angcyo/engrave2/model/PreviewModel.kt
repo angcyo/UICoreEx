@@ -112,7 +112,7 @@ class PreviewModel : LifecycleViewModel() {
             val zPause = previewInfo.zState
             if (zPause == null) {
                 val haveEx = laserPeckerModel.haveExDevice()
-                //非第三轴预览模式下
+                //非第三轴预览模式下, 正常模式预览
                 if (previewInfo.isCenterPreview) {
                     //需要中心点预览
                     if (laserPeckerModel.isCSeries()) {
@@ -125,7 +125,7 @@ class PreviewModel : LifecycleViewModel() {
                                 val centerX = it.centerX()
                                 val centerY = it.centerY()
                                 val bounds = RectF(centerX, centerY, centerX + 1f, centerY + 1f)
-                                _previewRangeRect(bounds, null, async)
+                                _previewRangeRect(bounds, null, null, async)
                             }
                         } else {
                             //设备中心点
@@ -138,7 +138,12 @@ class PreviewModel : LifecycleViewModel() {
                     }
                 } else {
                     //需要范围预览
-                    _previewRangeRect(originBounds, if (haveEx) null else it.boundsList, async)
+                    _previewRangeRect(
+                        originBounds,
+                        if (haveEx) null else it.boundsList,
+                        it.elementBoundsList,
+                        async
+                    )
                 }
             } else {
                 //第三轴预览模式
@@ -149,6 +154,7 @@ class PreviewModel : LifecycleViewModel() {
                         _previewRangeRect(
                             originBounds,
                             null,
+                            it.elementBoundsList,
                             async,
                             true
                         )
@@ -161,7 +167,7 @@ class PreviewModel : LifecycleViewModel() {
                     }
                 } else {
                     //没有开始预览则需要新进入预览状态
-                    _previewRangeRect(originBounds, null, async)
+                    _previewRangeRect(originBounds, null, it.elementBoundsList, async)
                     previewInfo.isStartPreview = true
                     previewInfo.zState = PreviewInfo.Z_STATE_PAUSE
                 }
@@ -187,7 +193,8 @@ class PreviewModel : LifecycleViewModel() {
     @Private
     fun _previewRangeRect(
         bounds: RectF?,
-        boundsList: List<RectF>?,
+        @Pixel boundsList: List<RectF>?,
+        @Pixel elementBoundsList: List<RectF>?,
         async: Boolean,
         zPause: Boolean = false,
     ) {
@@ -196,6 +203,7 @@ class PreviewModel : LifecycleViewModel() {
             bounds,
             bounds,
             boundsList,
+            elementBoundsList,
             null,
             HawkEngraveKeys.lastPwrProgress,
             async,

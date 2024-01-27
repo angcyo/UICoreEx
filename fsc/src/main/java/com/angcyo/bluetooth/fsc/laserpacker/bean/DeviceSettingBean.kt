@@ -159,6 +159,13 @@ data class DeviceSettingBean(
     /**中文帮助文档地址*/
     var timeFormatHelpUrlZh: String? = null,
 
+    /**过点延迟说明, 配置了才有帮助按钮入口*/
+    var overScanDelayHelpUrl: String? = null,
+    /**中文帮助文档地址*/
+    var overScanDelayHelpUrlZh: String? = null,
+    /**显示过点扫描延迟设置的固件范围*/
+    var showOverScanDelayRange: String? = null,
+
     /**二维码支持的格式集合*/
     var barcode2DTypeList: List<String>? = null,
     /**一维码支持的格式集合*/
@@ -286,3 +293,6 @@ val _multiElementRange: Boolean
 
 val _loopGcodeDataCmdRange: Boolean
     get() = _deviceSettingBean?.loopGcodeDataCmdRange?.matchesProductVersion() == true
+
+val _showOverScanDelayRange: Boolean
+    get() = _deviceSettingBean?.showOverScanDelayRange?.matchesProductVersion() == true

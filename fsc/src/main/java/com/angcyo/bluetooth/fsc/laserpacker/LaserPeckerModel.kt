@@ -17,6 +17,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.model.toFourPoint
@@ -213,7 +214,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun sendUpdatePreviewRange(
         @Pixel bounds: RectF,
         @Pixel rotateBounds: RectF,
-        boundsList: List<RectF>?,
+        @Pixel boundsList: List<RectF>?,
+        @Pixel elementBoundsList: List<RectF>?,
         rotate: Float?,
         pwrProgress: Float,
         async: Boolean,
@@ -244,6 +246,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                     rotateBounds.width(),
                     rotateBounds.height(),
                     boundsList,
+                    elementBoundsList,
                     pwrProgress,
                     diameter
                 )
@@ -270,6 +273,18 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
         cmd?.enqueue(flag, address, progress, action)
+    }
+
+    /**是否超过了物理高度*/
+    fun isOverflowHeight(@MM height: Int): Boolean {
+        val heightPhys = productInfoData.value?.deviceConfigBean?.sRepHeightPhys
+        return heightPhys != null && isSRepMode() && height > heightPhys
+    }
+
+    /**是否超过了有效的打印高度*/
+    fun isOverflowHeightLimit(@MM height: Int): Boolean {
+        val bestHeightPhys = productInfoData.value?.deviceConfigBean?.bestHeightPhys
+        return bestHeightPhys != null && isSRepMode() && height > bestHeightPhys
     }
 
     //</editor-fold desc="Command">

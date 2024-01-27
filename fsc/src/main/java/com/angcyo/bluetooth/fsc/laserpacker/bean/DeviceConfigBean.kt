@@ -49,6 +49,10 @@ data class DeviceConfigBean(
     var bestWidthPhys: Int = 0,
     var bestHeightPhys: Int = 0,
 
+    /**滑台多文件能雕刻的物理高度*/
+    @MM
+    var sRepHeightPhys: Int = 0,
+
     /**最佳尺寸的svg path.
      * [M10,10L100,100] 值是mm单位*/
     @MM
