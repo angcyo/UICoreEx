@@ -642,6 +642,26 @@ class DeviceSettingFragment : BaseDslFragment() {
                     }
                 }
             }
+            //过点扫描
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showOverScanDelayRange,
+                    false,
+                    true
+                )
+            ) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.over_scan_delay_label)
+                    itemDes = _string(R.string.over_scan_delay_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.overScanDelay == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.overScanDelay = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
+                }
+            }
 
             //自动连接蓝牙
             if (VersionMatcher.matches(

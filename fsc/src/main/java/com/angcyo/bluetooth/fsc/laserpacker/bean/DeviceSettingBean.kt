@@ -293,6 +293,3 @@ val _multiElementRange: Boolean
 
 val _loopGcodeDataCmdRange: Boolean
     get() = _deviceSettingBean?.loopGcodeDataCmdRange?.matchesProductVersion() == true
-
-val _showOverScanDelayRange: Boolean
-    get() = _deviceSettingBean?.showOverScanDelayRange?.matchesProductVersion() == true

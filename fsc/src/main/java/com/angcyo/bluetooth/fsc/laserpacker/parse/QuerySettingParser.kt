@@ -62,6 +62,8 @@ data class QuerySettingParser(
     var printDir: Int = 0,
     //2023-7-19 忽略LX1的温度传感器，0为不忽略，1为忽略。 @ignoreTempSensor#b=true
     var ignoreTempSensor: Int = 0,
+    //过点延迟开关。0为关闭，1为打开。（常用于黑白图雕刻）//2024年1月25日L4 V655以上支持
+    var overScanDelay: Int = 0,
 ) : BaseCommand(), IPacketParser<QuerySettingParser> {
 
     companion object {
@@ -141,6 +143,7 @@ data class QuerySettingParser(
                 carFlag = if (productInfo?.isCSeries() == true) readInt(1, 0) else offset(1, 0)
                 printDir = readInt(1, 0)
                 ignoreTempSensor = readInt(1, 0)
+                overScanDelay = readInt(1, 0)
                 //---最后位
                 state = readInt(1, 0)
             }
@@ -175,7 +178,7 @@ data class QuerySettingParser(
                 //todo 安全码与用户设置
                 dataLength = 0x27
             } else {
-                dataLength = 0x16 //数据长度
+                dataLength = 0x17 //数据长度
 
                 //1为自由模式，为0时安全模式。
                 append(free.toHexString())
@@ -208,6 +211,8 @@ data class QuerySettingParser(
                 append(printDir.toHexString())
                 //2023-7-19
                 append(ignoreTempSensor.toHexString())
+                //2024-1-27
+                append(overScanDelay.toHexString())
                 //dataLength 数据长度需要手动+1
             }
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)

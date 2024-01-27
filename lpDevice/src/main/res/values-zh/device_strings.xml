@@ -50,6 +50,10 @@
     <string name="device_setting_txt_6">该开关可控制外接配件“批量雕刻按键”的启用和禁用状态</string>
     <string name="device_setting_blue_connect_auto">自动连接蓝牙</string>
 
+    <string name="over_scan_delay_label">过点延时</string>
+    <string name="over_scan_delay_des">开启过点延迟，雕刻效果会更加均匀</string>
+    <string name="over_scan_delay_enable_tip">您已开启过点延时</string>
+
     <string name="engrave_experimental">实验性</string>
     <string name="create_log_tip">请稍等，正在生成日志...</string>
 

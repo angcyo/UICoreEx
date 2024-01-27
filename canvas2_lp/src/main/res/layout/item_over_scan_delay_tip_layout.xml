@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/lib_ldpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_over_scan_delay_enable_tip"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/lib_xhdpi"
+        android:paddingVertical="@dimen/lib_ldpi"
+        android:text="@string/over_scan_delay_enable_tip" />
+
+</FrameLayout>

@@ -35,6 +35,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravingControlI
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravingInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.appendDrawable
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.OverScanDelayTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.DataStopTransferItem
@@ -820,6 +821,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     itemEngraveConfigEntity = engraveConfigEntity
                 }
             }
+            if (laserPeckerModel.deviceSettingData.value?.overScanDelay == 1) {
+                //过点延迟提示
+                OverScanDelayTipItem()()
+            }
 
             //雕刻相关的参数
             if (_isSingleItemFlow) {
@@ -1186,6 +1191,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
             }
+            /*if (laserPeckerModel.deviceSettingData.value?.overScanDelay == 1) {
+                //过点延迟提示
+                OverScanDelayTipItem()()
+            }*/
             if (!laserPeckerModel.isCSeries()) {
                 //非C1显示, 设备水平角度
                 renderDeviceInfoIfNeed()
