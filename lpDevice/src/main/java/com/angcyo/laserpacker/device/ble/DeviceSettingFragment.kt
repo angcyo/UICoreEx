@@ -650,7 +650,15 @@ class DeviceSettingFragment : BaseDslFragment() {
                     true
                 )
             ) {
-                DslPropertySwitchItem()() {
+                HelpPropertySwitchItem()() {
+                    val isZh = LanguageModel.isChinese()
+                    itemHelpUrl = if (isZh) {
+                        config?.overScanDelayHelpUrlZh
+                            ?: config?.overScanDelayHelpUrl
+                    } else {
+                        config?.overScanDelayHelpUrl
+                    }
+
                     itemLabel = _string(R.string.over_scan_delay_label)
                     itemDes = _string(R.string.over_scan_delay_des)
                     initItem()
