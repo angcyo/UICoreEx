@@ -90,6 +90,8 @@
     <string name="canvas_photo">사진첩</string>
     <string name="out_of_limit">최적 범위를 벗어났습니다.</string>
     <string name="out_of_bounds">각인 범위를 초과하였습니다.</string>
+    <string name="out_of_height_limit">현재 모드에서 요소 높이가 %1$dmm를 초과할 경우 새김이 불완전할 겁니다.</string>
+    <string name="out_of_height_bounds">현재 모드에서는 원소 높이가 %1$dmm를 초과할 수 없습니다.</string>
     <string name="canvas_crop">잘라내기</string>
     <string name="canvas_mesh">매쉬</string>
     <string name="canvas_system">시스템</string>

@@ -50,6 +50,10 @@
     <string name="device_setting_txt_6">Cet interrupteur permet d\'activer et de désactiver l\'accessoire externe "Bouton de gravure par lots".</string>
     <string name="device_setting_blue_connect_auto">Connexion Bluetooth automatique</string>
 
+    <string name="over_scan_delay_label">Délai de dépassement de point</string>
+    <string name="over_scan_delay_des">Activez le délai de dépassement de point pour obtenir un résultat de gravure plus homogène.</string>
+    <string name="over_scan_delay_enable_tip">Vous avez activé le délai de dépassement de point</string>
+
     <string name="engrave_experimental">Expérimental</string>
     <string name="create_log_tip">Veuillez patienter, les journaux sont en cours de génération...</string>
 

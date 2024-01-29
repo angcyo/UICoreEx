@@ -90,6 +90,8 @@
     <string name="canvas_photo">アルバム</string>
     <string name="out_of_limit">最適な範囲から外れる</string>
     <string name="out_of_bounds">彫刻範囲外</string>
+    <string name="out_of_height_limit">現在のモードでは、エレメントの高さが%1$dmmを超えると、彫刻が不完全になります。</string>
+    <string name="out_of_height_bounds">現在のモードでは、エレメントの高さは%1$dmmを越えてはいけません。</string>
     <string name="canvas_crop">クロッピング</string>
     <string name="canvas_mesh">ディストーション</string>
     <string name="canvas_system">システム</string>

@@ -50,6 +50,10 @@
     <string name="device_setting_txt_6">이 스위치는 "대량 각인 버튼"의 사용 가능 및 사용 불가능 상태를 제어합니다.</string>
     <string name="device_setting_blue_connect_auto">블루투스 자동 연결</string>
 
+    <string name="over_scan_delay_label">특정 위치 초과시 지연</string>
+    <string name="over_scan_delay_des">특정 위치 초과시 지연 모드에서 더 좋은 새김 결과를 얻을 수 있습니다.</string>
+    <string name="over_scan_delay_enable_tip">특정 위치 초과시 지연 모드로 설정했습니다.</string>
+
     <string name="engrave_experimental">실험성</string>
     <string name="create_log_tip">기다려주세요, 로그 생성 중...</string>
 

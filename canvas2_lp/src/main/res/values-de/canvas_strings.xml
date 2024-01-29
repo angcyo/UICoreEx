@@ -90,6 +90,8 @@
     <string name="canvas_photo">Album</string>
     <string name="out_of_limit">Außerhalb des optimalen Bereichs</string>
     <string name="out_of_bounds">Außerhalb des Gravurbereichs</string>
+    <string name="out_of_height_limit">Wenn im aktuellen Modus die Höhe des Elements %1$d mm überschreitet, wird die Gravur nicht vollständig sein.</string>
+    <string name="out_of_height_bounds">Im aktuellen Modus darf die Höhe des Elements %1$d mm nicht überschreiten.</string>
     <string name="canvas_crop">Zuschneiden</string>
     <string name="canvas_mesh">Verzerrung</string>
     <string name="canvas_system">System</string>

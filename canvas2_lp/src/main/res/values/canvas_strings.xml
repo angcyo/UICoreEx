@@ -98,8 +98,8 @@
     <string name="canvas_photo">Album</string>
     <string name="out_of_limit">Out of limit</string>
     <string name="out_of_bounds">Out of bounds</string>
-    <string name="out_of_height_limit">In the current mode, the element height exceeds %1$d, and the print is incomplete</string>
-    <string name="out_of_height_bounds">In the current mode, the height of the element is not allowed to exceed %1$d</string>
+    <string name="out_of_height_limit">In the current mode, if the element height exceeds %1$d mm, the engraving will be incomplete.</string>
+    <string name="out_of_height_bounds">In the current mode, the element height cannot exceed %1$d mm.</string>
     <string name="canvas_crop">Crop</string>
     <string name="canvas_relief">Relief</string>
     <string name="canvas_slice_count">Slices</string>

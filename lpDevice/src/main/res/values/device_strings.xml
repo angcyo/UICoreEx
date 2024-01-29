@@ -54,9 +54,9 @@
     <string name="device_setting_txt_6">This switch controls the enable and disable status of the outboard accessories \'Batch Engraving Key\'</string>
     <string name="device_setting_blue_connect_auto">Automatic Bluetooth Connection</string>
 
-    <string name="over_scan_delay_label">DelayOverTime</string>
-    <string name="over_scan_delay_des">Turn on the point delay, and the engraving effect will be more uniform</string>
-    <string name="over_scan_delay_enable_tip">You\'ve enabled the dot delay</string>
+    <string name="over_scan_delay_label">Over-point Delay</string>
+    <string name="over_scan_delay_des">Turn on the Over-point Delay for a more even engraving result</string>
+    <string name="over_scan_delay_enable_tip">You have activated the Over-point Delay</string>
 
     <string name="engrave_experimental">Experimental</string>
     <string name="create_log_tip">Please wait, logs are being generated...</string>

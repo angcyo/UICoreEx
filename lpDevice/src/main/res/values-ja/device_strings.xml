@@ -50,6 +50,10 @@
     <string name="device_setting_txt_6">外部アクセサリー「一括彫刻ボタン」のON/OFFを操作するスイッチです。</string>
     <string name="device_setting_blue_connect_auto">Bluetooth自動接続</string>
 
+    <string name="over_scan_delay_label">過点遅延</string>
+    <string name="over_scan_delay_des">過点遅延をオンにすれば、より均一な彫刻効果が得られます。</string>
+    <string name="over_scan_delay_enable_tip">過点遅延がオンになっています。</string>
+
     <string name="engrave_experimental">実験的</string>
     <string name="create_log_tip">れ履歴が生成しています。しばらくお待ちください...</string>
 

@@ -50,6 +50,10 @@
     <string name="device_setting_txt_6">Este interruptor puede controlar el estado de activación y desactivación del "botón de grabado por lotes" del accesorio externo  </string>
     <string name="device_setting_blue_connect_auto">Conectar Bluetooth automáticamente</string>
 
+    <string name="over_scan_delay_label">Retardo en el punto de paso </string>
+    <string name="over_scan_delay_des">Al activar el retardo en el punto de paso, el efecto del grabado será más uniforme.</string>
+    <string name="over_scan_delay_enable_tip">Ha activado el retardo en el punto de paso.</string>
+
     <string name="engrave_experimental">Experimental</string>
     <string name="create_log_tip">Por favor, espere, se están generando registros...</string>
 

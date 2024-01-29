@@ -50,6 +50,10 @@
     <string name="device_setting_txt_6">Dieser Schalter steuert die Aktivierung und Deaktivierung der "Taste für die Chargengravur" des externen Zubehörs.</string>
     <string name="device_setting_blue_connect_auto">Bluetooth automatisch verbinden</string>
 
+    <string name="over_scan_delay_label">Überpunktverzögerung</string>
+    <string name="over_scan_delay_des">Wenn Sie die Überpunktverzögerung einschalten, wird der Gravureffekt gleichmäßiger.</string>
+    <string name="over_scan_delay_enable_tip">Sie haben die Überpunktverzögerung aktiviert</string>
+
     <string name="engrave_experimental">Experimentell</string>
     <string name="create_log_tip">Bitte warten, es werden Protokolle generiert...</string>
 
