@@ -137,6 +137,7 @@ data class EngravePreviewCmd(
          * [com.angcyo.engrave.EngraveProductLayoutHelper.ENGRAVE_COLOR] 物理范围, 红光提示
          * [getLimitPath]
          * */
+        @Pixel
         fun getBoundsPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
             val deviceStateModel = vmApp<DeviceStateModel>()
