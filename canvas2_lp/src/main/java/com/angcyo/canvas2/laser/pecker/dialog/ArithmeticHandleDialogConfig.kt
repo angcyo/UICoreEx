@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.bean._isGCodeUsePathData
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -219,7 +220,10 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
                     EngraveTransitionHelper.transitionToGCode(
                         renderElement,
                         transferConfigEntity,
-                        TransitionParam(enableGCodeCutData = true)
+                        TransitionParam(
+                            enableGCodeCutData = true,
+                            gcodeUsePathData = _isGCodeUsePathData || !vmApp<DeviceStateModel>().isDeviceConnect()
+                        )
                     )
                 }
             }
