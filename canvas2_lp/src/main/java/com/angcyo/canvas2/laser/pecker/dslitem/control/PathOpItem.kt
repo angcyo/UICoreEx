@@ -43,9 +43,11 @@ class PathOpItem : CanvasIconItem() {
             val pathList = mutableListOf<Path>()
             val list = delegate.getSingleElementRendererListIn(rendererList)
             var haveFillElement = false
+            var isAllLine = list.isNotEmpty() //全部是线条
             for (renderer in list) {
                 val element = renderer.lpElement()
                 val renderProperty = renderer.renderProperty
+                isAllLine = isAllLine && element?.elementBean?.isLineShape == true
                 if (element is LPPathElement) {
                     haveFillElement = haveFillElement ||
                             element.paint.style == Paint.Style.FILL ||
@@ -77,13 +79,14 @@ class PathOpItem : CanvasIconItem() {
                 val elementBean = LPElementBean().apply {
                     mtype = LPDataConstant.DATA_TYPE_SVG
                     this.path = svgContent
-                    paintStyle =
-                        if ((HawkEngraveKeys.enableXorFill && op == Path.Op.XOR) /*xor操作时, 默认填充处理*/ ||
-                            (op == null && haveFillElement) /*合并path时, 检查是否填充处理*/) {
-                            Paint.Style.FILL.toPaintStyleInt()
-                        } else {
-                            Paint.Style.STROKE.toPaintStyleInt()
-                        }
+                    paintStyle = if (isAllLine) {
+                        Paint.Style.STROKE.toPaintStyleInt()
+                    } else if ((HawkEngraveKeys.enableXorFill && op == Path.Op.XOR) /*xor操作时, 默认填充处理*/ ||
+                        (op == null && haveFillElement) /*合并path时, 检查是否填充处理*/) {
+                        Paint.Style.FILL.toPaintStyleInt()
+                    } else {
+                        Paint.Style.STROKE.toPaintStyleInt()
+                    }
                 }
                 LPRendererHelper.parseElementRenderer(elementBean, false)?.apply {
                     originBounds?.let {
