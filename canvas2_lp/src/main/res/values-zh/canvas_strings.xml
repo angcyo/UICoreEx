@@ -98,8 +98,8 @@
     <string name="canvas_photo">相册</string>
     <string name="out_of_limit">超出最佳范围</string>
     <string name="out_of_bounds">超出雕刻范围</string>
-    <string name="out_of_height_limit">当前模式下，元素高度超出%1$d,打印不完整</string>
-    <string name="out_of_height_bounds">当前模式下，元素高度不允许超出%1$d</string>
+    <string name="out_of_height_limit">当前模式下，元素高度超出%1$dmm,打印不完整</string>
+    <string name="out_of_height_bounds">当前模式下，元素高度不允许超出%1$dmm</string>
     <string name="canvas_crop">剪裁</string>
     <string name="canvas_relief">浮雕</string>
     <string name="canvas_slice_count">切片数量</string>
