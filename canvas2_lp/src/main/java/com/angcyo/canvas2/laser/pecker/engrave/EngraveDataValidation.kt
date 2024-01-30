@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.util.mmToRenderValueUnit
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.laserpacker.LPDataConstant
@@ -120,7 +121,7 @@ object EngraveDataValidation {
                         dialogMessage =
                             _string(
                                 R.string.data_not_allowed_height,
-                                (sRepMaxHeight * 1f).unitDecimal(0)
+                                (sRepMaxHeight * 1f).mmToRenderValueUnit()
                             )
                     }
                     return false

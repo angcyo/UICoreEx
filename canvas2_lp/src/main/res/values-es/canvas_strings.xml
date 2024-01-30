@@ -161,7 +161,7 @@
 
     <string name="data_not_allowed">En el modo actual, no se permite grabar datos "%1$s"</string>
     <string name="data_not_allowed_reverse">En el modo actual, no se permite grabar datos que no sean "%1$s"</string>
-    <string name="data_not_allowed_height">En el modo actual, no se permite el grabado de datos con una altura superior a %1$s mm</string>
+    <string name="data_not_allowed_height">En el modo actual, no se permite el grabado de datos con una altura superior a %1$s</string>
     <string name="data_not_allowed_multi">En el modo actual, no se permite esculpir varios elementos</string>
 
     <string name="canvas_side">Número de lados</string>

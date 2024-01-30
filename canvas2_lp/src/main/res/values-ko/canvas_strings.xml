@@ -161,7 +161,7 @@
 
     <string name="data_not_allowed">현재 모드에서는 "%1$s" 데이터를 조각할 수 없습니다</string>
     <string name="data_not_allowed_reverse">현재 모드에서는 "%1$s"가 아닌 데이터를 조각할 수 없습니다</string>
-    <string name="data_not_allowed_height">현재 모드에서는 높이가 %1$s mm보다 큰 데이터의 조각이 허용되지 않습니다</string>
+    <string name="data_not_allowed_height">현재 모드에서는 높이가 %1$s보다 큰 데이터의 조각이 허용되지 않습니다</string>
     <string name="data_not_allowed_multi">현재 모드에서는 여러 요소를 조각할 수 없습니다</string>
 
     <string name="canvas_side">가장자리</string>

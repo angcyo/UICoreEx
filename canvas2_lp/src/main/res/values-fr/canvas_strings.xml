@@ -161,7 +161,7 @@
 
     <string name="data_not_allowed">En mode courant, la gravure des données « %1$s » n’est pas autorisée</string>
     <string name="data_not_allowed_reverse">En mode courant, la gravure de données autres que « %1$s » n’est pas autorisée</string>
-    <string name="data_not_allowed_height">En mode courant, la gravure de données d’une hauteur supérieure à %1$s mm n’est pas autorisée</string>
+    <string name="data_not_allowed_height">En mode courant, la gravure de données d’une hauteur supérieure à %1$s n’est pas autorisée</string>
     <string name="data_not_allowed_multi">En mode actuel, plusieurs éléments ne sont pas autorisés à être sculptés</string>
 
     <string name="canvas_side">Nombre de bords</string>

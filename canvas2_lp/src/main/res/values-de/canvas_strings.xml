@@ -161,7 +161,7 @@
 
     <string name="data_not_allowed">Im aktuellen Modus ist das Gravieren von "%1$s"-Daten nicht zulässig</string>
     <string name="data_not_allowed_reverse">Im aktuellen Modus ist das Gravieren von Nicht-"%1$s"-Daten nicht zulässig</string>
-    <string name="data_not_allowed_height">Im aktuellen Modus ist das Gravieren von Daten mit einer Höhe von mehr als %1$s mm nicht zulässig</string>
+    <string name="data_not_allowed_height">Im aktuellen Modus ist das Gravieren von Daten mit einer Höhe von mehr als %1$s nicht zulässig</string>
     <string name="data_not_allowed_multi">Im aktuellen Modus dürfen nicht mehrere Elemente geformt werden</string>
 
     <string name="canvas_side">Seite</string>
