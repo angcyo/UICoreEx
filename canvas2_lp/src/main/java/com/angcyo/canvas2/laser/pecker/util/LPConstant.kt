@@ -57,3 +57,8 @@ fun Float.mmToRenderUnitValue(): Float {
     val pixel = toPixel()
     return LPConstant.renderUnit.convertPixelToValue(pixel)
 }
+
+/**[mmToRenderUnitValue]*/
+fun Float.mmToRenderValueUnit(): String {
+    return LPConstant.renderUnit.formatValue(mmToRenderUnitValue(), false, true)
+}

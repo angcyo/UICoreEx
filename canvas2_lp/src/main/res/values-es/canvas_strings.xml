@@ -90,8 +90,8 @@
     <string name="canvas_photo">Álbum</string>
     <string name="out_of_limit">Superar al óptimo límite</string>
     <string name="out_of_bounds">Superar al límite de grabado</string>
-    <string name="out_of_height_limit">En el modo actual, si la altura del elemento supera los %1$d mm, el grabado no será completo.</string>
-    <string name="out_of_height_bounds">En el modo actual, la altura del elemento no debe exceder los %1$d mm.</string>
+    <string name="out_of_height_limit">En el modo actual, si la altura del elemento supera los %1$s, el grabado no será completo.</string>
+    <string name="out_of_height_bounds">En el modo actual, la altura del elemento no debe exceder los %1$s.</string>
     <string name="canvas_crop">Cortar</string>
     <string name="canvas_mesh">Retorcer</string>
     <string name="canvas_system">Sistema</string>

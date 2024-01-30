@@ -90,8 +90,8 @@
     <string name="canvas_photo">Album</string>
     <string name="out_of_limit">Au-delà de la plage optimale</string>
     <string name="out_of_bounds">Au-delà de la portée de la gravure</string>
-    <string name="out_of_height_limit">Dans le mode actuel, si la hauteur de l\'élément dépasse %1$d mm, la gravure sera incomplète.</string>
-    <string name="out_of_height_bounds">Dans le mode actuel, la hauteur de l\'élément ne peut pas dépasser %1$d mm.</string>
+    <string name="out_of_height_limit">Dans le mode actuel, si la hauteur de l\'élément dépasse %1$s, la gravure sera incomplète.</string>
+    <string name="out_of_height_bounds">Dans le mode actuel, la hauteur de l\'élément ne peut pas dépasser %1$s.</string>
     <string name="canvas_crop">Couper</string>
     <string name="canvas_mesh">Distorsion</string>
     <string name="canvas_system">Système</string>

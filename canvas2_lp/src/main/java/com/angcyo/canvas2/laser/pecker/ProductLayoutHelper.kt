@@ -18,6 +18,7 @@ import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.manager.GuideManager
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.canvas2.laser.pecker.util.mmToRenderValueUnit
 import com.angcyo.canvas2.laser.pecker.util.updateElementAfterEngrave
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
@@ -181,8 +182,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     if (it.overflowType.have(OverflowInfo.OVERFLOW_TYPE_HEIGHT)) {
                         _string(
                             R.string.out_of_height_bounds,
-                            laserPeckerModel.productInfoData.value?.deviceConfigBean?.sRepHeightPhys
-                                ?: 0
+                            (laserPeckerModel.productInfoData.value?.deviceConfigBean?.sRepHeightPhys
+                                ?: 0).toFloat().mmToRenderValueUnit()
                         )
                     } else {
                         _string(R.string.out_of_bounds)
@@ -191,8 +192,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     if (it.overflowType.have(OverflowInfo.OVERFLOW_TYPE_HEIGHT_LIMIT)) {
                         _string(
                             R.string.out_of_height_limit,
-                            laserPeckerModel.productInfoData.value?.deviceConfigBean?.bestHeightPhys
-                                ?: 0
+                            (laserPeckerModel.productInfoData.value?.deviceConfigBean?.bestHeightPhys
+                                ?: 0).toFloat().mmToRenderValueUnit()
                         )
                     } else {
                         _string(R.string.out_of_limit)
