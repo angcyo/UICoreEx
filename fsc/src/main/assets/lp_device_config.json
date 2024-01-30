@@ -101,6 +101,7 @@
     "focalDistance": 110,
     "widthPhys": 100,
     "heightPhys": 100,
+    "bestHeightPhys": 100,
     "sRepHeightPhys": 100,
     "zMaxHeight": 2000,
     "rMaxHeight": 628,
