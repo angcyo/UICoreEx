@@ -277,14 +277,14 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**是否超过了物理高度*/
     fun isOverflowHeight(@MM height: Int): Boolean {
-        val heightPhys = productInfoData.value?.deviceConfigBean?.sRepHeightPhys
-        return heightPhys != null && isSRepMode() && height > heightPhys
+        val heightPhys = productInfoData.value?.deviceConfigBean?.sRepHeightPhys ?: 0
+        return heightPhys > 0 && isSRepMode() && height > heightPhys
     }
 
     /**是否超过了有效的打印高度*/
     fun isOverflowHeightLimit(@MM height: Int): Boolean {
-        val bestHeightPhys = productInfoData.value?.deviceConfigBean?.bestHeightPhys
-        return bestHeightPhys != null && isSRepMode() && height > bestHeightPhys
+        val bestHeightPhys = productInfoData.value?.deviceConfigBean?.bestHeightPhys ?: 0
+        return bestHeightPhys > 0 && isSRepMode() && height > bestHeightPhys
     }
 
     //</editor-fold desc="Command">
