@@ -821,7 +821,9 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     itemEngraveConfigEntity = engraveConfigEntity
                 }
             }
-            if (laserPeckerModel.deviceSettingData.value?.overScanDelay == 1) {
+            if (laserPeckerModel.deviceSettingData.value?.overScanDelay == 1 /*开启了过点扫描*/ &&
+                layerList.find { it.layerId == LaserPeckerHelper.LAYER_FILL } != null /*具有填充图层*/
+            ) {
                 //过点延迟提示
                 OverScanDelayTipItem()()
             }
