@@ -1,6 +1,8 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
+import android.graphics.Point
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.toDC
 
@@ -38,7 +40,9 @@ data class FactoryCmd(
     /**data4*/
     var data4: Byte = 0x0,
 
-    ) : BaseCommand() {
+    /**[pointList] mm单位, 精度需要手动乘以10后发送来*/
+    var pointList: List<Point> = emptyList(),
+) : BaseCommand() {
 
     companion object {
 
@@ -71,6 +75,15 @@ data class FactoryCmd(
         /**激光点跳到指定坐标*/
         fun jumpToCoordCmd(x: Int, y: Int): FactoryCmd {
             return FactoryCmd(state = 0x0A, x = x, y = y)
+        }
+
+        /**[pointList] mm单位, 精度需要手动乘以10后发送来*/
+        fun jumpToCoordCmd(
+            pwr: Byte,
+            type: Byte,
+            @MM pointList: List<Point>
+        ): FactoryCmd {
+            return FactoryCmd(state = 0x0A, laser = pwr, type = type, pointList = pointList)
         }
 
         /**激光点预览功率设置*/
@@ -120,9 +133,20 @@ data class FactoryCmd(
                 }
 
                 0x0A.toByte() -> {
-                    write(x, 2)
-                    write(y, 2)
-                    writeUByte(custom)
+                    if (pointList.isEmpty()) {
+                        write(x, 2)
+                        write(y, 2)
+                        writeUByte(custom)
+                    } else {
+                        writeUByte(laser)
+                        writeUByte(type)
+                        write(pointList.size)
+                        pointList.forEach {
+                            write(it.x, 2)
+                            write(it.y, 2)
+                        }
+                        writeUByte(custom)
+                    }
                 }
 
                 0x0B.toByte() -> {
@@ -178,7 +202,17 @@ data class FactoryCmd(
                 0x05.toByte() -> append("无较正范围预览")
                 0x08.toByte() -> append("较正数据传输完成[$index]")
                 0x09.toByte() -> append("激光点跳至指定AD值:x:${adX} y:${adY} laser:$laser type:${type}")
-                0x0A.toByte() -> append("激光点跳到指定坐标:x:${x} y:${y}")
+                0x0A.toByte() -> {
+                    if (pointList.isEmpty()) {
+                        append("激光点跳到指定坐标:x:${x} y:${y}")
+                    } else {
+                        append("激光点跳到指定坐标[${pointList.size}]: laser:$laser type:${type}")
+                        pointList.forEach {
+                            append(" (x:${it.x} y:${it.y})")
+                        }
+                    }
+                }
+
                 0x0B.toByte() -> append("激光点预览功率设置:laser:$laser type:${type}")
                 0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"}")
                 0x11.toByte() -> append("保存对焦光标坐标值")
