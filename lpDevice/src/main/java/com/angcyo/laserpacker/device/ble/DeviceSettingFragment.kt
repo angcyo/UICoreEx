@@ -686,6 +686,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChecked = HawkEngraveKeys.enableGCodePathOpt
                     itemSwitchChangedAction = {
                         HawkEngraveKeys.enableGCodePathOpt = it
+                        deviceStateModel.deviceExInfoOnceData.updateValue("路径优化状态改变->${it}")
                     }
                 }
             }
