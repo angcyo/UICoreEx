@@ -119,4 +119,6 @@
     <string name="permission_request_title">Le pediremos los siguientes permisos:</string>
     <string name="permission_ble_des">Conectándose a Bluetooth\nDescripción de permiso: conectar la app a Bluetooth\nEscenario y propósito de uso: emparejar Bluetooth</string>
     <string name="permission_gps_des">Localización\nDescripción de permiso: conectar la app a la máquina\nEscenario y propósito de uso: emparejar máquina</string>
+    <string name="path_opt_label">Optimización de Trayectoria</string>
+    <string name="path_opt_des">Para datos vectoriales, optimiza la trayectoria de grabado para mejorar la eficiencia del grabado.</string>
 </resources>

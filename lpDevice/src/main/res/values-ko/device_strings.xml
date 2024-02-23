@@ -119,4 +119,6 @@
     <string name="permission_request_title">다음 권한의 허용을 요청합니다：</string>
     <string name="permission_ble_des">블루투스 장치 연결\n권한 기능 설명: 앱이 블루투스 장치에 연결할 수 있도록 허용합니다.\n사용 장면과 목적: 블루투스 장치와 매치</string>
     <string name="permission_gps_des">위치 권한\n권한 기능 설명: 앱이 기기에 연결할 수 있도록 허용합니다.\n사용 장면과 목적: 기기와 매치</string>
+    <string name="path_opt_label">경로 최적화</string>
+    <string name="path_opt_des">벡터 데이터에 맞추어 새김 경로를 최적화하여 새김 효율을 향상시킵니다.</string>
 </resources>

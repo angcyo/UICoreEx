@@ -13,6 +13,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.gcode.CollectPoint
 import com.angcyo.gcode.GCodeWriteHandler
+import com.angcyo.gcode.toCollectPointList
+import com.angcyo.gcode.toPointArray
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -31,6 +33,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeTo
 import com.angcyo.opencv.OpenCV
+import com.hingin.lp1.hiprint.rust.LdsCore
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.roundToInt
@@ -200,6 +203,15 @@ class SimpleTransition : ITransition {
         gCodeHandler.isAutoCnc = params.isAutoCnc
         gCodeHandler.isCollectPoint = params.gcodeUsePathData
 
+        //2024-2-22
+        val needGCodePathOpt = params.enableGCodePathOpt && !params.enableGCodeCutData
+        if (needGCodePathOpt) {
+            gCodeHandler.gcodeHeader = ""
+            gCodeHandler.gcodeFooter = ""
+            gCodeHandler.turnOn = ""
+            gCodeHandler.turnOff = ""
+        }
+
         //2023-11-8
         gCodeHandler.enableVectorRadiansSample = LibLpHawkKeys.enableVectorRadiansSample
         gCodeHandler.pathSampleStepRadians = LibHawkKeys.pathSampleStepRadians
@@ -233,9 +245,39 @@ class SimpleTransition : ITransition {
             gCodeHandler.needMoveToOrigin = params.gcodeMoveToOriginRange
             gCodeHandler.pathStrokeToVector(targetPathList, true, true, 0f, 0f, pathStep)
         }
+
+        //手机到的点坐标
+        var collectPointList: List<CollectPoint>? = null
+        if (gCodeHandler.isCollectPoint) {
+            collectPointList = gCodeHandler._collectPointList
+        }
+
+        if (needGCodePathOpt) {
+            //优化GCode, 并返回优化后的GCode数据
+            val text = outputFile.readText()
+            val newText = LdsCore.gcodeOptimiser(text, buildString {
+                gCodeHandler.writeGCodeHeader(this)
+            }, buildString {
+                gCodeHandler.writeGCodeFooter(this)
+            }, buildString {
+                gCodeHandler.writeTurnOn(this)
+            }, buildString {
+                gCodeHandler.writeTurnOff(this)
+            })
+            //newText.writeTo(libCacheFile("test-gcode.gc"), false)
+            newText?.writeTo(outputFile, false)//覆盖原始的GCode文件
+
+            val array = collectPointList?.toPointArray()
+            if (array != null) {
+                //路径优化
+                collectPointList = LdsCore.pointsOptimiser(array).toCollectPointList()
+            }
+            //gCodeHandler._collectPointList =
+        }
+
         val result = PathDataFile(outputFile)
         if (gCodeHandler.isCollectPoint) {
-            result.collectPointList = gCodeHandler._collectPointList
+            result.collectPointList = collectPointList
         }
         return result
     }

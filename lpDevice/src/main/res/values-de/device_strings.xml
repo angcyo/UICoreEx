@@ -119,4 +119,6 @@
     <string name="permission_request_title">Wir werden Sie um die folgenden Berechtigungen bitten:</string>
     <string name="permission_ble_des">Bluetoothberechtigung\nBeschreibung der Berechtigungsfunktion: Ermöglicht der App, eine Verbindung zu Bluetooth-Geräten herzustellen\nNutzungsszenarien und -zwecke: Kopplung von Bluetooth-Geräten</string>
     <string name="permission_gps_des">Standortberechtigung\nBeschreibung der Berechtigungsfunktion: Ermöglicht der App, eine Verbindung zur Maschine herzustellen\nNutzungsszenarien und -zwecke: Kopplung von Maschinen</string>
+    <string name="path_opt_label">Pfadoptimierung</string>
+    <string name="path_opt_des">Hinsichtlich der Vektordaten werden die Gravurpfade optimiert, um die Gravureffizienz zu verbessern.</string>
 </resources>

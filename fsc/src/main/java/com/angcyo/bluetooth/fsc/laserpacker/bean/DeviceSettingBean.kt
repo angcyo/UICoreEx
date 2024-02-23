@@ -165,6 +165,8 @@ data class DeviceSettingBean(
     var overScanDelayHelpUrlZh: String? = null,
     /**显示过点扫描延迟设置的固件范围*/
     var showOverScanDelayRange: String? = null,
+    /**显示路径优化固件范围*/
+    var showPathOptRange: String? = "",
 
     /**二维码支持的格式集合*/
     var barcode2DTypeList: List<String>? = null,

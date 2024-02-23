@@ -178,6 +178,9 @@ object HawkEngraveKeys {
     /**是否激活压缩输出GCode*/
     var enableGCodeShrink: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**是否激活GCode路径优化, 激活了路径优化要关闭GCode指令压缩, 因为优化算法不支持压缩GCode数据*/
+    var enableGCodePathOpt: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
     /**激活元素从上往下的雕刻顺序*/
     var enableItemTopOrder: Boolean by HawkPropertyValue<Any, Boolean>(false)
 

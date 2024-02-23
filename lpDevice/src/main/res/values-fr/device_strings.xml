@@ -119,4 +119,6 @@
     <string name="permission_request_title">Nous vous demanderons les autorisations suivantes ：</string>
     <string name="permission_ble_des">Bluetooth\nDescription de l\'autorisation : connecter l\'application à l\'appareil Bluetooth\nScénario d\'utilisation ou objectif : coupler le périphérique Bluetooth</string>
     <string name="permission_gps_des">Emplacement\nDescription de l\'autorisation : connecter l\'application à la machine\nScénario ou objectif d\'utilisation : coupler la machine</string>
+    <string name="path_opt_label">Optimisation des Chemins</string>
+    <string name="path_opt_des">Optimiser les chemins de gravure pour les données vectorielles afin d\'améliorer l\'efficacité de la gravure.</string>
 </resources>

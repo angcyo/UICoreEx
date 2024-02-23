@@ -159,4 +159,6 @@
     <string name="permission_request_title">We\'d like to ask you for the following permissions:</string>
     <string name="permission_ble_des">Bluetooth\nPermission description: connect the application to the Bluetooth device\nUsage scenario or purpose: pairing Bluetooth device</string>
     <string name="permission_gps_des">Location\nPermission description: connect the application to the machine\nUsage scenario or purpose: pairing the machine</string>
+    <string name="path_opt_label">Path Optimization</string>
+    <string name="path_opt_des">Optimize the engraving path based on vector data to improve engraving efficiency.</string>
 </resources>

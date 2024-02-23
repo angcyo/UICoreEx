@@ -119,4 +119,6 @@
     <string name="permission_request_title">以下の権限申し込みを同意しますか？</string>
     <string name="permission_ble_des">Bluetooth デバイス接続の許可\n許可する権限の機能説明:アプリが Bluetooth デバイスに接続することを許可する。\n使用シナリオと目的:Bluetoothデバイスとマッチングする。</string>
     <string name="permission_gps_des">位置情報のアクセス許可\n許可する権限の機能説明:アフリケ一ションがデバイスに接続することを許可する。\n使用シナリオと目的:デバイスとのマッチング</string>
+    <string name="path_opt_label">ルート最適化</string>
+    <string name="path_opt_des">ベクトルデータに対して、彫刻のルートを最適化し、彫刻の作業効率を向上させます。</string>
 </resources>

@@ -670,6 +670,25 @@ class DeviceSettingFragment : BaseDslFragment() {
                     }
                 }
             }
+            //路径优化
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showPathOptRange,
+                    false,
+                    true
+                )
+            ) {
+                HelpPropertySwitchItem()() {
+                    itemLabel = _string(R.string.path_opt_label)
+                    itemDes = _string(R.string.path_opt_des)
+                    initItem()
+
+                    itemSwitchChecked = HawkEngraveKeys.enableGCodePathOpt
+                    itemSwitchChangedAction = {
+                        HawkEngraveKeys.enableGCodePathOpt = it
+                    }
+                }
+            }
 
             //自动连接蓝牙
             if (VersionMatcher.matches(

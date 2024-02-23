@@ -104,4 +104,6 @@
     <string name="save_project_title">項目名稱</string>
     <string name="project_title_limit">最多輸入20個字符</string>
     <string name="project_save_success_tip">項目保存成功</string>
+    <string name="path_opt_label">路径优化</string>
+    <string name="path_opt_des">针对矢量数据雕刻路径优化,提高雕刻效率</string>
 </resources>

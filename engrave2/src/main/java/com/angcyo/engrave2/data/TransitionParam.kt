@@ -98,7 +98,7 @@ data class TransitionParam(
 
     /**是否激活压缩输出GCode
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
-    val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,
+    val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink && !HawkEngraveKeys.enableGCodePathOpt,
 
     /**[com.angcyo.gcode.GCodeWriteHandler.needMoveToOrigin]*/
     var gcodeMoveToOriginRange: Boolean = _gcodeMoveToOriginRange,
@@ -141,6 +141,11 @@ data class TransitionParam(
     val sliceHeight: Float = HawkEngraveKeys.minSliceHeight,
     /**切片的粒度*/
     val sliceGranularity: Int? = _sliceGranularity,
+
+    //---其他---
+
+    /**是否激活GCode路径优化*/
+    var enableGCodePathOpt: Boolean = HawkEngraveKeys.enableGCodePathOpt,
 ) {
 
     /**需要平移的矩阵信息*/

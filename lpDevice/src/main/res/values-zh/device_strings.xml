@@ -156,4 +156,6 @@
     <string name="permission_ble_des">连接蓝牙设备BLUETOOTH\n权限功能说明:允许应用连接蓝牙设备\n使用场景与目的:适配蓝牙设备</string>
     <string name="permission_gps_des">位置权限GPS\n权限功能说明:允许应用连接机器设备\n使用场景与目的:适配机器设备</string>
 
+    <string name="path_opt_label">路径优化</string>
+    <string name="path_opt_des">针对矢量数据雕刻路径优化,提高雕刻效率</string>
 </resources>
