@@ -10,6 +10,7 @@ import com.angcyo.canvas2.laser.pecker.history.dslitem.EngraveIndexHistoryItem
 import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
 import com.angcyo.engrave2.EngraveFlowDataHelper
+import com.angcyo.library.ex.isDebug
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.lpRemoveEntity
 
@@ -69,7 +70,11 @@ class EngraveDeviceHistoryFragment : BaseHistoryFragment() {
                     loadDataEnd(resultList)
                 }
             } else {
-                _adapter.toError(error)
+                if (isDebug()) {
+                    _adapter.toError(error)
+                } else {
+                    _adapter.toEmpty()
+                }
             }
         }
     }
