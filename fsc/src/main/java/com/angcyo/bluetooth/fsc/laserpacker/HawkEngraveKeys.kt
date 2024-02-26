@@ -521,4 +521,6 @@ object HawkEngraveKeys {
     var showPowerTipVersion: String? by HawkPropertyValue<Any, String?>(null)
     var showSpeedTipVersion: String? by HawkPropertyValue<Any, String?>(null)
     var showTimesTipVersion: String? by HawkPropertyValue<Any, String?>(null)
+
+    var showSpeedConvertTipVersion: String? by HawkPropertyValue<Any, String?>(null)
 }

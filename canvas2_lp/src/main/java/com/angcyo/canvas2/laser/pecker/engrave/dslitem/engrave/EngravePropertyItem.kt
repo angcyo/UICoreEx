@@ -36,6 +36,7 @@ import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.hawkGetString
 import com.angcyo.library.ex.hawkPut
 import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.visible
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -204,7 +205,18 @@ class EngravePropertyItem : DslAdapterItem() {
             }
         }
         //速度转换计算
-        itemHolder.visible(R.id.speed_convert_view, needShowSpeedConvert(_layerId))
+        itemHolder.view(R.id.speed_convert_view)?.apply {
+            val showSpeedConvert = needShowSpeedConvert(_layerId)
+            visible(showSpeedConvert)
+            if (showSpeedConvert) {
+                checkAndShowTip(
+                    this,
+                    _string(R.string.speed_convert_calculate, "LP4"),
+                    HawkEngraveKeys::showSpeedConvertTipVersion.name,
+                    /*Gravity.LEFT or Gravity.BOTTOM*/
+                )
+            }
+        }
         itemHolder.click(R.id.speed_convert_view) {
             it.context.speedConvertDialogConfig {
                 appointConvertType = SpeedConvertDialogConfig.TYPE_TO_NEW
@@ -338,12 +350,17 @@ class EngravePropertyItem : DslAdapterItem() {
         wheelItems?.get(index)?.toString()?.toIntOrNull() ?: def
 
     /**检查或者显示tip窗口*/
-    private fun checkAndShowTip(anchor: View, tip: CharSequence?, hawkKey: String) {
+    private fun checkAndShowTip(
+        anchor: View,
+        tip: CharSequence?,
+        hawkKey: String,
+        gravity: Int? = null,
+    ) {
         val value = hawkKey.hawkGetString()?.toLongOrNull()
         val versionCode = getAppVersionCode()
         if (itemShowPopupTip && value != versionCode) {
             anchor.postDelayed(360L) {
-                anchor.popupTipWindow(tip)
+                anchor.popupTipWindow(tip, gravity = gravity)
                 hawkKey.hawkPut("$versionCode")
             }
         }
