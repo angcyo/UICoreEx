@@ -69,6 +69,12 @@ data class DeviceSettingBean(
     var multiElementRange: String? = null,
     /**切片浮雕, 使用循环数据指令的版本范围*/
     var loopGcodeDataCmdRange: String? = null,
+    /**材质版本名称映射, 比如:
+     * 原本的材质配置名称: `LP4_450_10.json`,
+     * 现在`655~699`版本的固件需要指定配置文件名到`LP4_655_450_10.json`配置名称,
+     * 则需要配置: `655~699`->`LP4_655.json`
+     * */
+    var materialConfigNameMap: Map<String, String?>? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/

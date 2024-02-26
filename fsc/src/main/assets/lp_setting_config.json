@@ -44,6 +44,9 @@
   "rotateFlagHelpUrlZh": "https://faq.hingin.com/docs/RFlag_Tutorial",
   "freeModeProtectorHelpUrl": "https://laserpecker.feishu.cn/wiki/B4JawedgFiocNckoPkzcKTi1nfh",
   "freeModeProtectorHelpUrlZh": "https://laserpecker.feishu.cn/wiki/BnQUwJzt3itytpk1ZoccaSUDnKb",
+  "materialConfigNameMap": {
+    "655~699": "LP4_655"
+  },
   "dateFormatList": [
     "YYYY-MM-DD",
     "MM-DD-YYYY",

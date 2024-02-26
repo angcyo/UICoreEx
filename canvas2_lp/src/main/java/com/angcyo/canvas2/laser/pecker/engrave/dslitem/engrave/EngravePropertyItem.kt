@@ -36,6 +36,7 @@ import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.hawkGetString
 import com.angcyo.library.ex.hawkPut
 import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.tooltipText
 import com.angcyo.library.ex.visible
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.unit.InchRenderUnit
@@ -206,14 +207,15 @@ class EngravePropertyItem : DslAdapterItem() {
         }
         //速度转换计算
         itemHolder.view(R.id.speed_convert_view)?.apply {
+            val label = _string(R.string.speed_convert_calculate, "LP4")
+            tooltipText(label)
             val showSpeedConvert = needShowSpeedConvert(_layerId)
             visible(showSpeedConvert)
             if (showSpeedConvert) {
                 checkAndShowTip(
                     this,
-                    _string(R.string.speed_convert_calculate, "LP4"),
-                    HawkEngraveKeys::showSpeedConvertTipVersion.name,
-                    /*Gravity.LEFT or Gravity.BOTTOM*/
+                    label,
+                    HawkEngraveKeys::showSpeedConvertTipVersion.name/*Gravity.LEFT or Gravity.BOTTOM*/
                 )
             }
         }

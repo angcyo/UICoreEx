@@ -1,6 +1,8 @@
 package com.angcyo.bluetooth.fsc.laserpacker.data
 
 import androidx.annotation.Keep
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.matchesProductVersion
 import com.angcyo.library.ex.appendSpaceIfNotEmpty
 import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.extend.IToText
@@ -52,18 +54,24 @@ data class LaserTypeInfo(
     override fun toText(): CharSequence = "${wave}nm"  //label
 
     /**配置文件的名称
-     * [productName] 产品名称 `LP4/LX1`*/
+     * [productName] 产品名称 `LP4/LX1`
+     * [version] 固件的版本号
+     * */
     fun getConfigFileName(productName: String): String {
+        val key =
+            _deviceSettingBean?.materialConfigNameMap?.keys?.find { it.matchesProductVersion() }
+        val prefix = if (!key.isNullOrEmpty()) _deviceSettingBean?.materialConfigNameMap?.get(key)
+            ?: productName else productName
         if (wave > 0 && power > 0) {
-            return "${productName}_${wave}_${power.ensureInt()}.json"
+            return "${prefix}_${wave}_${power.ensureInt()}.json"
         }
         if (moduleState >= 0) {
-            return "${productName}_module_${moduleState}.json"
+            return "${prefix}_module_${moduleState}.json"
         }
         if (type >= 0) {
-            return "${productName}_type_${type}.json"
+            return "${prefix}_type_${type}.json"
         }
-        return "${productName}.json"
+        return "${prefix}.json"
     }
 
     fun toLabel(): CharSequence = buildString {
