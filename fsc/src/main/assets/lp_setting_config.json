@@ -44,6 +44,8 @@
   "rotateFlagHelpUrlZh": "https://faq.hingin.com/docs/RFlag_Tutorial",
   "freeModeProtectorHelpUrl": "https://laserpecker.feishu.cn/wiki/B4JawedgFiocNckoPkzcKTi1nfh",
   "freeModeProtectorHelpUrlZh": "https://laserpecker.feishu.cn/wiki/BnQUwJzt3itytpk1ZoccaSUDnKb",
+  "overScanDelayHelpUrl": "https://faq.hingin.com/docs/time_delay_en",
+  "overScanDelayHelpUrlZh": "https://faq.hingin.com/docs/time_delay",
   "materialConfigNameMap": {
     "655~699": "LP4_655"
   },
