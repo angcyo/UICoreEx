@@ -662,6 +662,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemLabel = _string(R.string.over_scan_delay_label)
                     itemDes = _string(R.string.over_scan_delay_des)
                     initItem()
+                    itemCheckTipFlag = false
 
                     itemSwitchChecked = settingParser?.overScanDelay == 1
                     itemSwitchChangedAction = {
@@ -682,6 +683,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemLabel = _string(R.string.path_opt_label)
                     itemDes = _string(R.string.path_opt_des)
                     initItem()
+                    itemCheckTipFlag = false
 
                     itemSwitchChecked = HawkEngraveKeys.enableGCodePathOpt
                     itemSwitchChangedAction = {

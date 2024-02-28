@@ -32,9 +32,12 @@ class HelpPropertySwitchItem : DslPropertySwitchItem() {
     /**提示窗口使用的label, 默认是[itemLabel]*/
     var itemTipLabel: CharSequence? = null
 
+    /**选中状态时, 是否需要tip*/
+    var itemCheckTipFlag: Boolean = true
+
     /**是否要提示*/
     private val needFlagTip: Boolean
-        get() = itemFlagPromptKey?.hawkGetBoolean() != true
+        get() = itemCheckTipFlag && itemFlagPromptKey?.hawkGetBoolean() != true
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
