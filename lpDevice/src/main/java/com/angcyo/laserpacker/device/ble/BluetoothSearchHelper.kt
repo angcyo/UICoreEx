@@ -81,7 +81,7 @@ class BluetoothSearchHelper {
         var ON_CONTACT_ME_ACTION: Action? = null
 
         /**指定的蓝牙名称, 是否是LP设备*/
-        fun isLpBluetoothDevice(deviceName: String?): Boolean {
+        fun isLaserPeckerDevice(deviceName: String?): Boolean {
             deviceName ?: return false
             val name = deviceName.lowercase()
             if (name.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX} ".lowercase())) {
@@ -293,7 +293,7 @@ class BluetoothSearchHelper {
             }
             viewHolder.tab(R.id.scan_type_tab_layout)?.apply {
                 tabDefaultIndex =
-                    if (HawkEngraveKeys.lastWifiConnect) scanTypeList.indexOfFirst { it.type == ScanType.TYPE_WIFI }
+                    if (HawkEngraveKeys.lastConnectDeviceType != LaserPeckerHelper.DEVICE_TYPE_BLE) scanTypeList.indexOfFirst { it.type == ScanType.TYPE_WIFI }
                     else scanTypeList.indexOfFirst { it.type == ScanType.TYPE_BLE }
                 resetChild(
                     scanTypeList,
@@ -329,7 +329,7 @@ class BluetoothSearchHelper {
 
                     //过滤
                     if (find == null) {
-                        if (isLpBluetoothDevice(device.name) &&
+                        if (isLaserPeckerDevice(device.name) &&
                             !DeviceConnectTipActivity.isWifiDevice(device.name)
                         ) {
                             //添加新的item
@@ -423,7 +423,7 @@ class BluetoothSearchHelper {
 
                     //过滤
                     if (find == null) {
-                        if (isLpBluetoothDevice(device.deviceName) &&
+                        if (isLaserPeckerDevice(device.deviceName) &&
                             DeviceConnectTipActivity.isWifiDevice(device.deviceName)
                         ) {
                             //添加新的item
@@ -470,12 +470,12 @@ class BluetoothSearchHelper {
                 }
             }
 
-            if (wifiModel.startScan(lifecycleOwner)) {
+            if (wifiModel.startDiscovery(lifecycleOwner)) {
                 //开始扫描的时间
                 onStartScan()
             }
         } else if (rescan) {
-            if (wifiModel.startScan(lifecycleOwner)) {
+            if (wifiModel.startDiscovery(lifecycleOwner)) {
                 //开始扫描的时间
                 onStartScan()
             }
@@ -617,7 +617,7 @@ class BluetoothSearchHelper {
     fun toggleScan(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
         if (scanType.type == ScanType.TYPE_WIFI) {
             if (wifiModel.scanState == WifiDeviceScan.STATE_SCAN_START) {
-                wifiModel.stopScan()
+                wifiModel.stopDiscovery()
             } else {
                 renderWifiLayout(lifecycleOwner, viewHolder, true)
             }
@@ -633,7 +633,7 @@ class BluetoothSearchHelper {
     /**停止扫描*/
     fun stopScan() {
         bleModel.stopScan()
-        wifiModel.stopScan()
+        wifiModel.stopDiscovery()
     }
 
 }

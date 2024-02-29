@@ -16,6 +16,7 @@ import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.StateBarDrawable
 import com.angcyo.http.rx.doBack
+import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -48,6 +49,20 @@ import kotlin.math.max
  * @since 2022/03/24
  */
 object LaserPeckerHelper {
+
+    /**设备类型:无*/
+    const val DEVICE_TYPE_NONE = 0
+
+    /**设备类型:蓝牙*/
+    const val DEVICE_TYPE_BLE = 1
+
+    /**设备类型:WIFI*/
+    const val DEVICE_TYPE_WIFI = 2
+
+    /**设备类型:Http*/
+    const val DEVICE_TYPE_HTTP = 3
+
+    //---
 
     /**初始化指令, 失败后重试的次数*/
     var INIT_RETRY_COUNT = 3
@@ -267,13 +282,20 @@ object LaserPeckerHelper {
         }
     }
 
-    /**指定的蓝牙设备名, 是否是wifi设备
+    /**指定的蓝牙设备名, 是否是wifi设备, wifi设备使用socket传输
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isWifiProduct]
      * */
     fun isWifiDevice(deviceName: String?): Boolean {
+        //LP5 才有WIFI模块
+        return deviceName?.startsWith(LV) == true
+    }
+
+    /**
+     * LX2之后, 都是http请求的设备
+     * */
+    fun isHttpDevice(deviceName: String?): Boolean {
         //LP5 LX2 才有WIFI模块
-        return deviceName?.startsWith(LV) == true ||
-                deviceName?.startsWith(CII) == true
+        return deviceName?.startsWith(CII) == true
     }
 
     /**指定的蓝牙设备名, 是否具有USB存储功能
@@ -1045,4 +1067,25 @@ fun List<PxInfo>.filterPxList(result: MutableList<PxInfo> = mutableListOf()) =
         } else {
             true
         }
+    }
+
+/**访问主机*/
+val TcpDevice.host: String
+    get() = when (deviceType) {
+        LaserPeckerHelper.DEVICE_TYPE_HTTP -> "http://${address}.local"
+        LaserPeckerHelper.DEVICE_TYPE_WIFI -> "${address}.local"
+        else -> address
+    }
+
+/**从设备名中获取设备类型信息*/
+val TcpDevice.deviceType: Int
+    get() = deviceName?.deviceType ?: LaserPeckerHelper.DEVICE_TYPE_NONE
+
+val String.deviceType: Int
+    get() = if (LaserPeckerHelper.isHttpDevice(this)) {
+        LaserPeckerHelper.DEVICE_TYPE_HTTP
+    } else if (LaserPeckerHelper.isWifiDevice(this)) {
+        LaserPeckerHelper.DEVICE_TYPE_WIFI
+    } else {
+        LaserPeckerHelper.DEVICE_TYPE_BLE
     }

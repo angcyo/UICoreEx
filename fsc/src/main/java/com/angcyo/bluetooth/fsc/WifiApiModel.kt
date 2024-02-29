@@ -1,15 +1,27 @@
 package com.angcyo.bluetooth.fsc
 
+import android.content.Context
+import android.net.nsd.NsdManager
+import android.net.nsd.NsdServiceInfo
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.core.WifiDeviceScan
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.deviceType
+import com.angcyo.bluetooth.fsc.laserpacker.host
 import com.angcyo.http.tcp.Tcp
 import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.http.tcp.TcpState
+import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.app
+import com.angcyo.library.component._delay
 import com.angcyo.library.component.hawk.LibLpHawkKeys
+import com.angcyo.library.component.runOnMainThread
 import com.angcyo.library.ex.nowTime
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.MutableOnceLiveData
@@ -44,7 +56,7 @@ class WifiApiModel : ViewModel(), IViewModel {
             }
             /*return lpBoxOf(DeviceConnectEntity::class).findLastList()
                 .lastOrNull()?.isWifiConnect == true*/
-            return HawkEngraveKeys.lastWifiConnect
+            return HawkEngraveKeys.lastConnectDeviceType == LaserPeckerHelper.DEVICE_TYPE_WIFI
         }
     }
 
@@ -63,6 +75,12 @@ class WifiApiModel : ViewModel(), IViewModel {
             super.onConnectStateChanged(tcp, state, info)
             tcpStateData.updateValue(state)
             tcpConnectDeviceOnceData.updateValue(state.tcpDevice)
+
+            //更新连接状态
+            tcpScanDeviceList.find { state.tcpDevice.deviceName == it.deviceName }?.let {
+                it.connectState = state.state
+            }
+
             if (state.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                 //连接成功
                 if (!tcpConnectDeviceListData.value!!.contains(state.tcpDevice)) {
@@ -149,7 +167,7 @@ class WifiApiModel : ViewModel(), IViewModel {
      * */
     fun connect(device: TcpDevice, info: TcpConnectInfo?) {
         HawkEngraveKeys.forceUseWifi = true
-        HawkEngraveKeys.lastWifiConnect = true
+        HawkEngraveKeys.lastConnectDeviceType = device.deviceType
         HawkEngraveKeys.lastWifiIp = device.address
         if (tcp.tcpDevice == null || tcp.tcpDevice == device) {
             tcp.tcpDevice = device
@@ -193,7 +211,7 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     //---
 
-    /**端口扫描*/
+    /**使用ip端口扫描设备*/
     fun startScan(lifecycleOwner: LifecycleOwner): Boolean {
         if (scanState == WifiDeviceScan.STATE_SCAN_START) {
             return false
@@ -209,5 +227,118 @@ class WifiApiModel : ViewModel(), IViewModel {
             wifiDeviceScan.cancel()
         }
     }
+
+    //region ---nsd---
+
+    var _lifecycleOwner: LifecycleOwner? = null
+    val _lifecycleObserver = LifecycleEventObserver { source, event ->
+        if (event == Lifecycle.Event.ON_DESTROY) {
+            //销毁之后, 自动移除
+            stopDiscovery()
+        }
+    }
+
+    /**[NsdModel]*/
+    val nsdManager: NsdManager by lazy {
+        app().getSystemService(Context.NSD_SERVICE) as NsdManager
+    }
+
+    // Instantiate a new DiscoveryListener
+    private val discoveryListener = object : NsdManager.DiscoveryListener {
+
+        // Called as soon as service discovery begins.
+        override fun onDiscoveryStarted(regType: String) {
+            L.d("开始发现服务:${regType}")
+        }
+
+        override fun onServiceFound(service: NsdServiceInfo) {
+            L.d("发现服务:$service")
+            runOnMainThread {
+                val device = TcpDevice(service.serviceName, service.port, service.serviceName)
+                device.address = device.host
+                if (device.deviceType == LaserPeckerHelper.DEVICE_TYPE_WIFI) {
+                    device.port = HawkEngraveKeys.wifiPort
+                }
+                device.connectState =
+                    tcpConnectDeviceListData.value?.find { it == device }?.connectState
+                        ?: device.connectState
+                if (!tcpScanDeviceList.contains(device)) {
+                    tcpScanDeviceList.add(device)
+                    tcpDeviceOnceData.updateValue(device)
+                }
+            }
+        }
+
+        override fun onServiceLost(service: NsdServiceInfo) {
+            // When the network service is no longer available.
+            // Internal bookkeeping code goes here.
+            L.e("服务丢失:$service")
+        }
+
+        override fun onDiscoveryStopped(serviceType: String) {
+            L.i("发现服务停止:$serviceType")
+            stopDiscovery()
+        }
+
+        override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+            L.e("发现服务失败:$serviceType :$errorCode")
+            stopDiscovery()
+        }
+
+        override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+            L.e("停止发现服务失败:${serviceType} :$errorCode")
+            nsdManager.stopServiceDiscovery(this)
+        }
+    }
+
+    /**更新探测状态*/
+    private fun updateDiscoveryState(state: Int) {
+        wifiDeviceScan._state = state
+        scanStateOnceData.updateValue(state)
+    }
+
+    /**使用nsd服务,开始发现设备*/
+    fun startDiscovery(lifecycleOwner: LifecycleOwner): Boolean {
+        if (scanState == WifiDeviceScan.STATE_SCAN_START) {
+            return false
+        }
+        _lifecycleOwner = lifecycleOwner
+        lifecycleOwner.lifecycle.addObserver(_lifecycleObserver)
+        tcpScanDeviceList.clear()
+        try {
+            nsdManager.discoverServices(
+                HawkEngraveKeys.nsdServiceType,
+                NsdManager.PROTOCOL_DNS_SD,
+                discoveryListener
+            )
+            updateDiscoveryState(WifiDeviceScan.STATE_SCAN_START)
+
+            //3秒后停止
+            _delay(3 * 1000) {
+                stopDiscovery()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return true
+    }
+
+    /**停止发现设备*/
+    fun stopDiscovery() {
+        if (scanState == WifiDeviceScan.STATE_SCAN_START) {
+            nsdManager.stopServiceDiscovery(discoveryListener)
+            updateDiscoveryState(WifiDeviceScan.STATE_SCAN_FINISH)
+        }
+        try {
+            nsdManager.stopServiceDiscovery(discoveryListener)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        _lifecycleOwner?.lifecycle?.removeObserver(_lifecycleObserver)
+        _lifecycleOwner = null
+    }
+
+    //endregion ---nsd---
 
 }

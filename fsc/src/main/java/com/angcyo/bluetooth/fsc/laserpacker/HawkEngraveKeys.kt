@@ -431,8 +431,13 @@ object HawkEngraveKeys {
      * */
     var forceUseWifi: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
-    /**最后一次是否是使用wifi连接的*/
-    var lastWifiConnect: Boolean by HawkPropertyValue<Any, Boolean>(false)
+    /**最后一次是否是使用wifi连接的
+     * 最后一次连接的设备类型
+     * */
+    var lastConnectDeviceType: Int by HawkPropertyValue<Any, Int>(LaserPeckerHelper.DEVICE_TYPE_NONE)
+
+    /**NSD探测服务的类型*/
+    var nsdServiceType: String by HawkPropertyValue<Any, String>("_http._tcp") //2024-2-29
 
     /**最后一次配置的wifi设备ip
      * 用来用来确定是否配置过wifi设备*/

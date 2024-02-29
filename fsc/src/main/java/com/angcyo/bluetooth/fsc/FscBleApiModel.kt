@@ -32,6 +32,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RE
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean.AtCommandBean
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
@@ -855,7 +856,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         stopScan: Boolean = true,
         connectToModify: Boolean = false,
     ) {
-        HawkEngraveKeys.lastWifiConnect = false
+        HawkEngraveKeys.lastConnectDeviceType = LaserPeckerHelper.DEVICE_TYPE_BLE
         _checkDisconnectTimeout()
         if (stopScan) {
             stopScan()
