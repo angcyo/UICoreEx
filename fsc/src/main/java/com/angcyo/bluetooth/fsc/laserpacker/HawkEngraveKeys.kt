@@ -425,6 +425,9 @@ object HawkEngraveKeys {
 
     //2023-8-2
 
+    /**是否使用旧的wifi扫描设备*/
+    var useOldWifiScan: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     /**强制显示wifi扫描列表
      * [LibLpHawkKeys.enableWifiConfig]
      * [HawkEngraveKeys.forceUseWifi]

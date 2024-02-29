@@ -30,7 +30,7 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
                     wifiApi.disconnect(TcpConnectInfo(isActiveDisConnected = true))
                 } else {
                     //未连接
-                    wifiApi.stopScan()
+                    wifiApi.stopIpScan()
                     fscApi.disconnectAll(true) //断开所有蓝牙连接
                     wifiApi.connect(itemTcpDevice!!, null)
                     onSearchFinish()

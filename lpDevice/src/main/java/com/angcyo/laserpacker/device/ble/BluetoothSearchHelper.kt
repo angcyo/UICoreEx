@@ -470,12 +470,12 @@ class BluetoothSearchHelper {
                 }
             }
 
-            if (wifiModel.startDiscovery(lifecycleOwner)) {
+            if (wifiModel.startScan(lifecycleOwner)) {
                 //开始扫描的时间
                 onStartScan()
             }
         } else if (rescan) {
-            if (wifiModel.startDiscovery(lifecycleOwner)) {
+            if (wifiModel.startScan(lifecycleOwner)) {
                 //开始扫描的时间
                 onStartScan()
             }
@@ -617,7 +617,7 @@ class BluetoothSearchHelper {
     fun toggleScan(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
         if (scanType.type == ScanType.TYPE_WIFI) {
             if (wifiModel.scanState == WifiDeviceScan.STATE_SCAN_START) {
-                wifiModel.stopDiscovery()
+                wifiModel.stopScan()
             } else {
                 renderWifiLayout(lifecycleOwner, viewHolder, true)
             }
@@ -633,7 +633,7 @@ class BluetoothSearchHelper {
     /**停止扫描*/
     fun stopScan() {
         bleModel.stopScan()
-        wifiModel.stopDiscovery()
+        wifiModel.stopScan()
     }
 
 }

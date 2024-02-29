@@ -209,10 +209,28 @@ class WifiApiModel : ViewModel(), IViewModel {
         tcp.cancel(info) //取消连接, 这里应该要支持多设备连接
     }
 
+    /**开始扫描设备*/
+    fun startScan(lifecycleOwner: LifecycleOwner): Boolean {
+        return if (HawkEngraveKeys.useOldWifiScan) {
+            startIpScan(lifecycleOwner)
+        } else {
+            startDiscovery(lifecycleOwner)
+        }
+    }
+
+    /**结束扫描设备*/
+    fun stopScan() {
+        if (HawkEngraveKeys.useOldWifiScan) {
+            stopIpScan()
+        } else {
+            stopDiscovery()
+        }
+    }
+
     //---
 
     /**使用ip端口扫描设备*/
-    fun startScan(lifecycleOwner: LifecycleOwner): Boolean {
+    fun startIpScan(lifecycleOwner: LifecycleOwner): Boolean {
         if (scanState == WifiDeviceScan.STATE_SCAN_START) {
             return false
         }
@@ -222,7 +240,7 @@ class WifiApiModel : ViewModel(), IViewModel {
     }
 
     /**停止端口扫描*/
-    fun stopScan() {
+    fun stopIpScan() {
         if (scanState == WifiDeviceScan.STATE_SCAN_START) {
             wifiDeviceScan.cancel()
         }
