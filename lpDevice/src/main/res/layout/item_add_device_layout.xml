@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/lib_hdpi">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lib_item_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/add_device_item_bg_selector">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="@dimen/lib_xxxhdpi"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:srcCompat="@mipmap/device_l5" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/lib_xhdpi"
+            tools:text="LP5" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_check_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/lib_xhdpi"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/lib_check_lp_checked" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

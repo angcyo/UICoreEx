@@ -18,4 +18,10 @@ data class AddDeviceConfigBean(
     val channelPage: String, //, MethodChannelParam.deviceDiscovery
     /**是否只在debug模式下显示*/
     val debug: Boolean = false,
-)
+) {
+    companion object {
+        const val CHANNEL_PAGE_HTTP = "apDiscovery"
+        const val CHANNEL_PAGE_WIFI = "deviceDiscovery"
+        const val CHANNEL_PAGE_BLE = "bleScan"
+    }
+}

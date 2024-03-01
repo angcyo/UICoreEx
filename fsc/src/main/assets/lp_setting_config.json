@@ -172,6 +172,12 @@
       "type": 11,
       "url": "assets/images/device_lx1.png",
       "channelPage": "bleScan"
+    },
+    {
+      "name": "LX2",
+      "type": 12,
+      "url": "assets/images/device_lx2.png",
+      "channelPage": "apDiscovery"
     }
   ]
 }
