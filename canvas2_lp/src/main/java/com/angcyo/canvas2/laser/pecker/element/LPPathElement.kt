@@ -33,7 +33,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
 import com.angcyo.svg.Svg
-import com.angcyo.toSVGStrokeContentStr
+import com.angcyo.toSVGStrokeContentVectorStr
 import com.angcyo.vector.VectorHelper
 import com.angcyo.vector.VectorWriteHandler
 import com.pixplicity.sharp.Sharp
@@ -330,7 +330,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             if (HawkEngraveKeys.enableDrawPathFill) {
                 //使用编辑后的数据进行路径填充, 需要改变数据,清空原始渲染属性
                 val pList = getOriginPathTranslateAfter()
-                val svg = pList?.toSVGStrokeContentStr {
+                val svg = pList?.toSVGStrokeContentVectorStr {
                     it.isSinglePath = true
                     it.needClosePath = true
                 }

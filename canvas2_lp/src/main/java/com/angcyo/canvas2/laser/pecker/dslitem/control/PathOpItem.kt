@@ -23,7 +23,7 @@ import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex.op
 import com.angcyo.library.ex.toListOf
-import com.angcyo.toSVGStrokeContentStr
+import com.angcyo.toSVGStrokeContentVectorStr
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -70,7 +70,7 @@ class PathOpItem : CanvasIconItem() {
                 val svgContent = if (result.isEmpty) {
                     null
                 } else {
-                    result.toSVGStrokeContentStr {
+                    result.toSVGStrokeContentVectorStr {
                         it.isSinglePath = true
                         it.needClosePath = false //不需要闭合
                     }
