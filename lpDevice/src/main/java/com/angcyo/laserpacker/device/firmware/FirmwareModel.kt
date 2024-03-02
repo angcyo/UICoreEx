@@ -16,10 +16,12 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.vmApp
 import com.angcyo.http.download.download
 import com.angcyo.laserpacker.device.R
+import com.angcyo.library.component.MainExecutor
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex._string
 import com.angcyo.library.utils.CRC16.crc16
 import com.angcyo.viewmodel.vmDataOnce
+import java.util.concurrent.TimeoutException
 
 /**
  * 固件升级模式
@@ -110,10 +112,32 @@ class FirmwareModel : ViewModel() {
         }
     }
 
+    val timeout = 3 * 60 * 1000L
+
+    /**更新固件超时检测*/
+    val updateTimeoutRunnable = Runnable {
+        firmwareUpdateOnceData.postValue(
+            FirmwareUpdateState(
+                FirmwareUpdateState.STATE_ERROR,
+                -1,
+                TimeoutException(_string(R.string.command_timeout_tip))
+            )
+        )
+    }
+
+    fun startCheckTimeout() {
+        MainExecutor.delay(updateTimeoutRunnable, timeout)
+    }
+
+    fun removeCheckTimeout() {
+        MainExecutor.remove(updateTimeoutRunnable)
+    }
+
     var _waitReceivePacket: WaitReceivePacket? = null
 
     /**监听是否接收数据完成, 数据接收完成设备自动重启*/
     fun listenerFinish() {
+        startCheckTimeout()
         _waitReceivePacket = listenerReceivePacket(progress = {
             //进度
             firmwareUpdateOnceData.postValue(
@@ -123,6 +147,7 @@ class FirmwareModel : ViewModel() {
                 )
             )
         }) { receivePacket, bean, error ->
+            removeCheckTimeout()
             val isFinish = bean?.parse<FirmwareUpdateParser>()?.isUpdateFinish() == true
             if (isFinish || (error != null && error !is ReceiveCancelException)) {
                 receivePacket.isCancel = true
