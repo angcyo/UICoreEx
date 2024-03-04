@@ -112,7 +112,7 @@ class FirmwareModel : ViewModel() {
         }
     }
 
-    val timeout = 3 * 60 * 1000L
+    val timeout = /*3 **/ 60 * 1000L
 
     /**更新固件超时检测*/
     val updateTimeoutRunnable = Runnable {

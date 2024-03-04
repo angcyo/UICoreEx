@@ -28,7 +28,9 @@ data class WifiUpdateCmd(
         write(commandFunc())
         write(state)
         write(custom)
+        write("\"")
         write(url)
+        write("\"")
         write(0)//结束字符
     }
 }
