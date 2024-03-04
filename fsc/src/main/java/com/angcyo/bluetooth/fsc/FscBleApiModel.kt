@@ -31,10 +31,12 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PR
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean.AtCommandBean
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
+import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -1153,6 +1155,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         callbackListenerList.forEach {
             it.onPeripheralConnected(address, gatt, type)
         }
+
+        vmApp<DeviceStateModel>().notifyDeviceConnect(LaserPeckerHelper.DEVICE_TYPE_BLE)
     }
 
     @UiThread

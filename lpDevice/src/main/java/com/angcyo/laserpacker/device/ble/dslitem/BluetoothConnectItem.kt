@@ -40,7 +40,7 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
                 if (fscApi.isConnectState(itemFscDevice)) {
                     fscApi.disconnect(itemFscDevice)
                 } else {
-                    wifiApi.disconnectAll(null) //断开所有Wifi连接
+                    wifiApi.disconnectAll() //断开所有Wifi连接
                     fscApi.connect(itemFscDevice, false, true)
                     onSearchFinish()
                 }

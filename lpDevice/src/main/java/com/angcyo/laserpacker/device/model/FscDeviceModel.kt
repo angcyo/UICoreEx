@@ -11,6 +11,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.deviceType
+import com.angcyo.bluetooth.fsc.laserpacker.deviceTypeName
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.Debug
 import com.angcyo.core.component.file.writeErrorLog
@@ -107,15 +109,15 @@ class FscDeviceModel : LifecycleViewModel() {
                 val tcpDevice = tcpState.tcpDevice
                 val log = "[${tcpDevice.deviceName}]:${tcpDevice.address}:${tcpDevice.port}"
                 if (tcpState.state == Tcp.CONNECT_STATE_CONNECTING) {
-                    "WIFI准备连接${log}".writeBleLog()
+                    "${tcpDevice.deviceTypeName}准备连接${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_ERROR) {
-                    "WIFI连接失败${log}:${it.connectInfo}".writeErrorLog()
+                    "${tcpDevice.deviceTypeName}连接失败${log}:${it.connectInfo}".writeErrorLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
                     //wifi断开
                     productAssignLocationBounds = null
                     toastQQ(_string(R.string.wifi_disconnected))
                     onDeviceDisconnect(it.connectInfo?.isActiveDisConnected == true)
-                    "WIFI已断开[主动:${(it.connectInfo?.isActiveDisConnected == true).toDC()}]:${log}".writeBleLog()
+                    "${tcpDevice.deviceTypeName}已断开[主动:${(it.connectInfo?.isActiveDisConnected == true).toDC()}]:${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                     //WIFI连接成功
                     val isAutoConnect = tcpState.connectInfo?.isAutoConnect == true
@@ -127,7 +129,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         wifiApiModel.connectStartTime,
                         tcpState.connectInfo?.isReConnect == false
                     )
-                    "WIFI连接成功[auto:${isAutoConnect.toDC()}]:${log}".writeBleLog()
+                    "${tcpDevice.deviceTypeName}连接成功[auto:${isAutoConnect.toDC()}]:${log}".writeBleLog()
                 }
             }
         }
@@ -341,8 +343,11 @@ class FscDeviceModel : LifecycleViewModel() {
                     }
 
                     if (autoConnect) {
-                        if (it.isWifiConnect) {
-                            //wifi连接的设备
+                        if (it.isWifiConnect ||
+                            it.deviceType == LaserPeckerHelper.DEVICE_TYPE_WIFI ||
+                            it.deviceType == LaserPeckerHelper.DEVICE_TYPE_HTTP
+                        ) {
+                            //wifi/http连接的设备
                             "准备自动连接设备[${it.deviceName}]:${it.deviceAddress}:${it.wifiPort}".writeBleLog()
                             wifiApiModel.connect(
                                 TcpDevice(it.deviceAddress ?: "", it.wifiPort, it.deviceName),
@@ -382,6 +387,7 @@ class FscDeviceModel : LifecycleViewModel() {
         DeviceConnectEntity::class.saveEntity(LPBox.PACKAGE_NAME) {
             this.isAutoConnect = isAutoConnect
             this.deviceAddress = address
+            this.deviceType = name.deviceType
             this.deviceName = name
             this.wifiPort = port
             this.isWifiConnect = port > 0

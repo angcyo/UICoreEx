@@ -424,7 +424,8 @@ class BluetoothSearchHelper {
                     //过滤
                     if (find == null) {
                         if (isLaserPeckerDevice(device.deviceName) &&
-                            DeviceConnectTipActivity.isWifiDevice(device.deviceName)
+                            (DeviceConnectTipActivity.isWifiDevice(device.deviceName) ||
+                                    DeviceConnectTipActivity.isHttpDevice(device.deviceName))
                         ) {
                             //添加新的item
                             renderBluetoothConnectItem(null, device)

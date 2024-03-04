@@ -34,7 +34,7 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LIII]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LIV]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.CI]
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.CII]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LX2]
      * */
     var name: String?,
 
@@ -170,7 +170,7 @@ data class LaserPeckerProductInfo(
      * */
     fun isCI(): Boolean = name == LaserPeckerHelper.CI
 
-    fun isCII(): Boolean = name == LaserPeckerHelper.CII
+    fun isCII(): Boolean = name == LaserPeckerHelper.LX2
 
     //---
 

@@ -15,6 +15,7 @@ import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.updateItemWith
+import com.angcyo.getData
 import com.angcyo.getDataParcelable
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.laserpacker.device.R
@@ -36,6 +37,8 @@ import com.angcyo.library.toastQQ
  * @since 2023/07/31
  */
 class AddWifiStateFragment : BaseDslFragment() {
+    /**是否是配置ap网络*/
+    var isConfigApDevice: Boolean = false
 
     /**选择的设备*/
     var deviceConfig: WifiConfigBean? = null
@@ -55,7 +58,12 @@ class AddWifiStateFragment : BaseDslFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        deviceConfig = getDataParcelable()
+        isConfigApDevice =
+            getData<Boolean>(AddWifiConfigFragment.KEY_IS_CONFIG_AP_DEVICE) ?: isConfigApDevice
+        if (isConfigApDevice) {
+        } else {
+            deviceConfig = getDataParcelable()
+        }
     }
 
     override fun onDestroy() {
@@ -82,7 +90,9 @@ class AddWifiStateFragment : BaseDslFragment() {
             finishWifiConfig()
         }
 
-        if (deviceConfig == null) {
+        if (isConfigApDevice) {
+
+        } else if (deviceConfig == null) {
             removeThis()
             toastQQ(_string(R.string.core_thread_error_tip))
         }
@@ -94,6 +104,7 @@ class AddWifiStateFragment : BaseDslFragment() {
     private fun finishWifiConfig() {
         dslFHelper {
             remove(AddWifiDeviceFragment::class, AddWifiConfigFragment::class)
+            remove(AddHttpApConfigFragment::class)
             removeThis()
         }
     }
@@ -124,15 +135,20 @@ class AddWifiStateFragment : BaseDslFragment() {
         //默认状态
         toConfigState(AddWifiStateItem.STATE_NORMAL)
 
-        "开始配置wifi:$deviceConfig".writeBleLog()
-        deviceConfig?.let { configBean ->
-            bleModel.connect(configBean.device) { connected ->
-                "Ble连接设备[${configBean.device.name}]:$connected".writeBleLog()
-                if (connected) {
-                    sendConfig(configBean)
-                } else {
-                    //超时, 连接失败
-                    toConfigState(AddWifiStateItem.STATE_ERROR)
+        if (isConfigApDevice) {
+            "开始Ap配网:${HawkEngraveKeys.lastWifiSSID}:${HawkEngraveKeys.lastWifiPassword}".writeBleLog()
+
+        } else {
+            "开始配置wifi:$deviceConfig".writeBleLog()
+            deviceConfig?.let { configBean ->
+                bleModel.connect(configBean.device) { connected ->
+                    "Ble连接设备[${configBean.device.name}]:$connected".writeBleLog()
+                    if (connected) {
+                        sendConfig(configBean)
+                    } else {
+                        //超时, 连接失败
+                        toConfigState(AddWifiStateItem.STATE_ERROR)
+                    }
                 }
             }
         }

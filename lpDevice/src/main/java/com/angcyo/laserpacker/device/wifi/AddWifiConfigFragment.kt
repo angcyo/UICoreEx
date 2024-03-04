@@ -12,6 +12,7 @@ import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.dsladapter.updateItemByClass
+import com.angcyo.getData
 import com.angcyo.getDataParcelable
 import com.angcyo.laserpacker.device.BuildConfig
 import com.angcyo.laserpacker.device.R
@@ -34,6 +35,13 @@ import com.clj.fastble.data.BleDevice
  */
 class AddWifiConfigFragment : BaseDslFragment() {
 
+    companion object {
+        const val KEY_IS_CONFIG_AP_DEVICE = "isConfigApDevice"
+    }
+
+    /**是否是配置ap网络*/
+    var isConfigApDevice: Boolean = false
+
     /**选择的设备*/
     var bleDevice: BleDevice? = null
 
@@ -50,7 +58,11 @@ class AddWifiConfigFragment : BaseDslFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bleDevice = getDataParcelable()
+        isConfigApDevice = getData<Boolean>(KEY_IS_CONFIG_AP_DEVICE) ?: isConfigApDevice
+        if (isConfigApDevice) {
+        } else {
+            bleDevice = getDataParcelable()
+        }
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {
@@ -60,14 +72,22 @@ class AddWifiConfigFragment : BaseDslFragment() {
             _vh.focused(it)
             dslFHelper {
                 hideSoftInput()
-                show(AddWifiStateFragment::class) {
-                    _adapter.get<AddWifiConfigItem>().firstOrNull()?.let {
-                        HawkEngraveKeys.lastWifiPassword = it.itemWifiPassword
+
+                //save info
+                _adapter.get<AddWifiConfigItem>().firstOrNull()?.let {
+                    HawkEngraveKeys.lastWifiPassword = it.itemWifiPassword
+                    HawkEngraveKeys.lastWifiSSID = it.itemWifiName
+                }
+
+                if (isConfigApDevice) {
+                    show(AddHttpApConfigFragment::class)
+                } else {
+                    show(AddWifiStateFragment::class) {
                         putDataParcelable(
                             WifiConfigBean(
                                 bleDevice!!,
-                                it.itemWifiName ?: "",
-                                it.itemWifiPassword ?: ""
+                                HawkEngraveKeys.lastWifiSSID ?: "",
+                                HawkEngraveKeys.lastWifiPassword ?: ""
                             )
                         )
                     }
@@ -76,7 +96,9 @@ class AddWifiConfigFragment : BaseDslFragment() {
         }
 
         renderDslAdapter(true) {
-            AddWifiConfigTipItem()()
+            if (!isConfigApDevice) {
+                AddWifiConfigTipItem()()
+            }
             AddWifiConfigItem()() {
                 itemWifiName = getWifiSSID()
                 observeItemChange {
@@ -85,14 +107,19 @@ class AddWifiConfigFragment : BaseDslFragment() {
                         !itemWifiName.isNullOrBlank() && !itemWifiPassword.isNullOrBlank()
                     )
                 }
-                if (BuildConfig.BUILD_TYPE.isBuildDebug()) {
+                if (HawkEngraveKeys.rememberWifiPassword) {
+                    itemWifiPassword = HawkEngraveKeys.lastWifiPassword
+                    itemChanging = true
+                } else if (BuildConfig.BUILD_TYPE.isBuildDebug()) {
                     itemWifiPassword = "Hi@Yanfa123"
                     itemChanging = true
                 }
             }
         }
 
-        if (bleDevice == null) {
+        if (isConfigApDevice) {
+
+        } else if (bleDevice == null) {
             removeThis()
             toastQQ(_string(R.string.core_thread_error_tip))
         }

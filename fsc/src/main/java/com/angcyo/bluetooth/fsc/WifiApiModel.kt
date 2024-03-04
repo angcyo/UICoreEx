@@ -8,10 +8,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.core.WifiDeviceScan
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.deviceType
 import com.angcyo.bluetooth.fsc.laserpacker.host
+import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
 import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.http.tcp.TcpDevice
@@ -87,6 +89,7 @@ class WifiApiModel : ViewModel(), IViewModel {
                     tcpConnectDeviceListData.value!!.add(state.tcpDevice)
                     tcpConnectDeviceListData.updateThis()
                 }
+                vmApp<DeviceStateModel>().notifyDeviceConnect(LaserPeckerHelper.DEVICE_TYPE_WIFI)
             } else if (state.state == Tcp.CONNECT_STATE_DISCONNECT) {
                 //连接断开
                 tcpConnectDeviceListData.value!!.remove(state.tcpDevice)
@@ -150,8 +153,8 @@ class WifiApiModel : ViewModel(), IViewModel {
     }
 
     /**网络是否连接上了*/
-    fun isTcpConnected(): Boolean {
-        return tcp.isConnected()
+    fun isWifiDeviceConnected(): Boolean {
+        return httpDeviceConnectData.value != null || tcp.isConnected()
     }
 
     /**连接开始的时间*/
@@ -168,19 +171,28 @@ class WifiApiModel : ViewModel(), IViewModel {
     fun connect(device: TcpDevice, info: TcpConnectInfo?) {
         HawkEngraveKeys.forceUseWifi = true
         HawkEngraveKeys.lastConnectDeviceType = device.deviceType
-        HawkEngraveKeys.lastWifiIp = device.address
-        if (tcp.tcpDevice == null || tcp.tcpDevice == device) {
-            tcp.tcpDevice = device
+        if (device.deviceType == LaserPeckerHelper.DEVICE_TYPE_HTTP) {
+            connectStartTime = nowTime()
+            connectHttpDevice(device)
         } else {
-            tcp.cancel(TcpConnectInfo())
-            tcp.listeners.remove(tcpListener)
+            disconnectHttpDevice()
+            if (device.deviceType == LaserPeckerHelper.DEVICE_TYPE_WIFI) {
+                HawkEngraveKeys.lastWifiIp = device.address
 
-            //重新建立连接
-            tcp = createTcp()
-            tcp.tcpDevice = device
+                if (tcp.tcpDevice == null || tcp.tcpDevice == device) {
+                    tcp.tcpDevice = device
+                } else {
+                    tcp.cancel(TcpConnectInfo())
+                    tcp.listeners.remove(tcpListener)
+
+                    //重新建立连接
+                    tcp = createTcp()
+                    tcp.tcpDevice = device
+                }
+                connectStartTime = nowTime()
+                tcp.connect(info)
+            }
         }
-        connectStartTime = nowTime()
-        tcp.connect(info)
     }
 
     /**断开连接
@@ -189,16 +201,18 @@ class WifiApiModel : ViewModel(), IViewModel {
         tcp.tcpDevice?.let {
             disconnect(it, info)
         }
+        disconnectHttpDevice()
     }
 
     /**断开所有设备*/
-    fun disconnectAll(info: TcpConnectInfo?) {
+    fun disconnectAll(info: TcpConnectInfo? = null) {
         tcp.tcpDevice?.let {
             disconnect(it, info)
         }
         tcpConnectDeviceListData.value!!.forEach {
             disconnect(it, info)
         }
+        disconnectHttpDevice()
     }
 
     /**断开设备, 但是之后通知
@@ -248,6 +262,28 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     //region ---nsd---
 
+    /**当前连接上的http设备*/
+    val httpDeviceConnectData = vmDataNull<TcpDevice>()
+
+    /**连接http设备*/
+    fun connectHttpDevice(device: TcpDevice) {
+        device.connectState = Tcp.CONNECT_STATE_CONNECT_SUCCESS
+        httpDeviceConnectData.updateValue(device)
+        tcpStateData.updateValue(TcpState(device, Tcp.CONNECT_STATE_CONNECT_SUCCESS))
+
+        vmApp<DeviceStateModel>().notifyDeviceConnect(LaserPeckerHelper.DEVICE_TYPE_HTTP)
+    }
+
+    /**断开http设备的连接*/
+    fun disconnectHttpDevice() {
+        val tcpDevice = httpDeviceConnectData.value
+        if (tcpDevice != null) {
+            tcpDevice.connectState = Tcp.CONNECT_STATE_DISCONNECT
+            httpDeviceConnectData.updateValue(null)
+            tcpStateData.updateValue(TcpState(tcpDevice, Tcp.CONNECT_STATE_DISCONNECT))
+        }
+    }
+
     var _lifecycleOwner: LifecycleOwner? = null
     val _lifecycleObserver = LifecycleEventObserver { source, event ->
         if (event == Lifecycle.Event.ON_DESTROY) {
@@ -280,6 +316,12 @@ class WifiApiModel : ViewModel(), IViewModel {
                 device.connectState =
                     tcpConnectDeviceListData.value?.find { it == device }?.connectState
                         ?: device.connectState
+
+                if (device.deviceName == httpDeviceConnectData.value?.deviceName) {
+                    device.connectState =
+                        httpDeviceConnectData.value?.connectState ?: device.connectState
+                }
+
                 if (!tcpScanDeviceList.contains(device)) {
                     tcpScanDeviceList.add(device)
                     tcpDeviceOnceData.updateValue(device)

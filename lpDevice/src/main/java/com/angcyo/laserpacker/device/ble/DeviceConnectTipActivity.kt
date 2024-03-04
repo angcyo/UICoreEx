@@ -31,6 +31,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         fun getDeviceType(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String {
             val prefix = LaserPeckerHelper.PRODUCT_PREFIX
             val result = when {
+                name?.startsWith(LaserPeckerHelper.LX2) == true -> LaserPeckerHelper.LX2
                 name == LaserPeckerHelper.CI ||
                         name?.startsWith("$prefix-CI") == true ||
                         name?.startsWith("$prefix-${LaserPeckerHelper.CI}") == true ||
@@ -68,6 +69,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
          * */
         fun getDeviceImageRes(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): Int =
             when (getDeviceType(name)) {
+                LaserPeckerHelper.LX2 -> R.mipmap.device_lx2
                 LaserPeckerHelper.CI -> R.mipmap.device_c1
                 LaserPeckerHelper.LV -> R.mipmap.device_l5
                 LaserPeckerHelper.LIV -> R.mipmap.device_l4
@@ -103,6 +105,9 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         fun isWifiDevice(deviceName: String?): Boolean =
             LaserPeckerHelper.isWifiDevice(formatDeviceName(deviceName))
 
+        fun isHttpDevice(deviceName: String?): Boolean =
+            LaserPeckerHelper.isHttpDevice(formatDeviceName(deviceName))
+
         fun isLp5Device(deviceName: String?): Boolean {
             val name = formatDeviceName(deviceName)
             return name?.startsWith(LaserPeckerHelper.LV) == true
@@ -110,7 +115,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
 
         fun isLx2Device(deviceName: String?): Boolean {
             val name = formatDeviceName(deviceName)
-            return name?.startsWith(LaserPeckerHelper.CII) == true
+            return name?.startsWith(LaserPeckerHelper.LX2) == true
         }
     }
 

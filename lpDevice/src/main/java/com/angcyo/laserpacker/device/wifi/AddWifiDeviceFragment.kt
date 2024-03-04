@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.BluetoothModel
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
@@ -69,6 +70,7 @@ class AddWifiDeviceFragment : BaseDslFragment() {
 
         //2023-8-1 lp5 ble
         vmApp<FscBleApiModel>().disconnectAll()
+        vmApp<WifiApiModel>().disconnectAll()
         BluetoothModel.init(app() as Application)
 
         //2023-8-21 禁用自动连接

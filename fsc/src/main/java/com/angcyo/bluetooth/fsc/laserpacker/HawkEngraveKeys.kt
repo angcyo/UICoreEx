@@ -449,12 +449,18 @@ object HawkEngraveKeys {
     /**最后一次配置的wifi密码*/
     var lastWifiPassword: String? by HawkPropertyValue<Any, String?>(null)
 
+    /**最后一次配置的wifi名称*/
+    var lastWifiSSID: String? by HawkPropertyValue<Any, String?>(null)
+
     /**是否配置过wifi*/
     val isConfigWifi: Boolean
         get() = !lastWifiIp.isNullOrEmpty()
 
     /**默认的wifi端口*/
     var wifiPort: Int by HawkPropertyValue<Any, Int>(1111)//1111
+
+    /**是否要记住wifi密码*/
+    var rememberWifiPassword: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**扫描ip的范围
      * ```

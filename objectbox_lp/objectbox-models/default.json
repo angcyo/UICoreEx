@@ -19,7 +19,7 @@
     },
     {
       "id": "2:8000287119433493370",
-      "lastPropertyId": "8:1669536524050052814",
+      "lastPropertyId": "9:8412048937911007565",
       "name": "DeviceConnectEntity",
       "properties": [
         {
@@ -61,6 +61,11 @@
         {
           "id": "8:1669536524050052814",
           "name": "wifiPort",
+          "type": 5
+        },
+        {
+          "id": "9:8412048937911007565",
+          "name": "deviceType",
           "type": 5
         }
       ],

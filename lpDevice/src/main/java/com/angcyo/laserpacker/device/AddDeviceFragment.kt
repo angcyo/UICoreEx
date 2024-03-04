@@ -4,17 +4,21 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.dslAHelper
 import com.angcyo.base.removeThis
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.AddDeviceConfigBean
 import com.angcyo.core.fragment.BaseDslFragment
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.getAllItemSelectedList
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
+import com.angcyo.laserpacker.device.wifi.AddHttpDeviceFragment
 import com.angcyo.laserpacker.device.wifi.AddWifiDeviceFragment
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.model.singlePage
 import com.angcyo.widget.DslViewHolder
 
@@ -39,7 +43,18 @@ class AddDeviceFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
-        loadDataEnd(AddDeviceItem::class, _deviceSettingBean?.addDeviceList, null) {
+        //蓝牙设备连接成功后, 自动关闭界面
+        vmApp<DeviceStateModel>().deviceConnectOnceData.observe {
+            if (it == LaserPeckerHelper.DEVICE_TYPE_BLE || it == LaserPeckerHelper.DEVICE_TYPE_WIFI) {
+                removeThis()
+            }
+        }
+
+        loadDataEnd(
+            AddDeviceItem::class,
+            _deviceSettingBean?.addDeviceList?.filter { it.debug && isDebug() || !it.debug },
+            null
+        ) {
             observeItemSelectedChange {
                 val itemList = _adapter.getAllItemSelectedList()
                 _vh.enable(R.id.next_button, itemList.isNotEmpty())
@@ -64,7 +79,7 @@ class AddDeviceFragment : BaseDslFragment() {
                 } else if (it.channelPage == AddDeviceConfigBean.CHANNEL_PAGE_HTTP) {
                     removeThis()
                     context.dslAHelper {
-                        start(AddWifiDeviceFragment::class)
+                        start(AddHttpDeviceFragment::class)
                     }
                 }
             }

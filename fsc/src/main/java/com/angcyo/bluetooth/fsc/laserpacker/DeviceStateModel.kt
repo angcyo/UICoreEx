@@ -56,6 +56,13 @@ class DeviceStateModel : ViewModel() {
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
+    /**连接成功的设备类型通知
+     * [LaserPeckerHelper.DEVICE_TYPE_BLE]
+     * [LaserPeckerHelper.DEVICE_TYPE_WIFI]
+     * [LaserPeckerHelper.DEVICE_TYPE_HTTP]
+     * */
+    val deviceConnectOnceData = vmDataOnce<Int>()
+
     /**设备状态,蓝牙断开后,清空设备状态
      * [com.angcyo.laserpacker.device.model.FscDeviceModel.initDevice]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
@@ -348,9 +355,14 @@ class DeviceStateModel : ViewModel() {
 
     //---
 
+    /**通知连接成功的设备类型通知*/
+    fun notifyDeviceConnect(type: Int) {
+        deviceConnectOnceData.updateValue(type)
+    }
+
     /**是否有设备连接, 包括ble / wifi 连接*/
     fun isDeviceConnect() =
-        vmApp<FscBleApiModel>().haveDeviceConnected() || vmApp<WifiApiModel>().isTcpConnected()
+        vmApp<FscBleApiModel>().haveDeviceConnected() || vmApp<WifiApiModel>().isWifiDeviceConnected()
 
     /**断开设备连接*/
     fun disconnectDevice(info: TcpConnectInfo?) {

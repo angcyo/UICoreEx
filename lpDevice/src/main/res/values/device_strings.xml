@@ -161,4 +161,11 @@
     <string name="permission_gps_des">Location\nPermission description: connect the application to the machine\nUsage scenario or purpose: pairing the machine</string>
     <string name="path_opt_label">Path Optimization</string>
     <string name="path_opt_des">Optimize the engraving path based on vector data to improve engraving efficiency.</string>
+
+    <string name="remember_password_label">Remember Password</string>
+    <string name="confirm_next_label">已确认，下一步</string>
+    <string name="ap_connect_tip">1.设备连接电源；\n2.长按设备按钮10S，直至指示灯变为绿灯常亮，重置成功，进入配网状态。</string>
+    <string name="ap_connect_tip2">1.请将手机WiFi连接到Laserpecker LX2热点；\n2.回到APP。</string>
+    <string name="open_ap_wifi_label">去连接设备热点</string>
+
 </resources>

@@ -111,7 +111,7 @@ object LaserPeckerHelper {
     //2023-2-17  C系列改名为LX  C1重命名为LX1
     const val CI_OLD = "C1"            //"CI"               //spp 300*400mm
     const val CI = "LX1"               //"LX1"              //spp 300*400mm
-    const val CII = "LX2"               //"CII"
+    const val LX2 = "LX2"               //"CII"
     const val UNKNOWN = "Unknown"
 
     //endregion ---产品名称---
@@ -295,7 +295,7 @@ object LaserPeckerHelper {
      * */
     fun isHttpDevice(deviceName: String?): Boolean {
         //LP5 LX2 才有WIFI模块
-        return deviceName?.startsWith(CII) == true
+        return deviceName?.startsWith(LX2) == true
     }
 
     /**指定的蓝牙设备名, 是否具有USB存储功能
@@ -1081,11 +1081,18 @@ val TcpDevice.host: String
 val TcpDevice.deviceType: Int
     get() = deviceName?.deviceType ?: LaserPeckerHelper.DEVICE_TYPE_NONE
 
+val TcpDevice.deviceTypeName: String
+    get() = when (deviceType) {
+        LaserPeckerHelper.DEVICE_TYPE_HTTP -> "Http设备"
+        LaserPeckerHelper.DEVICE_TYPE_WIFI -> "Wifi设备"
+        else -> "不支持的设备:${deviceName}"
+    }
+
 val String.deviceType: Int
     get() = if (LaserPeckerHelper.isHttpDevice(this)) {
         LaserPeckerHelper.DEVICE_TYPE_HTTP
     } else if (LaserPeckerHelper.isWifiDevice(this)) {
         LaserPeckerHelper.DEVICE_TYPE_WIFI
     } else {
-        LaserPeckerHelper.DEVICE_TYPE_BLE
+        LaserPeckerHelper.DEVICE_TYPE_NONE
     }

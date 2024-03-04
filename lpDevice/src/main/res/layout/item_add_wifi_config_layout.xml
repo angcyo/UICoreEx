@@ -63,12 +63,23 @@
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/remember_password_box"
         style="@style/LibDesTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/lib_xxhdpi"
-        android:text="@string/add_wifi_device_password_tip"
+        android:button="@drawable/lib_check_lp_selector"
+        android:checked="false"
+        android:padding="@dimen/lib_hdpi"
+        android:text="@string/remember_password_label"
         app:layout_constraintTop_toBottomOf="@id/wifi_password_wrap_layout" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_tip_view"
+        style="@style/LibDesTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_wifi_device_password_tip"
+        app:layout_constraintTop_toBottomOf="@id/remember_password_box" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

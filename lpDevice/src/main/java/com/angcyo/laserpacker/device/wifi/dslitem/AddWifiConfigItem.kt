@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.device.wifi.dslitem
 
 import android.provider.Settings
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.ex.startIntent
@@ -44,6 +45,12 @@ class AddWifiConfigItem : DslAdapterItem() {
         itemHolder.ev(R.id.wifi_password_edit_text)?.listenerTextChange(itemWifiPassword) {
             itemWifiPassword = it.toStr()
             itemChanging = true
+        }
+        itemHolder.check(
+            R.id.remember_password_box,
+            HawkEngraveKeys.rememberWifiPassword
+        ) { _, isChecked ->
+            HawkEngraveKeys.rememberWifiPassword = isChecked
         }
 
         itemHolder.click(R.id.select_wifi_button) {
