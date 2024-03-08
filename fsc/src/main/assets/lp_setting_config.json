@@ -15,7 +15,7 @@
   "showIrDstRange": "500~999 5000~9999",
   "showPumpRange": "7010~7099",
   "showRefVelocityRange": "650~699 7010~7099 800~899 8000~8499",
-  "autoCncRange": "377-399 655~699 700~749 7000~7099 800~899 8000~8499",
+  "autoCncRange": "377~399 655~699 700~749 7000~7099 800~899 8000~8499",
   "gcodeUsePathDataRange": "655~699 800~899 8000~8499",
   "disableGcodeM2Range": "5510~5514",
   "showSpeedConvertRange": "655~699",
