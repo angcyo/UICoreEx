@@ -13,6 +13,14 @@
   "showKeyViewRange": "",
   "showKeyPrintRange": "",
   "showIrDstRange": "",
+  "showPumpRange": "7010~7099",
+  "showRefVelocityRange": "650~699 7010~7099 800~899 8000~8499",
+  "autoCncRange": "377~399 655~699 700~749 7000~7099 800~899 8000~8499",
+  "gcodeUsePathDataRange": "800~899 8000~8499",
+  "disableGcodeM2Range": "5510~5514",
+  "showSpeedConvertRange": "655~699",
+  "multiElementRange": "800~899",
+  "gcodeMoveToOriginRange": null,
   "showAutoConnectRange": "",
   "showExperimentalRange": "",
   "showUploadLogRange": "",
@@ -21,12 +29,156 @@
   "lpSupportFirmware": "",
   "lpSupportFirmwareDebug": "",
   "lpBatchEngraveFirmware": null,
+  "showOverScanDelayRange": "655~699 800~899",
   "closeCanvasItemsFun": null,
   "closeImageEditItemsFun": null,
   "closeTextEditItemsFun": null,
   "enableFun": null,
   "maxEngraveItemCount": 30,
   "updateHawkCommand": "",
+  "newHawkKeyStr": "_variableText__2dRelief__tracer__materialTest_",
+  "openFun": "enableItemEngraveParams,enableSingleItemTransfer,",
   "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_en",
-  "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_zh"
+  "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_zh",
+  "rotateFlagHelpUrl": "https://faq.hingin.com/docs/RFlag_Tutorial_EN",
+  "rotateFlagHelpUrlZh": "https://faq.hingin.com/docs/RFlag_Tutorial",
+  "freeModeProtectorHelpUrl": "https://laserpecker.feishu.cn/wiki/B4JawedgFiocNckoPkzcKTi1nfh",
+  "freeModeProtectorHelpUrlZh": "https://laserpecker.feishu.cn/wiki/BnQUwJzt3itytpk1ZoccaSUDnKb",
+  "overScanDelayHelpUrl": "https://faq.hingin.com/docs/time_delay_en",
+  "overScanDelayHelpUrlZh": "https://faq.hingin.com/docs/time_delay",
+  "materialConfigNameMap": {
+    "655~699": "LP4_655"
+  },
+  "dateFormatList": [
+    "YYYY-MM-DD",
+    "MM-DD-YYYY",
+    "DD-MM-YYYY",
+    "YYYY.MM.DD",
+    "MM.DD.YYYY",
+    "DD.MM.YYYY",
+    "YYYY/MM/DD",
+    "MM/DD/YYYY",
+    "DD/MM/YYYY",
+    "YYYYMMDD",
+    "YY-MM-DD",
+    "MM-DD-YY",
+    "DD-MM-YY",
+    "YY/MM/DD",
+    "MM/DD/YY",
+    "DD/MM/YY",
+    "YY.MM.DD",
+    "MM.DD.YY",
+    "DD.MM.YY",
+    "YYYY{{year}}MM{{month}}DD{{day}}",
+    "weekday",
+    "YYYY{{year}}MM{{month}}",
+    "YYYY{{year}}",
+    "DD({{day}})",
+    "M{{month}}",
+    "MM{{month}}",
+    "MM",
+    "dayOfYear",
+    "weekOfYear"
+  ],
+  "timeFormatList": [
+    "HH:mm",
+    "HH:mm:ss",
+    "Ahh:mm:ss",
+    "Ahh:mm",
+    "HH({{hour}})",
+    "mm({{minute}})",
+    "ss({{second}})"
+  ],
+  "barcodeSize": 200,
+  "barcodeWidth": 300,
+  "barcodeHeight": 100,
+  "barcode2DMargin": 0,
+  "barcode1DMargin": 0,
+  "barcodeBackgroundColor": "#00000000",
+  "barcode2DTypeList": [
+    "QR_CODE"
+  ],
+  "barcode1DTypeList": [
+    "CODE_128",
+    "EAN_13"
+  ],
+  "supportFileExt": [
+    ".xcs",
+    ".lp",
+    ".lp2",
+    ".txt",
+    ".svg",
+    ".pdf",
+    ".nc",
+    ".gcode",
+    ".gc"
+  ],
+  "quickTextInputAction": [
+    {
+      "label": "激活LX1设置雕刻完成不归位",
+      "value": "@enableFactoryPCT#b=true"
+    },
+    {
+      "label": "分享日志",
+      "value": "@shareLog#b=true"
+    },
+    {
+      "label": "上传日志",
+      "value": "@uploadLog#b=true"
+    },
+    {
+      "label": "使用旧的抖动算法",
+      "value": "@useNewDithering#b=false"
+    },
+    {
+      "label": "显示设备搜索过滤",
+      "value": "@showDeviceFilterCount#i=2"
+    }
+  ],
+  "addDeviceList": [
+    {
+      "name": "LP1",
+      "type": 1,
+      "url": "assets/images/device_l1.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP2",
+      "type": 2,
+      "url": "assets/images/device_l2.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP3",
+      "type": 3,
+      "url": "assets/images/device_l3.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP4",
+      "type": 4,
+      "url": "assets/images/device_l4.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LP5",
+      "type": 5,
+      "url": "assets/images/device_l5.png",
+      "debug": true,
+      "channelPage": "deviceDiscovery"
+    },
+    {
+      "name": "LX1",
+      "type": 11,
+      "url": "assets/images/device_lx1.png",
+      "channelPage": "bleScan"
+    },
+    {
+      "name": "LX2",
+      "type": 12,
+      "debug": true,
+      "url": "assets/images/device_lx2.png",
+      "channelPage": "apDiscovery"
+    }
+  ]
 }
