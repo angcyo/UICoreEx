@@ -406,17 +406,19 @@ fun Bitmap?.toBitmapElementBeanV2(
     this ?: return null
     val bean = LPElementBean()
     bean.mtype = LPDataConstant.DATA_TYPE_BITMAP
-    bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
     bean._imageOriginalBitmap = this
     val threshold = bmpThreshold ?: BitmapHandle.getBitmapThreshold(this)
     HawkEngraveKeys.lastBWThreshold = threshold.toFloat()
     bean.blackThreshold = HawkEngraveKeys.lastBWThreshold
     bean.sealThreshold = bean.blackThreshold
     bean.printsThreshold = bean.blackThreshold
-    bean._srcBitmap =
-        BitmapHandle.toBlackWhiteHandle(this, HawkEngraveKeys.lastBWThreshold.toInt(), invert)
     bean.scaleX = 1 / 1f.toPixel()
     bean.scaleY = bean.scaleX
+
+    //bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+    //bean._srcBitmap = BitmapHandle.toBlackWhiteHandle(this, HawkEngraveKeys.lastBWThreshold.toInt(), invert)
+    // 2024-3-11 默认抖动处理
+    bean.imageFilter = LPDataConstant.DATA_MODE_DITHERING //默认黑白处理
     return bean
 }
 
