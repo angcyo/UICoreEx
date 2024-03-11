@@ -1072,6 +1072,9 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             _cutItem.itemIsSelected = cut
             _cutItem.updateInViewGroup()
             renderLayerListLayout()
+
+            //2024-3-11 切割改变后, 刷新界面
+            delegate.refresh()
         }
     }
 

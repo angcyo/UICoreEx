@@ -225,6 +225,10 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             } else {
                 paint.color = elementBean.fill?.toColorInt() ?: Color.BLACK
             }
+            if (elementBean.isCut) {
+                //2024-3-11 切割数据使用紫色
+                paint.color = 0xFFE040FB.toInt()
+            }
 
             //线型
             params.updateDrawPathPaintStrokeWidth(paint)
