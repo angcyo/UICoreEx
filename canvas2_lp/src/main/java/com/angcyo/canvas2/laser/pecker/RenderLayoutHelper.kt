@@ -915,7 +915,11 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                             itemLayerInfo = layerInfo
 
                             //直接加载子元素
-                            val itemList = LPEngraveHelper.getLayerRendererList(delegate, layerInfo)
+                            val itemList = LPEngraveHelper.getLayerRendererList(
+                                delegate,
+                                layerInfo,
+                                allElement = true
+                            )
                                 .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
                                     CanvasLayerBaseItem().apply {//元素
                                         initItem(renderer)
