@@ -877,7 +877,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                             }
                         }
                 }
-                renderDslAdapter {
+                renderDslAdapter(new = false) {
                     hookUpdateDepend(this)
                     val allElementRendererList =
                         delegate.renderManager.getAllElementRendererList(false, false)
@@ -907,7 +907,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     _layerDragHelper?.detachFromRecyclerView()
                     _layerDragHelper = null
                 }
-                renderDslAdapter {
+                renderDslAdapter(new = false) {
                     LayerHelper.getEngraveLayerList().forEach { layerInfo ->
                         CanvasLayerNameItem()() {//雕刻图层
                             itemGroupExtend = layerInfo.isGroupExtend
