@@ -74,9 +74,9 @@ class ProjectListFragment : BaseDslFragment() {
             toastQQ(_string(R.string.ui_wait_tip))
 
             val userId = "${EntitySync.userId ?: "Default"}"
-            val allEntityList = ProjectSyncEntity::class.findAll(LPBox.PACKAGE_NAME) {
+            val allEntityList = ProjectSyncEntity::class.findAll(LPBox.PACKAGE_NAME) /*{
                 apply(ProjectSyncEntity_.userId.equal(userId))
-            }
+            }*/
 
             if (allEntityList.isEmpty()) {
                 toastQQ(_string(R.string.adapter_no_data))
