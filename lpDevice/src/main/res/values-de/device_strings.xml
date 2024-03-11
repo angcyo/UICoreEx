@@ -121,4 +121,6 @@
     <string name="permission_gps_des">Standortberechtigung\nBeschreibung der Berechtigungsfunktion: Ermöglicht der App, eine Verbindung zur Maschine herzustellen\nNutzungsszenarien und -zwecke: Kopplung von Maschinen</string>
     <string name="path_opt_label">Pfadoptimierung</string>
     <string name="path_opt_des">Hinsichtlich der Vektordaten werden die Gravurpfade optimiert, um die Gravureffizienz zu verbessern.</string>
+    <string name="firmware_update_state_tip">Überprüfung des Firmware-Upgrades</string>
+    <string name="firmware_update_state_des">1. Schließen Sie die Maschine wieder an;\n2. Wenn aktuelle Firmware-Versionsnummer des Gerätes der neuesten Version entspricht, bedeutet dies, dass das Upgrade erfolgreich war;\n3. Wenn die aktuelle Firmware-Versionsnummer des Gerätes nicht der neuesten Version entspricht, wird empfohlen, die APP neu zu starten, das Gerät auszuschalten, neu zu starten und anschließend die Firmware erneut zu aktualisieren.</string>
 </resources>

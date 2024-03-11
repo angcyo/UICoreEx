@@ -121,4 +121,6 @@
     <string name="permission_gps_des">위치 권한\n권한 기능 설명: 앱이 기기에 연결할 수 있도록 허용합니다.\n사용 장면과 목적: 기기와 매치</string>
     <string name="path_opt_label">경로 최적화</string>
     <string name="path_opt_des">벡터 데이터에 맞추어 새김 경로를 최적화하여 새김 효율을 향상시킵니다.</string>
+    <string name="firmware_update_state_tip">펌웨어 업그레이드 상태 확인</string>
+    <string name="firmware_update_state_des">1. 기계를 다시 연결합니다.\n2. 장치의 현재 펌웨어 버전 번호가 최신 버전인 경우 업그레이드가 성공합니다.\n3. 장치의 현재 펌웨어 버전 번호가 최신 버전이 아닌 경우 앱을 재부팅하고 장치의 전원을 차단하고 다시 재부팅한 후 펌웨어 업그레이드를 다시 시도하십시오.</string>
 </resources>

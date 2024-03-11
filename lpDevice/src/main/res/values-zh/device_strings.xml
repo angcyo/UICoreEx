@@ -165,4 +165,6 @@
     <string name="ap_connect_tip2">1.请将手机WiFi连接到Laserpecker LX2热点；\n2.回到APP。</string>
     <string name="open_ap_wifi_label">去连接设备热点</string>
 
+    <string name="firmware_update_state_tip">检查固件更新状态</string>
+    <string name="firmware_update_state_des">1、重新连接机器；\n2、若设备当前固件版本号为最新版本，表示升级成功；\n3、若设备当前固件版本号不是最新版本，建议APP重启、设备断电重启后，再次进行固件升级</string>
 </resources>

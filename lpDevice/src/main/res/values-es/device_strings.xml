@@ -121,4 +121,6 @@
     <string name="permission_gps_des">Localización\nDescripción de permiso: conectar la app a la máquina\nEscenario y propósito de uso: emparejar máquina</string>
     <string name="path_opt_label">Optimización de Trayectoria</string>
     <string name="path_opt_des">Para datos vectoriales, optimiza la trayectoria de grabado para mejorar la eficiencia del grabado.</string>
+    <string name="firmware_update_state_tip">Revisar el estado de la actualización del firmware</string>
+    <string name="firmware_update_state_des">1. Reconectar el dispositivo;\n2.Si la versión actual del firmware del dispositivo es la más reciente, indica que la actualización ha sido exitosa;\n3.Si el firmware no está actualizado, reinicie la APP y el dispositivo para intentar nuevamente la actualización.</string>
 </resources>

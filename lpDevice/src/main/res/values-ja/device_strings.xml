@@ -121,4 +121,6 @@
     <string name="permission_gps_des">位置情報のアクセス許可\n許可する権限の機能説明:アフリケ一ションがデバイスに接続することを許可する。\n使用シナリオと目的:デバイスとのマッチング</string>
     <string name="path_opt_label">ルート最適化</string>
     <string name="path_opt_des">ベクトルデータに対して、彫刻のルートを最適化し、彫刻の作業効率を向上させます。</string>
+    <string name="firmware_update_state_tip">ファームウェアの更新状態を確認する</string>
+    <string name="firmware_update_state_des">1.機器に再接続する。\n2.デバイスの現在のファームウェアのバージョン番号が最新のものであれば、更新が完了している。\n3.現在のファームウェアのバージョン番号が最新のものでない場合は、アプリを再起動し、デバイスの電源を一度切ってから電源を入れて再起動した後、ファームウェアの更新をもう一度行うことをお勧めします。</string>
 </resources>

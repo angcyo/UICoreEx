@@ -121,4 +121,6 @@
     <string name="permission_gps_des">Emplacement\nDescription de l\'autorisation : connecter l\'application à la machine\nScénario ou objectif d\'utilisation : coupler la machine</string>
     <string name="path_opt_label">Optimisation des Chemins</string>
     <string name="path_opt_des">Optimiser les chemins de gravure pour les données vectorielles afin d\'améliorer l\'efficacité de la gravure.</string>
+    <string name="firmware_update_state_tip">Vérifiez la mise à jour du micrologiciel</string>
+    <string name="firmware_update_state_des">1. Rebranchez l\'appareil ;\n2. Si le numéro de version actuel du micrologiciel de l\'appareil est le plus récent, la mise à niveau est réussie ;\n3. Si ce n\'est pas le cas, il est recommandé de redémarrer l\'application, d\'éteindre et de redémarrer l\'appareil, puis de mettre à jour le micrologiciel une nouvelle fois.</string>
 </resources>
