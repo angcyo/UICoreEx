@@ -50,6 +50,9 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
 
     companion object {
 
+        /**紫色*/
+        const val COLOR_PURPLE = 0xFFE040FB.toInt()
+
         /**默认的形状宽度, cm单位*/
         @MM
         const val SHAPE_DEFAULT_WIDTH = 10f
@@ -227,7 +230,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             }
             if (elementBean.isCut) {
                 //2024-3-11 切割数据使用紫色
-                paint.color = 0xFFE040FB.toInt()
+                paint.color = COLOR_PURPLE
             }
 
             //线型

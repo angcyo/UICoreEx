@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -12,6 +13,7 @@ import com.angcyo.canvas.render.element.BitmapElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.util.RenderHelper
+import com.angcyo.canvas2.laser.pecker.element.LPPathElement.Companion.COLOR_PURPLE
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
@@ -105,6 +107,12 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
             paint.strokeWidth = 1f
             paint.style = Paint.Style.STROKE
+            if (elementBean.isCut) {
+                //2024-3-11 切割数据使用紫色
+                paint.color = COLOR_PURPLE
+            } else {
+                paint.color = Color.BLACK
+            }
             params.updateDrawPathPaintStrokeWidth(paint)
             renderPath(canvas, paint, false, getDrawPathList(), params._renderMatrix)
             return
