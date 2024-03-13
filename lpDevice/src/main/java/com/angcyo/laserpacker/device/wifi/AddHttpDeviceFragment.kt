@@ -16,6 +16,7 @@ import com.angcyo.library.component.startCountDown
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ceilInt
+import com.angcyo.library.ex.isDebug
 import com.angcyo.putData
 import com.angcyo.widget.DslViewHolder
 
@@ -56,7 +57,7 @@ class AddHttpDeviceFragment : BaseDslFragment() {
         _vh.enable(R.id.bind_wifi_button, false)
         _vh.tv(R.id.bind_wifi_button)?.text = _string(R.string.confirm_next_label)
 
-        startCountDown(3) {
+        startCountDown(if (isDebug()) 1 else 3) {
             if (it == 0L) {
                 _vh.enable(R.id.bind_wifi_button, true)
                 _vh.tv(R.id.bind_wifi_button)?.text = _string(R.string.confirm_next_label)

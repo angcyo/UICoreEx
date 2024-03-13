@@ -877,6 +877,7 @@ object LaserPeckerHelper {
         count: Int = 0,
         end: (Throwable?) -> Unit = {}
     ) {
+        val isHttpDevice = name.deviceType == DEVICE_TYPE_HTTP
         isInitDeviceBusy = false
 
         val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -889,37 +890,45 @@ object LaserPeckerHelper {
         flow { chain ->
             //读取设备工作状态, 优先判断设备是否正忙, 异常
             if (initCommandFlowList.contains(QueryCmd.workState.state)) {
-                sendCommand(address, QueryCmd.workState) { bean, error ->
-                    if (bean != null) {
-                        bean.parse<QueryStateParser>()?.let {
-                            if (it.usbConnect == QueryStateParser.CONNECT_TYPE_USB) {
-                                //设备被USB占用, 则断开设备
-                                if (!isAutoConnect || !RBackground.isBackground()) {
-                                    isInitDeviceBusy = true
-                                    if (!laserPeckerModel.deviceBusyOnceData.hasObservers()) {
-                                        toastQQ(_string(R.string.device_busy_tip))
+                if (isHttpDevice) {
+                    vmApp<HttpApiModel>().fetchServerInfo(address.toLocal) { bean, error ->
+                        chain(error)
+                    }
+                } else {
+                    sendCommand(address, QueryCmd.workState) { bean, error ->
+                        if (bean != null) {
+                            bean.parse<QueryStateParser>()?.let {
+                                if (it.usbConnect == QueryStateParser.CONNECT_TYPE_USB) {
+                                    //设备被USB占用, 则断开设备
+                                    if (!isAutoConnect || !RBackground.isBackground()) {
+                                        isInitDeviceBusy = true
+                                        if (!laserPeckerModel.deviceBusyOnceData.hasObservers()) {
+                                            toastQQ(_string(R.string.device_busy_tip))
+                                        }
+                                        laserPeckerModel.deviceBusyOnceData.postValue(true)
                                     }
-                                    laserPeckerModel.deviceBusyOnceData.postValue(true)
-                                }
-                                doBack {
-                                    vmApp<FscBleApiModel>().disconnectAll()
-                                }
-                                chain(InterruptedException())//被中断
-                            } else {
-                                queryStateParser = it//保存数据, 但是不通知观察者
+                                    doBack {
+                                        vmApp<FscBleApiModel>().disconnectAll()
+                                    }
+                                    chain(InterruptedException())//被中断
+                                } else {
+                                    queryStateParser = it//保存数据, 但是不通知观察者
 
-                                //2023-8-11 单模块设备需要提前知道设备模块信息
-                                queryStateParser?.let {
-                                    deviceStateModel.deviceStateData.updateValue(queryStateParser)
-                                }
+                                    //2023-8-11 单模块设备需要提前知道设备模块信息
+                                    queryStateParser?.let {
+                                        deviceStateModel.deviceStateData.updateValue(
+                                            queryStateParser
+                                        )
+                                    }
 
+                                    chain(error)
+                                }
+                            }.elseNull {
                                 chain(error)
                             }
-                        }.elseNull {
+                        } else {
                             chain(error)
                         }
-                    } else {
-                        chain(error)
                     }
                 }
             } else {
@@ -927,7 +936,7 @@ object LaserPeckerHelper {
             }
         }.flow { chain ->
             //读取设备版本, 解析产品信息
-            if (initCommandFlowList.contains(QueryCmd.version.state)) {
+            if (!isHttpDevice && initCommandFlowList.contains(QueryCmd.version.state)) {
                 sendCommand(address, QueryCmd.version) { bean, error ->
                     bean?.let {
                         it.parse<QueryVersionParser>()?.let {
@@ -941,7 +950,7 @@ object LaserPeckerHelper {
             }
         }.flow { chain ->
             //读取设备设置状态
-            if (initCommandFlowList.contains(QueryCmd.settingState.state)) {
+            if (!isHttpDevice && initCommandFlowList.contains(QueryCmd.settingState.state)) {
                 sendCommand(address, QueryCmd.settingState) { bean, error ->
                     bean?.let {
                         it.parse<QuerySettingParser>()?.let {
@@ -1068,6 +1077,10 @@ fun List<PxInfo>.filterPxList(result: MutableList<PxInfo> = mutableListOf()) =
             true
         }
     }
+
+/**mDns服务的请求地址*/
+val String.toLocal: String
+    get() = if (isHttpScheme()) this else "http://${this}.local"
 
 /**访问主机*/
 val TcpDevice.host: String

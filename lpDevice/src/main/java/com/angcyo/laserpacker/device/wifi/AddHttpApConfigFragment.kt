@@ -10,6 +10,7 @@ import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.wifi.AddWifiConfigFragment.Companion.KEY_IS_CONFIG_AP_DEVICE
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.getWifiSSID
 import com.angcyo.library.ex.startIntent
 import com.angcyo.putData
 
@@ -19,6 +20,11 @@ import com.angcyo.putData
  * @since 2024/03/01
  */
 class AddHttpApConfigFragment : BaseDslFragment() {
+
+    companion object {
+        /**ap名称, 同时也是host.local请求地址*/
+        var wifiSsid: String? = null
+    }
 
     init {
         fragmentTitle = _string(R.string.add_wifi_device_title)
@@ -55,4 +61,8 @@ class AddHttpApConfigFragment : BaseDslFragment() {
         }
     }
 
+    override fun onFragmentShow(bundle: Bundle?) {
+        super.onFragmentShow(bundle)
+        wifiSsid = getWifiSSID() ?: wifiSsid
+    }
 }

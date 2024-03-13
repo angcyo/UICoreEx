@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.BluetoothModel
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker.toLocal
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.fragment.BaseDslFragment
@@ -17,17 +18,26 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.updateItemWith
 import com.angcyo.getData
 import com.angcyo.getDataParcelable
+import com.angcyo.http.base.jsonObject
+import com.angcyo.http.base.mapType
+import com.angcyo.http.get
+import com.angcyo.http.post
+import com.angcyo.http.rx.observe
 import com.angcyo.http.tcp.TcpDevice
+import com.angcyo.http.toApi
+import com.angcyo.http.toBean
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.device.wifi.dslitem.AddWifiStateItem
 import com.angcyo.library.L
+import com.angcyo.library.component._delay
 import com.angcyo.library.component.startCountDown
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.anim
 import com.angcyo.library.ex.ceilInt
+import com.angcyo.library.ex.getWifiSSID
 import com.angcyo.library.ex.toText
 import com.angcyo.library.toastQQ
 
@@ -91,13 +101,20 @@ class AddWifiStateFragment : BaseDslFragment() {
         }
 
         if (isConfigApDevice) {
-
+            //no op
         } else if (deviceConfig == null) {
             removeThis()
             toastQQ(_string(R.string.core_thread_error_tip))
         }
 
         startConfiguring()
+    }
+
+    override fun onFragmentShow(bundle: Bundle?) {
+        super.onFragmentShow(bundle)
+        if (isConfigApDevice) {
+            AddHttpApConfigFragment.wifiSsid = getWifiSSID() ?: AddHttpApConfigFragment.wifiSsid
+        }
     }
 
     /**完成wifi配置, 退出相关界面*/
@@ -137,7 +154,25 @@ class AddWifiStateFragment : BaseDslFragment() {
 
         if (isConfigApDevice) {
             "开始Ap配网:${HawkEngraveKeys.lastWifiSSID}:${HawkEngraveKeys.lastWifiPassword}".writeBleLog()
+            post {
+                url = "server/Wifi/confset".toApi(AddHttpApConfigFragment.wifiSsid?.toLocal)
+                body = jsonObject {
+                    add("SSID", HawkEngraveKeys.lastWifiSSID)
+                    add("PWD", HawkEngraveKeys.lastWifiPassword)
+                }
+                isSuccessful = { it.isSuccessful }
+            }.observe { data, error ->
+                if (error == null) {
+                    //L.i(data)
+                    //配网请求成功, 开始循环检查配网是否成功
+                    startCheckApConfig()
 
+                    //配置成功, 不查网络状态
+                    //toConfigState(AddWifiStateItem.STATE_SUCCESS)
+                } else {
+                    toConfigState(AddWifiStateItem.STATE_ERROR)
+                }
+            }
         } else {
             "开始配置wifi:$deviceConfig".writeBleLog()
             deviceConfig?.let { configBean ->
@@ -194,6 +229,17 @@ class AddWifiStateFragment : BaseDslFragment() {
         FscDeviceModel.disableAutoConnect(false)
     }
 
+    /**连接到http设备
+     * [host] 主机名称 `LX2-411EEA`*/
+    private fun connectHttpDevice(host: String) {
+        toConfigState(AddWifiStateItem.STATE_SUCCESS)
+        FscDeviceModel.disableAutoConnect(false)
+
+        val name = AddHttpApConfigFragment.wifiSsid ?: host
+        val tcpDevice = TcpDevice(name.toLocal, HawkEngraveKeys.wifiPort, name)
+        vmApp<WifiApiModel>().connect(tcpDevice, null)
+    }
+
     private var _progress: Int = 0
     private var _configuringAnimator: ValueAnimator? = null
 
@@ -212,6 +258,50 @@ class AddWifiStateFragment : BaseDslFragment() {
                         _configuringAnimator?.cancel()
                     }
                 }
+            }
+        }
+    }
+
+    /**循环检查配网是否成功
+     * [count] 重试的次数*/
+    private fun startCheckApConfig(count: Int = 1) {
+        if (isDetached) {
+            return
+        }
+        if (count > 60) {
+            toConfigState(AddWifiStateItem.STATE_ERROR)
+            return
+        }
+        fun retry() {
+            _delay(1000) {
+                startCheckApConfig(count + 1)
+            }
+        }
+        get {
+            url = "server/Wifi/status".toApi(AddHttpApConfigFragment.wifiSsid?.toLocal)
+            isSuccessful = { it.isSuccessful }
+        }.observe { data, error ->
+            if (error == null) {
+                val map =
+                    data?.toBean<Map<String, Any>>(mapType(String::class.java, Any::class.java))
+                if (map != null) {
+                    try {
+                        val status = (map["result"] as? Map<String, Any>)?.get("Status")
+                        if (status == 1.0) {
+                            //toConfigState(AddWifiStateItem.STATE_SUCCESS)
+                            connectHttpDevice(AddHttpApConfigFragment.wifiSsid!!)
+                        } else {
+                            retry()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        retry()
+                    }
+                } else {
+                    retry()
+                }
+            } else {
+                retry()
             }
         }
     }

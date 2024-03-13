@@ -129,6 +129,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         wifiApiModel.connectStartTime,
                         tcpState.connectInfo?.isReConnect == false
                     )
+                    //Http设备连接成功[auto:✘]:[LX2-4202A0]:LX2-4202A0:1111
                     "${tcpDevice.deviceTypeName}连接成功[auto:${isAutoConnect.toDC()}]:${log}".writeBleLog()
                 }
             }
@@ -365,7 +366,7 @@ class FscDeviceModel : LifecycleViewModel() {
         }
     }
 
-    /**设备连接*/
+    /**设备连接成功后触发*/
     fun onDeviceConnect(
         name: String?,
         address: String?,

@@ -538,3 +538,7 @@ object HawkEngraveKeys {
 
     var showSpeedConvertTipVersion: String? by HawkPropertyValue<Any, String?>(null)
 }
+
+/**最后一次是否是http设备连接*/
+val lastIsHttpDevice: Boolean
+    get() = HawkEngraveKeys.lastConnectDeviceType == LaserPeckerHelper.DEVICE_TYPE_HTTP

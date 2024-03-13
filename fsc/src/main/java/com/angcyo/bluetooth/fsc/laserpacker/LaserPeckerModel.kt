@@ -9,11 +9,13 @@ import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.ISendProgressAction
 import com.angcyo.bluetooth.fsc.R
+import com.angcyo.bluetooth.fsc.bean.DServerInfoBean
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
@@ -24,6 +26,7 @@ import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.MutableHoldLiveData
+import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
@@ -77,8 +80,23 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         }
         productInfo?.deviceName = LaserPeckerHelper.initDeviceName
         productInfo?.deviceAddress = LaserPeckerHelper.initDeviceAddress
-        productInfoData.postValue(productInfo)
-        deviceVersionData.postValue(queryVersionParser)
+        productInfoData.updateValue(productInfo)
+        deviceVersionData.updateValue(queryVersionParser)
+    }
+
+    /**更新http设备信息.*/
+    @AnyThread
+    fun updateHttpServerInfo(bean: DServerInfoBean) {
+        updateDeviceVersion(
+            QueryVersionParser(
+                bean.firmware_code ?: 0,
+                bean.firmware_code ?: 0,
+                -1,
+                0,
+                bean.firmware_name
+            )
+        )
+        vmApp<DeviceStateModel>().updateDeviceState(QueryStateParser())
     }
 
     @AnyThread

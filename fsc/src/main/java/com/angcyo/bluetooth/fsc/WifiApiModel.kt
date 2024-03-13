@@ -173,9 +173,11 @@ class WifiApiModel : ViewModel(), IViewModel {
         HawkEngraveKeys.lastConnectDeviceType = device.deviceType
         if (device.deviceType == LaserPeckerHelper.DEVICE_TYPE_HTTP) {
             connectStartTime = nowTime()
+            //断开旧的
+            disconnectHttpDevice(null)
             connectHttpDevice(device)
         } else {
-            disconnectHttpDevice()
+            disconnectHttpDevice(info)
             if (device.deviceType == LaserPeckerHelper.DEVICE_TYPE_WIFI) {
                 HawkEngraveKeys.lastWifiIp = device.address
 
@@ -201,7 +203,7 @@ class WifiApiModel : ViewModel(), IViewModel {
         tcp.tcpDevice?.let {
             disconnect(it, info)
         }
-        disconnectHttpDevice()
+        disconnectHttpDevice(info)
     }
 
     /**断开所有设备*/
@@ -212,7 +214,7 @@ class WifiApiModel : ViewModel(), IViewModel {
         tcpConnectDeviceListData.value!!.forEach {
             disconnect(it, info)
         }
-        disconnectHttpDevice()
+        disconnectHttpDevice(info)
     }
 
     /**断开设备, 但是之后通知
@@ -275,12 +277,21 @@ class WifiApiModel : ViewModel(), IViewModel {
     }
 
     /**断开http设备的连接*/
-    fun disconnectHttpDevice() {
+    fun disconnectHttpDevice(info: TcpConnectInfo?) {
         val tcpDevice = httpDeviceConnectData.value
         if (tcpDevice != null) {
             tcpDevice.connectState = Tcp.CONNECT_STATE_DISCONNECT
+
+            val find = tcpScanDeviceList.find { it.deviceName == tcpDevice.deviceName }
+            if (find != null) {
+                find.connectState = Tcp.CONNECT_STATE_DISCONNECT
+            }
+
+            tcpConnectDeviceListData.value!!.remove(tcpDevice)
+            tcpConnectDeviceListData.updateThis()
+
             httpDeviceConnectData.updateValue(null)
-            tcpStateData.updateValue(TcpState(tcpDevice, Tcp.CONNECT_STATE_DISCONNECT))
+            tcpStateData.updateValue(TcpState(tcpDevice, Tcp.CONNECT_STATE_DISCONNECT, info))
         }
     }
 
@@ -308,14 +319,13 @@ class WifiApiModel : ViewModel(), IViewModel {
         override fun onServiceFound(service: NsdServiceInfo) {
             L.d("发现服务:$service")
             runOnMainThread {
-                val device = TcpDevice(service.serviceName, service.port, service.serviceName)
+                val device =
+                    tcpConnectDeviceListData.value?.find { it.deviceName == service.serviceName }
+                        ?: TcpDevice(service.serviceName, service.port, service.serviceName)
                 device.address = device.host
                 if (device.deviceType == LaserPeckerHelper.DEVICE_TYPE_WIFI) {
                     device.port = HawkEngraveKeys.wifiPort
                 }
-                device.connectState =
-                    tcpConnectDeviceListData.value?.find { it == device }?.connectState
-                        ?: device.connectState
 
                 if (device.deviceName == httpDeviceConnectData.value?.deviceName) {
                     device.connectState =

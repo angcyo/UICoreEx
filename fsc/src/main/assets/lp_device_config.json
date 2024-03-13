@@ -999,5 +999,209 @@
         }
       ]
     }
+  },
+  {
+    "name": "LX2",
+    "softwareVersionRange": "90000~91000",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "ex": "z,r",
+    "zDirList": "cylinder",
+    "isSingleModule": true,
+    "enablePreviewDebounce": true,
+    "useCutCmd": true,
+    "focalDistance": 40,
+    "widthPhys": 400,
+    "heightPhys": 420,
+    "_bestPhysPath": "M0,0L385,0L385,420L0,420L0,0Z",
+    "zMaxHeight": 2000,
+    "rMaxHeight": 420,
+    "sMaxHeight": 300,
+    "carMaxWidth": 350,
+    "carMaxHeight": 2000,
+    "penMaxHeight": 400,
+    "refVelocityLayer": "layerFill,layerLine,layerCut,layerPicture",
+    "laserTypeList": [
+      {
+        "moduleState": 0,
+        "type": 0,
+        "wave": 450,
+        "power": 5,
+        "showPump": true,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 1,
+        "type": 0,
+        "wave": 450,
+        "power": 10,
+        "showPump": true,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 2,
+        "type": 0,
+        "wave": 450,
+        "power": 20,
+        "showPump": true,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 3,
+        "type": 1,
+        "wave": 1064,
+        "power": 2,
+        "label": "白光"
+      },
+      {
+        "moduleState": 4,
+        "labelIdStr": "engrave_module_single_pen"
+      },
+      {
+        "moduleState": 5,
+        "labelIdStr": "engrave_module_color_pen"
+      },
+      {
+        "moduleState": 6,
+        "labelIdStr": "engrave_module_knife_cutting"
+      },
+      {
+        "moduleState": 7,
+        "labelIdStr": "engrave_module_cnc"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 1016,
+        "px": 1,
+        "des": "4K"
+      }
+    ],
+    "layer": {
+      "layerPicture": {
+        "dpiList": [
+          {
+            "dpi": 254,
+            "px": 4,
+            "des": "1K"
+          },
+          {
+            "dpi": 508,
+            "px": 2,
+            "debug": true,
+            "des": "2K"
+          }
+        ]
+      },
+      "layerFill": {
+        "dpiList": [
+          {
+            "dpi": 127,
+            "px": 4,
+            "des": "0.5K",
+            "debug": true
+          },
+          {
+            "dpi": 254,
+            "px": 4,
+            "des": "1K"
+          },
+          {
+            "dpi": 508,
+            "px": 2,
+            "des": "2K",
+            "moduleList": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "dpi": 711,
+            "px": 1,
+            "des": "2.8k",
+            "label": "2k",
+            "moduleList": [
+              3
+            ]
+          },
+          {
+            "dpi": 889,
+            "px": 1,
+            "des": "3.5k",
+            "label": "4k",
+            "moduleList": [
+              3
+            ]
+          },
+          {
+            "dpi": 1016,
+            "px": 1,
+            "des": "4K",
+            "moduleList": [
+              0,
+              1,
+              2
+            ]
+          }
+        ]
+      }
+    },
+    "pumpMap": {
+      "layerFill": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerPicture": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerLine": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerCut": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ]
+    }
   }
 ]
