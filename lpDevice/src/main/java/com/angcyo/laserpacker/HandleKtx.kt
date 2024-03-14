@@ -401,7 +401,8 @@ fun String?.toSvgElementBean(): LPElementBean? {
 /**第二版, 直接使用图片对象*/
 fun Bitmap?.toBitmapElementBeanV2(
     bmpThreshold: Int? = null, //不指定阈值时, 自动从图片中获取
-    invert: Boolean = false
+    invert: Boolean = false,
+    imageFilter: Int? = null, //强制指定图片处理方式
 ): LPElementBean? {
     this ?: return null
     val bean = LPElementBean()
@@ -418,7 +419,7 @@ fun Bitmap?.toBitmapElementBeanV2(
     //bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
     //bean._srcBitmap = BitmapHandle.toBlackWhiteHandle(this, HawkEngraveKeys.lastBWThreshold.toInt(), invert)
     // 2024-3-11 默认抖动处理
-    bean.imageFilter = LPDataConstant.DATA_MODE_DITHERING //默认黑白处理
+    bean.imageFilter = imageFilter ?: LPDataConstant.DATA_MODE_DITHERING //默认黑白处理
     return bean
 }
 

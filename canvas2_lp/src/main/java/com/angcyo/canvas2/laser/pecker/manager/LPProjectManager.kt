@@ -984,7 +984,10 @@ fun deleteProjectFileV2Folder() {
 /**处理文件路径对应的数据, 解析成[LPElementBean]
  * [bmpThreshold] 不指定阈值时, 自动从图片中获取
  * */
-fun String?.toElementBeanOfFile(bmpThreshold: Int? = null): CanvasOpenDataType? {
+fun String?.toElementBeanOfFile(
+    bmpThreshold: Int? = null,
+    imageFilter: Int? = null
+): CanvasOpenDataType? {
     val path = this?.lowercase() ?: return null
     val extName = path.extName()
     if (extName.isNotEmpty()) {
@@ -1014,7 +1017,7 @@ fun String?.toElementBeanOfFile(bmpThreshold: Int? = null): CanvasOpenDataType? 
         }
     } else if (path.isImageType() || file.fileType().isImageType()) {
         val bitmap = path.toBitmap()
-        return bitmap.toBitmapElementBeanV2(bmpThreshold)
+        return bitmap.toBitmapElementBeanV2(bmpThreshold, imageFilter = imageFilter)
     } else if (path.endsWith(LPDataConstant.PROJECT_EXT, true) ||
         path.endsWith(LPDataConstant.PROJECT_EXT2, true)
     ) {
