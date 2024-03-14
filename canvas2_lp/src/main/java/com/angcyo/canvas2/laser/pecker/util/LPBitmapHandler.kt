@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
@@ -786,11 +785,13 @@ object LPBitmapHandler {
                                     mtype = LPDataConstant.DATA_TYPE_SVG
                                     this.data = svgPath
                                     paintStyle = Paint.Style.STROKE.toPaintStyleInt()
-                                    layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
+                                    dataMode = LPDataConstant.DATA_MODE_GCODE
+                                    isCut = vmApp<DeviceStateModel>().haveCutLayer()
+                                    /*layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
                                         LaserPeckerHelper.LAYER_CUT
                                     } else {
                                         LaserPeckerHelper.LAYER_LINE
-                                    }
+                                    }*/
                                     stroke = Color.MAGENTA.toHexColorString()
                                 }
                                 svgRenderer =
@@ -932,11 +933,13 @@ object LPBitmapHandler {
                                     mtype = LPDataConstant.DATA_TYPE_SVG
                                     this.data = svgPath
                                     paintStyle = Paint.Style.STROKE.toPaintStyleInt()
-                                    layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
+                                    dataMode = LPDataConstant.DATA_MODE_GCODE
+                                    isCut = vmApp<DeviceStateModel>().haveCutLayer()
+                                    /*layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
                                         LaserPeckerHelper.LAYER_CUT
                                     } else {
                                         LaserPeckerHelper.LAYER_LINE
-                                    }
+                                    }*/
                                     stroke = Color.MAGENTA.toHexColorString()
                                 }
                                 svgRenderer =

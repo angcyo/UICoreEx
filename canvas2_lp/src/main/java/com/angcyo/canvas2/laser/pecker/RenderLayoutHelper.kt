@@ -1057,8 +1057,13 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         var isChanged = false
         for (renderer in list) {
             renderer.lpElementBean()?.apply {
-                if (_layerId == LaserPeckerHelper.LAYER_CUT && cut) {
+                if (_layerId == LaserPeckerHelper.LAYER_CUT) {
                     //已经是切割
+                    if (cut != isCut) {
+                        isChanged = true
+                        isCut = cut
+                        clearIndex("快捷操作切割类型改变")
+                    }
                 } else if (_layerId != LaserPeckerHelper.LAYER_CUT && !cut) {
                     //已经不是切割
                 } else {
