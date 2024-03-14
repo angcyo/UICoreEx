@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.BitmapElement
@@ -107,7 +108,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
             paint.strokeWidth = 1f
             paint.style = Paint.Style.STROKE
-            if (elementBean.isCut) {
+            if (elementBean._layerId == LaserPeckerHelper.LAYER_CUT) {
                 //2024-3-11 切割数据使用紫色
                 paint.color = COLOR_PURPLE
             } else {

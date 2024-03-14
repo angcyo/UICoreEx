@@ -10,6 +10,7 @@ import android.graphics.PathEffect
 import android.graphics.RectF
 import android.os.Build
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
@@ -228,7 +229,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             } else {
                 paint.color = elementBean.fill?.toColorInt() ?: Color.BLACK
             }
-            if (elementBean.isCut) {
+            if (elementBean._layerId == LaserPeckerHelper.LAYER_CUT) {
                 //2024-3-11 切割数据使用紫色
                 paint.color = COLOR_PURPLE
             }

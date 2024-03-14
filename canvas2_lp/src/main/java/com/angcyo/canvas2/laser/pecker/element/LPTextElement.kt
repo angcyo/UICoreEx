@@ -2,11 +2,13 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
 import androidx.core.view.updateLayoutParams
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
@@ -221,6 +223,16 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
             if (codeBitmap == null && params.renderDst is CanvasRenderDelegate) {
                 renderNoData(canvas, params)
             }
+        }
+    }
+
+    override fun updatePaint() {
+        super.updatePaint()
+        paint.color = if (elementBean._layerId == LaserPeckerHelper.LAYER_CUT) {
+            //2024-3-11 切割数据使用紫色
+            LPPathElement.COLOR_PURPLE
+        } else {
+            textProperty.textColor?.toColor() ?: Color.BLACK
         }
     }
 
