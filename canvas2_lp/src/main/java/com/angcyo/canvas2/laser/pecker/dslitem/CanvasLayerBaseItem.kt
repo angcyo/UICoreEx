@@ -118,6 +118,12 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         val renderer = itemRenderer
 
+        //2024-3-14 高亮选中的item
+        itemIsSelected = itemRenderDelegate?.selectorManager?.getSelectorRendererList()
+            ?.contains(itemRenderer) == true
+
+        itemHolder.visible(R.id.background_view, itemIsSelected)
+
         //进度通知
         itemHolder.visible(
             R.id.layer_item_progress_view,

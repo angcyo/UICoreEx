@@ -9,7 +9,7 @@
     tools:background="@drawable/lib_tran_circle_shape"
     tools:layout_width="200dp">
 
-    <!--图层可见性控制-->
+    <!--背景提示-->
     <View
         android:id="@+id/background_view"
         android:layout_width="0dp"

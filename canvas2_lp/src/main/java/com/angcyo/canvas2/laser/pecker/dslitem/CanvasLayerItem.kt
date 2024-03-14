@@ -74,9 +74,9 @@ class CanvasLayerItem : CanvasLayerBaseItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        //高亮选中的item
+        /*//2024-3-14 高亮选中的item
         itemIsSelected = itemRenderDelegate?.selectorManager?.getSelectorRendererList()
-            ?.contains(itemRenderer) == true
+            ?.contains(itemRenderer) == true*/
 
         itemHolder.visible(R.id.background_view, itemIsSelected)
         itemHolder.visible(R.id.layer_item_sort_view, itemSortAction != null)
