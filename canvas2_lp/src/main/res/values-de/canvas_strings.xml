@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="canvas_tips">Hinweis</string>
-    <string name="canvas_exit_edit">Aufgeben des Editierens?</string>
     <string name="canvas_title">Erstellen</string>
 
     <string name="canvas_width">Breite</string>
@@ -11,7 +10,7 @@
     <string name="canvas_rotate">Drehen</string>
 
     <!--libcanvas-->
-    <string name="canvas_image">Album</string>
+    <string name="canvas_image">Bild</string>
     <string name="canvas_text">Text</string>
     <string name="canvas_input_text">Text eingeben</string>
     <string name="canvas_shapes">Formen</string>
@@ -23,17 +22,18 @@
     <string name="canvas_layer">Ebenen</string>
     <string name="canvas_undo">Rückgängig</string>
     <string name="canvas_redo">Wiederherstellen</string>
+    <string name="canvas_copy">Kopieren</string>
+    <string name="canvas_stroke">Strich</string>
     <string name="canvas_setting">Einstellungen</string>
-    <string name="canvas_line">Linie</string>
+    <string name="canvas_line">Linien</string>
     <string name="canvas_oval">Ellipse</string>
     <string name="canvas_polygon">Vieleck</string>
     <string name="canvas_rectangle">Rechteck</string>
     <string name="canvas_pentagram">Stern</string>
     <string name="canvas_love">Herz</string>
-    <string name="canvas_stroke">Strich</string>
     <string name="canvas_fill">Füllen</string>
     <string name="canvas_path_fill">Pfad-Füllung</string>
-    <string name="canvas_fill_stroke">Füllung &amp;; Kontur</string>
+    <string name="canvas_font">Schriftart</string>
 
     <string name="canvas_solid">Massiv</string>
     <string name="canvas_hollow">Hohl</string>
@@ -41,7 +41,6 @@
     <string name="canvas_italic">Kursiv</string>
     <string name="canvas_under_line">Unterstrichen</string>
     <string name="canvas_delete_line">Durchgestrichen</string>
-    <string name="canvas_font">Schriftart</string>
     <string name="canvas_standard">Horizontale Ausrichtung</string>
     <string name="canvas_vertical">Vertikale Ausrichtung</string>
     <string name="canvas_align_left">Linksbündig</string>
@@ -52,7 +51,7 @@
     <string name="canvas_align_top">Oben ausrichten</string>
     <string name="canvas_align_vertical">Vertikal zentriert</string>
     <string name="canvas_align_bottom">Unten ausrichten</string>
-    <string name="canvas_prints">Graphik</string>
+    <string name="canvas_prints">Bleistift</string>
     <string name="canvas_gcode">G-code</string>
     <string name="canvas_black_white">Schwarz-Weiß-Malerei</string>
     <string name="canvas_dithering">Dithering</string>
@@ -63,14 +62,14 @@
     <string name="canvas_threshold">Schwellenwert</string>
     <string name="canvas_contrast">Kontrast</string>
     <string name="canvas_brightness">Helligkeit</string>
-    <string name="canvas_line_space">Abstand zwischen den Linien</string>
-    <string name="canvas_path_fill_line_space">Abstand zwischen den Linien füllen</string>
-    <string name="canvas_path_fill_angle">Winkel füllen</string>
+    <string name="canvas_line_space">Linienabstand</string>
+    <string name="canvas_path_fill_line_space">Füllungsabstand</string>
+    <string name="canvas_path_fill_angle">Füllungswinkel</string>
     <string name="canvas_angle">Winkel</string>
     <string name="canvas_direction">Richtung</string>
-    <string name="canvas_inch_unit">Inch</string>
+    <string name="canvas_inch_unit">Zoll</string>
     <string name="canvas_pixel_unit">Pixel</string>
-    <string name="canvas_cloud_storage">Cloud-Speicher</string>
+    <string name="canvas_cloud_storage">Cloud-Speicherung</string>
     <string name="canvas_grid">Raster</string>
     <string name="canvas_smart_assistant">Intelligente Anleitung</string>
     <string name="canvas_preview">Vorschau</string>
@@ -90,24 +89,20 @@
     <string name="canvas_photo">Album</string>
     <string name="out_of_limit">Außerhalb des optimalen Bereichs</string>
     <string name="out_of_bounds">Außerhalb des Gravurbereichs</string>
-    <string name="out_of_height_limit">Wenn im aktuellen Modus die Höhe des Elements %1$s überschreitet, wird die Gravur nicht vollständig sein.</string>
-    <string name="out_of_height_bounds">Im aktuellen Modus darf die Höhe des Elements %1$s nicht überschreiten.</string>
-    <string name="canvas_crop">Zuschneiden</string>
-    <string name="canvas_mesh">Verzerrung</string>
-    <string name="canvas_system">System</string>
-    <string name="canvas_custom">Benutzerdefinierte</string>
-    <string name="canvas_style">Stil</string>
-    <string name="canvas_align">Ausrichtung</string>
     <string name="canvas_flat">Verteilung</string>
     <string name="canvas_flat_horizontal">Horizontal verteilen</string>
-    <string name="canvas_flat_vertical">Vertikal verteilen</string>
+    <string name="canvas_crop">Zuschneiden</string>
     <string name="canvas_group_dissolve">Aufheben</string>
     <string name="canvas_group_group">Gruppieren</string>
     <string name="canvas_outline">Kontur</string>
     <string name="canvas_magic_wand">Magischer Radiergummi</string>
+    <string name="canvas_mesh">Verzerrung</string>
+    <string name="canvas_system">System</string>
+    <string name="canvas_custom">Benutzerdefiniert</string>
+    <string name="canvas_style">Stil</string>
+    <string name="canvas_align">Ausrichtung</string>
+    <string name="canvas_flat_vertical">Vertikal verteilen</string>
     <string name="canvas_magic_wand_tolerance">Farbunterschied</string>
-    <string name="canvas_outline_hole">Behält die Innenkonturen der Bitmap bei</string>
-    <string name="canvas_outline_offset_tip">Versatzabstand (mm)</string>
 
     <string name="canvas_font_size">Schriftgröße</string>
     <string name="canvas_word_spacing">Wortabstand</string>
@@ -115,57 +110,60 @@
     <string name="canvas_curve">Kurve</string>
     <string name="canvas_rasterize">Rasterung</string>
     <string name="canvas_union">Zusammenführen</string>
-    <string name="canvas_op_union">Union</string>
-    <string name="canvas_op_difference">Subtrahieren</string>
-    <string name="canvas_op_intersect">Fragment</string>
-    <string name="canvas_op_xor">Kombinieren</string>
+    <string name="canvas_op_union">Vereinen</string>
+    <string name="canvas_op_difference">Abziehen</string>
+    <string name="canvas_op_intersect">Schnittmenge</string>
+    <string name="canvas_op_xor">Schnittmenge subtrahieren</string>
 
-    <string name="canvas_side_count">Seite</string>
-    <string name="canvas_angle_count">Anzahl der Ecken</string>
+    <string name="canvas_side_count">Kanten</string>
+    <string name="canvas_angle_count">Winkel</string>
     <string name="canvas_depth">Tiefe</string>
     <string name="canvas_corner">Abgerundet</string>
 
     <string name="invert_title">Anweisung für Farbumkehr</string>
-    <string name="invert_des">1. Testen Sie das Gravurmaterial nach dem normalen Prozess\n 2. Achten Sie auf die Tiefe des Gravureffekts (im Vergleich zur Farbe des Materials)\n 3. Bestimmen Sie, ob die umgekehrte Farbe überprüft werden soll</string>
     <string name="invert_criterion">Urteilsgrundlage</string>
-    <string name="invert_not_recommend">Farbumkehr ist nicht zu empfohlen</string>
+    <string name="invert_not_recommend">Farbumkehr ist nicht empfohlen</string>
     <string name="invert_not_recommend_criterion">Die Gravurfarbe ist dunkler als die Materialfarbe</string>
     <string name="invert_recommend">Farbumkehr wird empfohlen</string>
     <string name="invert_recommend_criterion">Die Gravurfarbe ist heller als die Materialfarbe</string>
 
-    <string name="canvas_clear">Alles leeren</string>
-    <string name="canvas_select_all">Alles prüfen</string>
+    <string name="canvas_clear">Alles löschen</string>
+    <string name="canvas_select_all">Alles auswählen</string>
     <string name="canvas_show_all">Alles anzeigen</string>
-    <string name="canvas_hide_other">Sonstiges ausblenden</string>
-    <string name="canvas_origin">Herkunft des Maltuchs</string>
-    <string name="canvas_reset">Zurücksetzen der Arbeitsfläche</string>
-    <string name="canvas_best">Leinwand-Adaption</string>
-    <string name="canvas_ratio_1">Leinwand-Zoom 100%</string>
+    <string name="canvas_hide_other">Andere ausblenden</string>
+    <string name="canvas_origin">Ausgangspunkt des Leinwands</string>
+    <string name="canvas_reset">Leinwand zurücksetzen</string>
+    <string name="canvas_best">Leinwand anpassen</string>
+    <string name="canvas_ratio_1">Leinwand zoomen 100%</string>
 
-    <string name="canvas_item_outof_limit">Die Anzahl der Elemente überschreitet das Limit!</string>
+    <string name="canvas_item_outof_limit">Anzahl der Elemente überschreitet das Limit!</string>
     <string name="canvas_min_diameter">Kleiner Durchmesser</string>
     <string name="canvas_max_diameter">Großer Durchmesser</string>
     <string name="canvas_rotation_axis">Drehachse</string>
 
     <string name="canvas_sync_font">Schriftarten sichern/synchronisieren</string>
 
-    <string name="add_parameter_comparison_table">Hinzufügen einer Parameterprüftabelle</string>
+    <string name="add_parameter_comparison_table">Eine Parameter-Prüftabelle hinzufügen</string>
     <string name="add_parameter_comparison_table_threshold">Schwellenwert</string>
     <string name="add_parameter_comparison_table_columns">Spalten</string>
     <string name="add_parameter_comparison_table_rows">Reihen</string>
-    <string name="add_parameter_comparison_table_font_size">Schriftgrad</string>
-    <string name="add_parameter_comparison_table_grid_margin">Karierte Ränder</string>
+    <string name="add_parameter_comparison_table_font_size">Schriftgröße</string>
+    <string name="add_parameter_comparison_table_grid_margin">Rasterrand</string>
 
-    <string name="add_multiplication_table">Füge eine Tabelle mit Multiplikationstipps hinzu</string>
-    <string name="add_visual_chart">Hinzufügen eines Augendiagramms</string>
+    <string name="add_multiplication_table">Eine Multiplikationstabelle hinzufügen</string>
+    <string name="add_visual_chart">Eine Sehtafel hinzufügen</string>
+    <string name="data_not_allowed_multi">Im aktuellen Modus ist das Gravieren mehrerer Elemente nicht erlaubt</string>
 
-    <string name="data_not_allowed">Im aktuellen Modus ist das Gravieren von "%1$s"-Daten nicht zulässig</string>
-    <string name="data_not_allowed_reverse">Im aktuellen Modus ist das Gravieren von Nicht-"%1$s"-Daten nicht zulässig</string>
-    <string name="data_not_allowed_height">Im aktuellen Modus ist das Gravieren von Daten mit einer Höhe von mehr als %1$s nicht zulässig</string>
-    <string name="data_not_allowed_multi">Im aktuellen Modus dürfen nicht mehrere Elemente geformt werden</string>
+    <string name="canvas_side">Kanten</string>
+    <string name="variable_time">Zeit</string>
+    <string name="variable_file">Datei</string>
 
-    <string name="canvas_side">Seite</string>
-    <string name="project_exist_tip">Das Projekt existiert bereits, ist es überschrieben?</string>
-    <string name="project_restore_tip">Möchten Sie frühere Elemente wiederherstellen?</string>
+    <string name="variable_model">Modus</string>
+    <string name="variable_file_txt">Txt</string>
+    <string name="variable_file_excel">Excel</string>
+    <string name="variable_file_label">Datei</string>
+    <string name="canvas_relief_strength">Intensität</string>
 
+    <string name="canvas_tracer_corner">Schwellenwert</string>
+    <string name="canvas_guid_send">Datei senden</string>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="recycle_paper">umweltfreundliches Papier</string>
-    <string name="corrugated_paper">Wellpappe</string>
+    <string name="recycle_paper">Umweltfreundliches Papier</string>
+    <string name="corrugated_paper">Wellenpapier</string>
     <string name="leather">Leder</string>
     <string name="bamboo">Bambus</string>
     <string name="wood">Holz</string>
@@ -10,9 +10,9 @@
     <string name="cloth">Stoff</string>
     <string name="felt">Filzstoff</string>
     <string name="opacity_acrylic">Undurchsichtiges Acryl</string>
-    <string name="photosensitive_seal">lichtempfindlicher Stempel</string>
+    <string name="photosensitive_seal">Lichtempfindlicher Stempel</string>
     <string name="fruit_peel">Fruchtschalen</string>
-    <string name="custom">Benutzerdefinierte</string>
+    <string name="custom">Benutzerdefiniert</string>
     <string name="coke_can">Cola-Dosen</string>
     <string name="stone">Stein</string>
     <string name="oxidized_metal">Oxidiertes Metall</string>
@@ -46,7 +46,7 @@
     <string name="vellum">Kraftpapier</string>
     <string name="paper_jam">Kartonpapier</string>
     <string name="cardboard">Pappe</string>
-    <string name="acrylic">Akryl</string>
+    <string name="acrylic">Acryl</string>
     <string name="cork_coasters">Untersetzer aus Kork</string>
     <string name="mark_draws_paper">Markerpapier</string>
     <string name="poplar_chips">Scheiben aus Pappelholz</string>
@@ -69,4 +69,6 @@
     <string name="walnut_planks_12">12mm Brett aus Walnussolz</string>
     <string name="bamboo_chips">Bambusstreifen</string>
     <string name="log_chips_3">3mm Scheiben aus Stammholz</string>
+
+    <string name="archive_bag">Aktenhülle</string>
 </resources>

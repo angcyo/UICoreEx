@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="engrave_warn">Warnung</string>
-    <string name="ble_permission_disabled">Relevante Berechtigungen sind deaktiviert, bitte schalten Sie Bluetooth und Standort und andere damit verbundene Berechtigungen ein!</string>
+    <string name="ble_permission_disabled">Die entsprechenden Berechtigungen sind deaktiviert. Bitte aktivieren Sie Bluetooth und Standort und andere damit verbundene Berechtigungen!</string>
     <string name="device_connected">Verbunden</string>
-    <string name="blue_connecting">Bluetooth verbindet...</string>
-    <string name="blue_disconnecting">Trennend...</string>
+    <string name="blue_connecting">Bluetooth-Verbindung herstellen</string>
+    <string name="blue_disconnecting">Trennen der Verbindung...</string>
     <string name="blue_connect">Bluetooth-Verbindung</string>
     <string name="ui_slip_menu_model">Moduseinstellungen</string>
 
     <string name="device_setting_act_model_warning_tone">Arbeitssignalton</string>
     <string name="device_setting_act_des_sound">Es gibt einen Signalton zu Beginn und am Ende des Auftrags</string>
     <string name="device_setting_act_model_security">Sicherheitsstatus</string>
-    <string name="device_setting_act_des_security">Der Sicherheitsmodus wird automatisch aktiviert</string>
+    <string name="device_setting_act_des_security">Automatisches Öffnen des Sicherheitsmodus unter dem Schutzabdeckung.</string>
     <string name="device_setting_act_model_free">Frei-Modus</string>
     <string name="device_setting_act_des_free">Beim Anwenden ohne Schutzabdeckung müssen Sie dem Haftungsausschluss vorerst zustimmen.</string>
     <string name="device_setting_act_model_preview_g_code">Vektordiagramm</string>
     <string name="device_setting_engrave_dir">Gravurrichtung</string>
-    <string name="device_setting_engrave_dir_des">Die voreingestellt Gravurrichtung ist die Vorwärtsgravur. Schalten Sie diesen den Knopf an</string>
+    <string name="device_setting_engrave_dir_des">Die Standardeinstellung ist Vorwärtsgravur, und die Öffnungstaste ist Rückwärtsgravur per Hand</string>
     <string name="device_g_code_pwr_label">G-Code-Befehlsleistung verwenden</string>
-    <string name="device_g_code_pwr_des">Aktivieren Sie die Option G-Code-Gravurleistung übernimmt den Wert aus dem Befehl. Wenn Sie die Option deaktivieren, wird die G-Code-Gravurleistung von der App übernommen.</string>
+    <string name="device_g_code_pwr_des">Schalten Sie die Option ein, übernimmt die GCode-Gravurleistung den Wert aus dem Befehl; schalten Sie die Option aus, übernimmt die GCode-Gravurleistung den Wert aus der App.</string>
     <string name="device_setting_act_des_preview_g_code">Der Cursor wird sich entsprechend dem Pfad der Vektordatei bewegen</string>
 
-    <string name="ui_disclaimer">Verzichtserklärung</string>
-    <string name="ui_disclaimer_content2">Warnung: Wenn der Schalter „Freier Modus“ eingeschaltet ist, kann Ihr Gerät ohne die Schutzhülle verwendet werden, was zu Sicherheitsrisiken führen kann. Bitte bestätigen Sie daher unbedingt, ob die aktuelle Aktion erforderlich ist. Wenn Sie bestätigen, dass Sie bei der Handhabung auf die Schutzhülle verzichten möchten, stellen Sie bitte sicher, dass Sie die Sicherheitsvorschriften einhalten und erklären Sie sich damit einverstanden,, dass Sie die volle Verantwortung für die Sicherheits- und Rechtsrisiken tragen, die durch diese Handhabung verursacht werden, und dass die Hersteller und Händler von LaserPecker keine Haftung für Sicherheit und rechtliche Haftung übernehmen.</string>
+    <string name="ui_disclaimer_content2">Warnung: Wenn der Schalter "Freier Modus" eingeschaltet ist, kann Ihr Gerät unter dem Schutz der Schutzhülle verwendet werden, was Sicherheitsrisiken mit sich bringen kann. Überprüfen Sie daher, ob es notwendig ist, die aktuelle Operation durchzuführen. Wenn Sie bestätigen, dass Sie unter dem Schutz der Schutzhülle aufgeben müssen, vergewissern Sie sich bitte, dass Ihre Operationen den Sicherheitsnormen entsprechen, und erklären Sie sich damit einverstanden, dass Sie für die durch diese Operation verursachten Sicherheits- und Rechtsrisiken voll verantwortlich sind. Sicherheit und rechtliche Verantwortung.</string>
 
     <string name="ui_reminder">Hinweis</string>
     <string name="ui_reminder_free_mode">Ist dieser Modus aktiviert, kann die Maschine ohne Schutzhaube in Betrieb genommen werden. Stellen Sie sicher, dass alle umstehenden Personen Schutzbrillen aufgesetzt haben und Sie die Maschine unter Berücksichtigung sämtlicher Sicherheitsmaßnahmen bedienen. Seien Sie sich bewusst, dass Sie allein für die  Sicherheit und gesetzlichen Risiken der Bedienung Verantwortung tragen. Die Hersteller und Vertreiber von LaserPecker übernehmen keinerlei sicherheitstechnische  oder rechtliche Verantwortung. </string>
     <string name="ui_reminder_see_free_mode">Klicken Sie hier, um sich den Unterschied zwischen der Schutzhaube und der tragbaren, pyramidenförmigen Schutzabdeckung anzusehen</string>
 
-    <string name="device_ex_car_label">Bewegliche Plattform</string>
+    <string name="device_ex_car_label">Mobile Plattform</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Vorwärts drehen</string>
     <string name="device_ex_direction_des">Vielseitige elektrische Walze vorwärts oder rückwärts drehen</string>
@@ -43,9 +42,9 @@
     <string name="start_calibration">Kalibrierung starten</string>
     <string name="finish_calibration">Kalibrierung abschließen</string>
     <string name="device_setting_txt_3">Touch-Taste der Haupteinheit</string>
-    <string name="device_setting_txt_4">Dieser Schalter steuert den Aktivierungs- und Deaktivierungsstatus der Vorschau- und Stopp-Touch-Tasten der Haupteinheit</string>
+    <string name="device_setting_txt_4">Dieser Schalter steuert die Aktivierung und Deaktivierung der Vorschau- und Stopp-Touch-Tasten auf der Haupteinheit</string>
     <string name="button_infra_red_title">Rotes Licht ist dauerhaft an</string>
-    <string name="button_infra_red_content">Da das Gerät mit unsichtbarem Licht graviert</string>
+    <string name="button_infra_red_content">Da das Gerät mit unsichtbarem Licht arbeitet, erhalten Sie Rotlicht-Anweisungen beim Betrieb, wenn Sie diese Taste einschalten.</string>
     <string name="device_setting_txt_5">Taste für die Chargengravur</string>
     <string name="device_setting_txt_6">Dieser Schalter steuert die Aktivierung und Deaktivierung der "Taste für die Chargengravur" des externen Zubehörs.</string>
     <string name="device_setting_blue_connect_auto">Bluetooth automatisch verbinden</string>
@@ -55,7 +54,7 @@
     <string name="over_scan_delay_enable_tip">Sie haben die Überpunktverzögerung aktiviert</string>
 
     <string name="engrave_experimental">Experimentell</string>
-    <string name="create_log_tip">Bitte warten, es werden Protokolle generiert...</string>
+    <string name="create_log_tip">Bitte warten Sie, die Protokolle werden gerade erstellt…</string>
 
     <string name="firmware_corrupted">Firmware ist beschädigt</string>
     <string name="firmware_invalid">Ungültige Firmware</string>
@@ -67,13 +66,12 @@
     <string name="upgrade_completed">Upgrade abgeschlossen!</string>
     <string name="upgrade_duration">Zeitaufwand für das Upgrade</string>
 
-    <string name="data_exception">Daten-Anomalien!</string>
+    <string name="data_exception">Daten abnormal!</string>
     <string name="blue_connected">Bluetooth ist verbunden</string>
     <string name="blue_disconnected">Bluetooth ist getrennt</string>
-
-    <string name="engrave_layer_bitmap">Album</string>
+    <string name="engrave_layer_bitmap">Bild</string>
     <string name="engrave_layer_fill">Füllen</string>
-    <string name="engrave_layer_line">Linie</string>
+    <string name="engrave_layer_line">Linien</string>
     <string name="engrave_layer_cut">Schneiden</string>
 
     <string name="engrave_channel">Gravurkanal</string>
@@ -85,42 +83,46 @@
     <string name="ui_quit">Beenden</string>
     <string name="ui_finish">Fertiggestellt</string>
     <string name="ui_setting">Einstellungen</string>
+    <string name="ui_search">Suchen</string>
 
     <string name="device_not_found">Ihr Gerät kann nicht gefunden werden</string>
-    <string name="device_not_found_des">Vergewissern Sie sich</string>
+    <string name="device_not_found_des">Vergewissern Sie sich, dass sich Ihr Gerät im Wartestatus befindet</string>
     <string name="contact_me">Kontaktieren Sie den Kundendienst</string>
 
-    <string name="device_setting_tips_fourteen_11">Gravur-Modus</string>
+    <string name="device_setting_tips_fourteen_11">Gravurmodus</string>
 
     <string name="select_device">Gerät auswählen</string>
     <string name="start_upgrade">Upgrade starten</string>
     <string name="engrave_feedback">Problem melden</string>
 
-    <string name="empty_data_transfer">Keine Sculpting-Daten!</string>
+    <string name="empty_data_transfer">Keine Gravurdaten!</string>
     <string name="out_of_data_transfer">Die Daten sind zu groß!</string>
-    <string name="transfer_data_exception">Übertragungsdaten abnormal!</string>
+    <string name="transfer_data_exception">Datenübertragungsfehler!</string>
     <string name="canvas_open">Öffnen</string>
     <string name="font_import_fail">Schriftartimport fehlgeschlagen</string>
     <string name="font_import_success">Schriftarten erfolgreich importiert</string>
     <string name="canvas_import_font">Importieren</string>
-    <string name="canvas_backups_font">Sicherungskopie</string>
+    <string name="canvas_backups_font">Backups</string>
     <string name="canvas_export_font">Exportieren</string>
     <string name="canvas_rename">Umbenennen</string>
     <string name="project_title">Meine Werke</string>
     <string name="canvas_delete_project">Elemente löschen</string>
-    <string name="canvas_delete_project_tip">Es kann nach dem Löschen nicht wiederhergestellt werden, möchten Sie fortfahren?</string>
+    <string name="canvas_delete">Löschen</string>
     <string name="save_project_title">Projektname</string>
     <string name="project_title_limit">Eingabe von bis zu 20 Zeichen</string>
     <string name="project_save_success_tip">Projekt erfolgreich gespeichert</string>
 
-    <string name="rotate_flag_tip_title">Stellen Sie sicher, dass der Strom für die %1$s eingeschaltet ist. Sollte der Strom bereits eingeschaltet sein und die Maschine reagiert dennoch nicht, verbinden Sie das Komponentenkabel erneut und schalten den Strom wieder ein. </string>
-    <string name="see_tutorial">Hilfe</string>
-
-    <string name="permission_request_title">Wir werden Sie um die folgenden Berechtigungen bitten:</string>
     <string name="permission_ble_des">Bluetoothberechtigung\nBeschreibung der Berechtigungsfunktion: Ermöglicht der App, eine Verbindung zu Bluetooth-Geräten herzustellen\nNutzungsszenarien und -zwecke: Kopplung von Bluetooth-Geräten</string>
-    <string name="permission_gps_des">Standortberechtigung\nBeschreibung der Berechtigungsfunktion: Ermöglicht der App, eine Verbindung zur Maschine herzustellen\nNutzungsszenarien und -zwecke: Kopplung von Maschinen</string>
+
     <string name="path_opt_label">Pfadoptimierung</string>
     <string name="path_opt_des">Hinsichtlich der Vektordaten werden die Gravurpfade optimiert, um die Gravureffizienz zu verbessern.</string>
     <string name="firmware_update_state_tip">Überprüfung des Firmware-Upgrades</string>
     <string name="firmware_update_state_des">1. Schließen Sie die Maschine wieder an;\n2. Wenn aktuelle Firmware-Versionsnummer des Gerätes der neuesten Version entspricht, bedeutet dies, dass das Upgrade erfolgreich war;\n3. Wenn die aktuelle Firmware-Versionsnummer des Gerätes nicht der neuesten Version entspricht, wird empfohlen, die APP neu zu starten, das Gerät auszuschalten, neu zu starten und anschließend die Firmware erneut zu aktualisieren.</string>
+    <string name="add_wifi_device_title">Gerät hinzufügen</string>
+    <string name="connect_device">Gerät verbinden</string>
+    <string name="wifi_connect_error">Verbindung fehlgeschlagen</string>
+    <string name="type_ble">Bluetooth</string>
+    <string name="type_wifi">Wi-Fi</string>
+    <string name="not_connected">Nicht verbunden</string>
+    <string name="connecting">Verbinden...</string>
 </resources>

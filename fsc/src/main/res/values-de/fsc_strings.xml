@@ -3,7 +3,6 @@
 
     <string name="safety_tips">Sicherheitshinweis</string>
     <string name="device_exception">Gerät abnormal</string>
-    <string name="ex_tips_one">Bitte geben Sie die Moduseinstellungen ein und schalten Sie [Freier Modus] ein.</string>
     <string name="ex_tips_one2">Unsicherer Zustand entdeckt. Öffnen Sie bitte Einstellungen, aktivieren den freien Modus und fahren mit der Bedienung fort.</string>
     <string name="ex_tips_two">Gerät stoppt\nDie Reichweite ist außerhalb der Grenzen. Bitte verwenden Sie die automatische Anpassung in der Laserjustage, um die Position des Laserfokus zurückzusetzen, und versuchen Sie es erneut.</string>
     <string name="ex_tips_three">Gerät stoppt\nBetriebstemperatur des Lasers zu hoch</string>
@@ -24,7 +23,7 @@
     <string name="preview_state_z_pause2">%1$s pausiert</string>
     <string name="preview_state_z_continue">Vielseitige elektrische Walze fortsetzen</string>
     <string name="preview_state_z_continue2">%1$s setzt sich fort</string>
-    <string name="preview_state_z_scroll">Vielseitige elektrische Walze scrollen</string>
+    <string name="preview_state_z_scroll">Vielseitige elektrische Walze rotieren</string>
     <string name="preview_state_center">Vorschau des Anzeigezentrums</string>
     <string name="preview_state_points">Vorschau des 4-Punkt-Bereichs</string>
     <string name="preview_state_bracket">Halterung verstellen</string>
@@ -34,10 +33,10 @@
     <string name="engrave_state_ing">Lasergravur in Bearbeitung</string>
 
     <string name="blue_no_device_connected">Gerät nicht angeschlossen</string>
-    <string name="device_busy_tip">Das Gerät ist ausgelastet, bitte versuchen Sie es später noch einmal!</string>
+    <string name="device_busy_tip">Das Gerät ist beschäftigt, bitte versuchen Sie es später noch einmal!</string>
     <string name="device_init_fail_tip">Geräteinitialisierung fehlgeschlagen!</string>
     <string name="command_too_long_tip">Befehl zu lang!</string>
-    <string name="command_send_error_tip">Kommunikationsausnahme, bitte versuchen Sie es später noch einmal!</string>
+    <string name="command_send_error_tip">Kommunikationsfehler, bitte versuchen Sie es später noch einmal!</string>
 
     <string name="work_mode_focusing">Fokussierungsmodus</string>
     <string name="work_mode_file_download">Modus zum Download von Dateien</string>
@@ -48,8 +47,8 @@
     <string name="laser_not_plugged_tip">Laserkopf nicht richtig eingesetzt</string>
 
     <string name="device_ex_z_label">Vielseitige elektrische Walze</string>
-    <string name="device_ex_z_des">Ermöglicht die Einstellung von Parametern für Gravurszenen auf den Oberflächen der regelmäßigen rechteckigen und zylindrischen Objekte (Größenbeschränkungen: Breite innerhalb von 100 mm</string>
-    <string name="device_ex_r_label">Drehen Sie den Greifer</string>
+    <string name="device_ex_z_des">Unterstützt die Parametereinstellung der Gravurszene auf der Oberfläche von regelmäßigen Quadern und Zylindern (Größenbeschränkung: die Breite des Quaders liegt innerhalb von 100mm, die Länge innerhalb von 5m und der Umfang des Zylinderquerschnitts innerhalb von 5m)</string>
+    <string name="device_ex_r_label">Drehachse</string>
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">Gleittisch</string>
     <string name="device_ex_s_des">--</string>
@@ -58,8 +57,8 @@
     <string name="device_z_model_car">Rollwagen</string>
     <string name="device_z_model_cylinder">Zylinder</string>
 
-    <string name="command_timeout_tip">Zeitüberschreitung bei der Anweisung</string>
-    <string name="command_cancel_tip">Stornierung der Bestellung</string>
+    <string name="command_timeout_tip">Zeitüberschreitung des Befehls</string>
+    <string name="command_cancel_tip">Befehl abbrechen</string>
 
     <string name="engrave_module_single_pen">Einfarbiger Stiftmodus</string>
     <string name="engrave_module_color_pen">Farbiger Stiftmodus</string>
