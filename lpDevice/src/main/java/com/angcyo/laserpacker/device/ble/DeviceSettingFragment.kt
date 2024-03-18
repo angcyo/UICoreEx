@@ -105,6 +105,12 @@ class DeviceSettingFragment : BaseDslFragment() {
         var createFirmwareUpdateItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
             null
 
+        /**获取帮助文档*/
+        fun getHelpUrl(enUrl: String?, zhUrl: String?): String? {
+            val isZh = LanguageModel.isChinese()
+            return if (isZh) zhUrl ?: enUrl else enUrl ?: zhUrl
+        }
+
         fun getFlagHelpUrl(ex: String): String? {
             val setting = _deviceSettingBean
             val name = _productName

@@ -174,6 +174,14 @@ data class DeviceSettingBean(
     /**显示路径优化固件范围*/
     var showPathOptRange: String? = "",
 
+    /**2D浮雕帮助文档*/
+    var reliefHelpUrl: String? = null,
+    var reliefHelpUrlZh: String? = null,
+
+    /**位图临摹帮助文档*/
+    var tracerHelpUrl: String? = null,
+    var tracerHelpUrlZh: String? = null,
+
     /**二维码支持的格式集合*/
     var barcode2DTypeList: List<String>? = null,
     /**一维码支持的格式集合*/

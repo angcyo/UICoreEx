@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._isAutoCnc
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
@@ -17,6 +18,7 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.renderer.PathRenderer
 import com.angcyo.canvas.render.state.IStateStack
+import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companion.APPLY_TYPE_CHANGE
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companion.APPLY_TYPE_DISMISS
@@ -24,6 +26,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companio
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.dialog.magicWandDialog
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
+import com.angcyo.core.CoreApplication
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.vmApp
 import com.angcyo.crop.ui.cropDialog
@@ -31,6 +34,7 @@ import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
+import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyleInt
@@ -42,6 +46,8 @@ import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempMatrix
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
+import com.angcyo.library.ex._drawable
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
@@ -53,6 +59,7 @@ import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.angcyo.rust.handle.RustBitmapHandle
+import com.angcyo.widget.span.span
 import com.hingin.rn.image.ImageProcess
 import java.io.File
 import kotlin.math.roundToInt
@@ -855,6 +862,25 @@ object LPBitmapHandler {
         var svgRenderer: CanvasElementRenderer? = null
 
         context.canvasRegulateWindow(anchor) {
+            val helpUrl = DeviceSettingFragment.getHelpUrl(
+                _deviceSettingBean?.tracerHelpUrl,
+                _deviceSettingBean?.tracerHelpUrlZh
+            )
+            popupTitle = span {
+                append(_string(R.string.canvas_tracer))
+                if (helpUrl != null) {
+                    append(" ")
+                    appendDrawable(_drawable(R.drawable.rotate_flag_help_svg))
+                }
+            }
+            if (helpUrl != null) {
+                onInitLayout = { window, viewHolder ->
+                    viewHolder.click(R.id.lib_title_text_view) {
+                        CoreApplication.onOpenUrlAction?.invoke(helpUrl)
+                    }
+                }
+            }
+
             addRegulate(
                 CanvasRegulatePopupConfig.KEY_TRACER_FILTER,
                 HawkEngraveKeys.lastTracerFilter
@@ -1123,6 +1149,26 @@ object LPBitmapHandler {
         val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
+            val helpUrl = DeviceSettingFragment.getHelpUrl(
+                _deviceSettingBean?.reliefHelpUrl,
+                _deviceSettingBean?.reliefHelpUrlZh
+            )
+            popupTitle = span {
+                append(_string(R.string.canvas_relief))
+                if (helpUrl != null) {
+                    append(" ")
+                    appendDrawable(_drawable(R.drawable.rotate_flag_help_svg))
+                }
+            }
+            if (helpUrl != null) {
+                onInitLayout = { window, viewHolder ->
+                    viewHolder.click(R.id.lib_title_text_view) {
+                        CoreApplication.onOpenUrlAction?.invoke(helpUrl)
+                    }
+                }
+            }
+
+
             addRegulate(CanvasRegulatePopupConfig.KEY_RELIEF_INVERT, bean.inverse)
             addRegulate(CanvasRegulatePopupConfig.KEY_RELIEF_STRENGTH, bean.reliefStrength)
             firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_RELIEF
