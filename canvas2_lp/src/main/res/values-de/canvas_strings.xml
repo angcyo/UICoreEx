@@ -120,6 +120,7 @@
     <string name="canvas_depth">Tiefe</string>
     <string name="canvas_corner">Abgerundet</string>
 
+    <string name="invert_des">1. Zunächst nach dem normalen Prozess das Gravurmaterial prüfen \n 2. Prüfen Sie die Tiefe des Gravureffekts (und den Farbkontrast des Materials) \n 3. Bestimmen Sie, ob die Farbe invertiert ist.</string>
     <string name="invert_title">Anweisung für Farbumkehr</string>
     <string name="invert_criterion">Urteilsgrundlage</string>
     <string name="invert_not_recommend">Farbumkehr ist nicht empfohlen</string>
