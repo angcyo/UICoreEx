@@ -15,7 +15,7 @@
     <string name="canvas_text">Texte</string>
     <string name="canvas_input_text">Saisissez du texte</string>
     <string name="canvas_shapes">Forme</string>
-    <string name="canvas_material"> Matériel</string>
+    <string name="canvas_material">Clipart</string>
     <string name="canvas_doodle">Graffiti</string>
     <string name="canvas_barcode">Codes-barres</string>
     <string name="canvas_qrcode">Code QR</string>

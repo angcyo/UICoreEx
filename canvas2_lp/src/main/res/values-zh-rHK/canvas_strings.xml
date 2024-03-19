@@ -15,7 +15,7 @@
     <string name="canvas_text">文本</string>
     <string name="canvas_input_text">輸入文本</string>
     <string name="canvas_shapes">形狀</string>
-    <string name="canvas_material">材料</string>
+    <string name="canvas_material">素材</string>
     <string name="canvas_doodle">塗鴉</string>
     <string name="canvas_barcode">條形碼</string>
     <string name="canvas_qrcode">二維碼</string>
