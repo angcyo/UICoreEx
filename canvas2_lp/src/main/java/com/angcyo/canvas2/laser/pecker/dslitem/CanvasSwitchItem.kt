@@ -13,6 +13,11 @@ import com.angcyo.widget.DslViewHolder
  */
 open class CanvasSwitchItem : DslSwitchInfoItem() {
 
+    init {
+        //itemExtendLayoutId = R.layout.dsl_extent_min_width_switch_item
+        itemLayoutId = R.layout.dsl_min_extent_width_info_item
+    }
+
     override fun onItemBind(
         itemHolder: DslViewHolder,
         itemPosition: Int,
