@@ -153,7 +153,9 @@
 
     <string name="add_multiplication_table">Eine Multiplikationstabelle hinzufügen</string>
     <string name="add_visual_chart">Eine Sehtafel hinzufügen</string>
+    <string name="data_not_allowed">Im aktuellen Modus ist die Gravur von "%1$s"-Daten nicht erlaubt</string>
     <string name="data_not_allowed_multi">Im aktuellen Modus ist das Gravieren mehrerer Elemente nicht erlaubt</string>
+    <string name="data_not_allowed_reverse">Im aktuellen Modus ist die Gravur von Daten, die nicht "%1$s" sind, nicht erlaubt</string>
 
     <string name="canvas_side">Kanten</string>
     <string name="variable_time">Zeit</string>
