@@ -503,7 +503,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                                 loadEnd(bean, error)
                                 if (error != null) {
                                     toastQQOrMessage(error.message)
-                                } else {
+                                }
+                                if (error == null || !deviceStateModel.isDeviceConnect()) {
                                     engraveFlow = if (_isSingleItemFlow) {
                                         ENGRAVE_FLOW_PREVIEW
                                     } else {
