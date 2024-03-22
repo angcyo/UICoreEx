@@ -1154,7 +1154,7 @@ object LPBitmapHandler {
                 _deviceSettingBean?.reliefHelpUrlZh
             )
             popupTitle = span {
-                append(_string(R.string.canvas_relief))
+                append(_string(R.string.canvas_2d_relief))
                 if (helpUrl != null) {
                     append(" ")
                     appendDrawable(_drawable(R.drawable.rotate_flag_help_svg))
