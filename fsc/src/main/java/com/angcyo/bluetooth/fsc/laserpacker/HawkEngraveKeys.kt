@@ -442,8 +442,10 @@ object HawkEngraveKeys {
     /**NSD探测服务的类型*/
     var nsdServiceType: String by HawkPropertyValue<Any, String>("_http._tcp") //2024-2-29
 
-    /**最后一次配置的wifi设备ip
-     * 用来用来确定是否配置过wifi设备*/
+    /**最后一次配置的wifi设备ip, 192.168.2.136
+     * 用来用来确定是否配置过wifi设备
+     * 有可能是`LP5-6666E6.local`
+     * */
     var lastWifiIp: String? by HawkPropertyValue<Any, String?>(null)
 
     /**最后一次配置的wifi密码*/

@@ -1086,9 +1086,13 @@ fun List<PxInfo>.filterPxList(result: MutableList<PxInfo> = mutableListOf()) =
 val String.toLocal: String
     get() = if (isHttpScheme()) this else "http://${this}.local"
 
+/**当前的字符串是否是ip*/
+val String.isIp: Boolean
+    get() = count { it == '.' } >= 3
+
 /**访问主机*/
 val TcpDevice.host: String
-    get() = when (deviceType) {
+    get() = if (address.isIp || address.contains("local")) address else when (deviceType) {
         LaserPeckerHelper.DEVICE_TYPE_HTTP -> "http://${address}.local"
         LaserPeckerHelper.DEVICE_TYPE_WIFI -> "${address}.local"
         else -> address

@@ -14,6 +14,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.deviceType
 import com.angcyo.bluetooth.fsc.laserpacker.host
 import com.angcyo.core.vmApp
+import com.angcyo.http.rx.doMain
 import com.angcyo.http.tcp.Tcp
 import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.http.tcp.TcpDevice
@@ -396,17 +397,19 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     /**停止发现设备*/
     fun stopDiscovery() {
-        if (scanState == WifiDeviceScan.STATE_SCAN_START) {
-            nsdManager.stopServiceDiscovery(discoveryListener)
-            updateDiscoveryState(WifiDeviceScan.STATE_SCAN_FINISH)
+        doMain {
+            if (scanState == WifiDeviceScan.STATE_SCAN_START) {
+                nsdManager.stopServiceDiscovery(discoveryListener)
+                updateDiscoveryState(WifiDeviceScan.STATE_SCAN_FINISH)
+            }
+            try {
+                nsdManager.stopServiceDiscovery(discoveryListener)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            _lifecycleOwner?.lifecycle?.removeObserver(_lifecycleObserver)
+            _lifecycleOwner = null
         }
-        try {
-            nsdManager.stopServiceDiscovery(discoveryListener)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        _lifecycleOwner?.lifecycle?.removeObserver(_lifecycleObserver)
-        _lifecycleOwner = null
     }
 
     //endregion ---nsd---
