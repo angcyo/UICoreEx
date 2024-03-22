@@ -232,13 +232,18 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 receivePacket.isCancel = true
             }
             if (isFinish) {
-                itemIsFinish = true
-                itemIsUpdating = false
-                _finishTime = nowTime()
-                //断开蓝牙设备
-                apiModel.disconnectAll()
+                _finishUpdate()
             }
         }
+    }
+
+    /**完成固件升级*/
+    private fun _finishUpdate() {
+        itemIsFinish = true
+        itemIsUpdating = false
+        _finishTime = nowTime()
+        //断开蓝牙设备
+        apiModel.disconnectAll()
     }
 
     /**检查更新的固件版本是否匹配*/
@@ -261,8 +266,17 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 .enqueue { bean, error ->
                     bean?.parse<FirmwareUpdateParser>()?.let {
                         //进入模式成功, 开始发送数据
-                        DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
-                        listenerFinish()
+                        if (vmApp<LaserPeckerModel>().isBleProduct()) {
+                            DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
+                            listenerFinish()
+                        } else {
+                            DataCmd.data(info.data)
+                                .enqueue(CommandQueueHelper.FLAG_NO_RECEIVE) { bean, error ->
+                                    if (error == null) {
+                                        _finishUpdate()
+                                    }
+                                }
+                        }
                     }.elseNull {
                         itemIsUpdating = false
                         toast(_string(R.string.data_exception))

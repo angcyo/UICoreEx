@@ -282,6 +282,10 @@ object LaserPeckerHelper {
         }
     }
 
+    fun isBleDevice(deviceName: String?): Boolean {
+        return !isWifiDevice(deviceName) && !isHttpDevice(deviceName);
+    }
+
     /**指定的蓝牙设备名, 是否是wifi设备, wifi设备使用socket传输
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isWifiProduct]
      * */

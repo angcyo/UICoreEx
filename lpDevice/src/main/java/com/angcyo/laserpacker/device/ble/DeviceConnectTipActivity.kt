@@ -101,6 +101,10 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
             }
         }
 
+        /**指定的蓝牙设备名, 是否是ble设备*/
+        fun isBleDevice(deviceName: String?): Boolean =
+            LaserPeckerHelper.isBleDevice(formatDeviceName(deviceName))
+
         /**指定的蓝牙设备名, 是否是wifi设备*/
         fun isWifiDevice(deviceName: String?): Boolean =
             LaserPeckerHelper.isWifiDevice(formatDeviceName(deviceName))
