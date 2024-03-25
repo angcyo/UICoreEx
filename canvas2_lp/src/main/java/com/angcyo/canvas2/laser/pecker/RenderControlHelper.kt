@@ -27,6 +27,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeTypeSelectItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.EditControlItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.ImageFilterItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.LayerSortMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.PathOffsetItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.PathStyleItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.PathUnionMenuItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.RendererAlignMenuItem
@@ -699,20 +700,12 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
         }
 
-        var afterItemCount = 0 //后面item的数量, 用来控制是否需要绘制分割线
         val enablePathFill = HawkEngraveKeys.enablePathFill && !isLineShape
-        if (enablePathFill) {
-            afterItemCount++
-        }
         PathStyleItem()() {
             initItem(renderer)
             itemIco = R.drawable.canvas_style_fill_ico
             itemText = _string(R.string.canvas_fill)
             itemStyle = Paint.Style.FILL
-            if (afterItemCount <= 0) {
-                drawCanvasRight()
-            }
-            afterItemCount--
         }
         /*//有切割图层之后, 就不能出现这个了
         PathStyleItem()() {
@@ -728,9 +721,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemText = _string(R.string.canvas_path_fill)
                 itemNewHawkKeyStr = "pathFill"
                 itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-                if (afterItemCount <= 0) {
-                    drawCanvasRight()
-                }
                 itemUpdateCheckColorAction = {
                     if (LPPathElement.isPathFill(elementBean)) {
                         _color(R.color.colorAccent).alphaRatio(0.5f)
@@ -748,8 +738,13 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                         }
                     }
                 }
-                afterItemCount--
             }
+        }
+        //路径偏移
+        PathOffsetItem()() {
+            initItem(renderer)
+            itemFragment = fragment
+            drawCanvasRight()
         }
     }
 
@@ -765,6 +760,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             PathUnionMenuItem()() {
                 initItem(renderer)
                 itemEnable = !PathUnionMenuItem.disablePathUnion(renderer)
+            }
+            //路径偏移
+            PathOffsetItem()() {
+                initItem(renderer)
+                itemFragment = fragment
             }
         }
 

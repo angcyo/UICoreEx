@@ -525,6 +525,7 @@ object HawkEngraveKeys {
     /**最大切片下降高度*/
     var maxSliceHeight: Float by HawkPropertyValue<Any, Float>(1f)
 
+    @MM
     var lastOutlineSpan: Float by HawkPropertyValue<Any, Float>(2f)
     var lastOutlineKeepHole: Boolean by HawkPropertyValue<Any, Boolean>(true)
 

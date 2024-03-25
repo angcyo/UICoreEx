@@ -16,6 +16,7 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.renderer.PathRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.R
@@ -25,6 +26,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companio
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companion.APPLY_TYPE_SUBMIT
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.dialog.magicWandDialog
+import com.angcyo.canvas2.laser.pecker.dslitem.control.PathOpItem
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.core.CoreApplication
 import com.angcyo.core.component.file.writePerfLog
@@ -40,6 +42,7 @@ import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.L
 import com.angcyo.library.LTime
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -59,7 +62,9 @@ import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.angcyo.rust.handle.RustBitmapHandle
+import com.angcyo.toSVGStrokeContentVectorStr
 import com.angcyo.widget.span.span
+import com.hingin.lp1.hiprint.rust.LdsCore
 import com.hingin.rn.image.ImageProcess
 import java.io.File
 import kotlin.math.roundToInt
@@ -717,7 +722,7 @@ object LPBitmapHandler {
         }
     }
 
-    /**偏移*/
+    /**图片偏移*/
     fun handleOutline(
         delegate: CanvasRenderDelegate?,
         anchor: View,
@@ -831,6 +836,150 @@ object LPBitmapHandler {
                             svgRenderer?.translateCenterTo(
                                 targetCenterX,
                                 targetCenterY,
+                                Reason.code,
+                                Strategy.preview,
+                                null
+                            )
+                            svgRenderer
+                        }
+                    }) {
+                        it?.let {
+                            delegate?.renderManager?.addAfterRendererList(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**矢量/路径偏移, 支持多个路径
+     *
+     * [CanvasGroupRenderer]
+     * */
+    fun handlePathOffset(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner?,
+        renderer: BaseRenderer?,
+        onDismissAction: () -> Unit = {}
+    ) {
+        owner ?: return
+        renderer ?: return
+        val pathList = PathOpItem.getAllElementDrawPath(renderer);
+        if (pathList.isEmpty()) {
+            return
+        }
+
+        // pathList 对应的svg path路径数据, 在首次触发时生成.
+        var pathSvgPath: String? = null
+
+        val context = anchor.context
+        var svgRenderer: CanvasElementRenderer? = null
+
+        context.canvasRegulateWindow(anchor) {
+            addRegulate(
+                CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET,
+                HawkEngraveKeys.lastOutlineSpan
+            )
+            /*addRegulate(
+                CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE,
+                HawkEngraveKeys.lastOutlineKeepHole
+            )*/
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
+            firstApply = true
+            realTimeApply = true
+            onSubmitAction = { dismiss, submit ->
+                if (dismiss) {
+                    onDismissAction()
+                    svgRenderer?.let { svgRenderer ->
+                        delegate?.renderManager?.removeAfterRendererList(svgRenderer)
+                    }
+                } else if (submit) {
+                    svgRenderer?.let { svgRenderer ->
+                        val elementBean = svgRenderer.lpElementBean()
+                        delegate?.renderManager?.removeAfterRendererList(svgRenderer)
+                        if (elementBean?.data.isNullOrBlank()) {
+                            //空数据
+                        } else {
+                            //有效数据
+                            elementBean?.stroke = null // 清空颜色
+                            delegate?.renderManager?.addElementRenderer(
+                                svgRenderer,
+                                false,
+                                Reason.user,
+                                Strategy.normal
+                            )
+                        }
+                    }
+                } else {
+                    owner.engraveLoadingAsync({
+                        HawkEngraveKeys.lastOutlineSpan = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET,
+                            HawkEngraveKeys.lastOutlineSpan
+                        )
+                        /*HawkEngraveKeys.lastOutlineKeepHole = getBooleanOrDef(
+                            CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE,
+                            HawkEngraveKeys.lastOutlineKeepHole
+                        )*/
+
+                        //公差
+                        val svgTolerance = LibHawkKeys.svgTolerance
+
+                        if (pathSvgPath.isNullOrBlank()) {
+                            pathSvgPath =
+                                pathList.toSVGStrokeContentVectorStr(pathStep = svgTolerance)
+                            //pathSvgPath = pathList.toSvgPathContent(LibHawkKeys.svgTolerance)
+                        }
+
+                        pathSvgPath?.let { pathString ->
+                            LTime.tick()
+
+                            @Pixel
+                            val outlineSpan = HawkEngraveKeys.lastOutlineSpan.toPixel()
+
+                            val svgPath = LdsCore.pathOffset(
+                                pathString,
+                                outlineSpan.toDouble(),
+                                10.0,
+                                svgTolerance.toDouble()
+                            )
+                            "矢量偏移[${
+                                svgPath?.length?.toSizeString()
+                            }]耗时:${LTime.time()}".writePerfLog()
+
+                            if (svgRenderer == null) {
+                                val elementBean = LPElementBean().apply {
+                                    mtype = LPDataConstant.DATA_TYPE_SVG
+                                    this.data = svgPath
+                                    paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+                                    dataMode = LPDataConstant.DATA_MODE_GCODE
+                                    isCut = vmApp<DeviceStateModel>().haveCutLayer()
+                                    /*layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
+                                        LaserPeckerHelper.LAYER_CUT
+                                    } else {
+                                        LaserPeckerHelper.LAYER_LINE
+                                    }*/
+                                    stroke = Color.MAGENTA.toHexColorString()
+                                }
+                                svgRenderer =
+                                    LPRendererHelper.parseElementRenderer(elementBean, false)
+                            } else {
+                                svgRenderer?.lpPathElement()
+                                    ?.updateElementPathData(svgPath, svgRenderer)
+                            }
+                            //需要移动到的目标中心
+                            val rendererBounds = renderer.getRendererBounds()
+                            var targetX = rendererBounds?.left ?: 0f
+                            var targetY = rendererBounds?.top ?: 0f
+
+                            svgRenderer?.lpPathElement()?.pathList?.computePathBounds()?.let {
+                                targetX = it.left
+                                targetY = it.top
+                            }
+
+                            svgRenderer?.translateLeftTo(
+                                targetX,
+                                targetY,
                                 Reason.code,
                                 Strategy.preview,
                                 null

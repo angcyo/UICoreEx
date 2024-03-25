@@ -32,6 +32,29 @@ import com.angcyo.toSVGStrokeContentVectorStr
 class PathOpItem : CanvasIconItem() {
 
     companion object {
+
+        /**获取元素的所有绘制路径*/
+        fun getAllElementDrawPath(renderer: BaseRenderer?): List<Path> {
+            val result = mutableListOf<Path>()
+            renderer?.let {
+                val elementList = it.getSingleElementList()
+                for (element in elementList) {
+                    if (element is LPPathElement) {
+                        RenderHelper.translateToRender(element.getDrawPathList(), element.renderProperty)
+                            ?.let {
+                                result.addAll(it)
+                            }
+                    } else if (element is LPBitmapElement) {
+                        RenderHelper.translateToRender(element.getDrawPathList(), element.renderProperty)
+                            ?.let {
+                                result.addAll(it)
+                            }
+                    }
+                }
+            }
+            return result
+        }
+
         /**合并元素*/
         fun opElement(
             op: Path.Op?,
