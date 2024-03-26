@@ -29,7 +29,7 @@
   "lpSupportFirmware": "253~269 272~299 314~349 358~369 373~399 4000~4099 4100~4199 4200~4299 4300~4399 550~599 5510~5510 5513~5599 650~699 6500~6599 700~799 7000~7999 800~899 8000~8499 90000~91000",
   "lpSupportFirmwareDebug": "253~269 272~299 314~349 358~369 373~399 4300~4399 550~599 5510~5510 5513~5599 650~699 6500~6599 700~799 7000~7999 800~899 8000~8499",
   "lpBatchEngraveFirmware": null,
-  "showOverScanDelayRange": "655~699 800~899",
+  "showOverScanDelayRange": "655~699 800~899 8000~8499",
   "closeCanvasItemsFun": null,
   "closeImageEditItemsFun": null,
   "closeTextEditItemsFun": null,
