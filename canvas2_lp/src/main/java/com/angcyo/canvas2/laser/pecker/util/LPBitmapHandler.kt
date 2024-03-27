@@ -940,7 +940,7 @@ object LPBitmapHandler {
                             val svgPath = LdsCore.pathOffset(
                                 pathString,
                                 outlineSpan.toDouble(),
-                                10.0,
+                                100.0,
                                 svgTolerance.toDouble()
                             )
                             "矢量偏移[${

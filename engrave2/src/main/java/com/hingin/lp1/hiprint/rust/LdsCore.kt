@@ -37,14 +37,14 @@ object LdsCore {
      * 矢量偏移
      * @param svg_path svg path 路径，例如 "M 100，10 L100 200"
      * @param offset 偏移量
-     * @param factor 缩放量，如果不知道就填 10
+     * @param factor 缩放量，如果不知道就填 100
      * @param tolerance 公差推荐 1e-2
      * @return svg 路径
      */
     external fun pathOffset(
         svg_path: String?,
         offset: Double,
-        factor: Double = 10.0,
+        factor: Double = 100.0,
         tolerance: Double = 1e-2
     ): String?
 
